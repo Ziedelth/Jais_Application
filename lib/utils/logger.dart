@@ -3,16 +3,13 @@ import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 
 class Logger {
-  static const int limit = 5000;
+  static const int limit = 250;
   static final GetStorage box = GetStorage();
   static const String key = 'logger';
-  static List<String> logs = [];
+  static List<dynamic> logs = [];
 
   static void init() {
-    (box.read(key) ?? [])
-        .map((e) => e.toString())
-        .toList()
-        .forEach((e) => logs.add(e));
+    // logs.addAll((box.read(key) ?? []).map((e) => e.toString()).toList());
   }
 
   static void log({required LogType logType, required String message}) {

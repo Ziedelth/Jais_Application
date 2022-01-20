@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:jais/components/episode_loader_widget.dart';
 import 'package:jais/components/skeleton.dart';
 import 'package:jais/models/episode.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -70,22 +72,16 @@ class EpisodeWidget extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  CircleWidget(
-                    widget: Image.network(
-                      'https://ziedelth.fr/${episode.platform.image}',
-                      width: 25,
-                      height: 25,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) {
-                          return child;
-                        } else {
-                          return const Skeleton(
-                            width: 25,
-                            height: 25,
-                          );
-                        }
-                      },
-                    ),
+                  CachedNetworkImage(
+                    imageUrl: 'https://ziedelth.fr/${episode.platform.image}',
+                    imageBuilder: (context, imageProvider) =>
+                        CircleWidget(widget: Image(image: imageProvider)),
+                    placeholder: (context, url) =>
+                        const Skeleton(width: 25, height: 25),
+                    errorWidget: (context, url, error) =>
+                        const Skeleton(width: 25, height: 25),
+                    width: 25,
+                    height: 25,
                   ),
                   const Padding(
                     padding: EdgeInsets.only(left: 10),
@@ -135,7 +131,7 @@ class EpisodeWidget extends StatelessWidget {
               ),
               RoundBorderWidget(
                 widget: GestureDetector(
-                  child: Image.network(
+                  /*child: Image.network(
                     'https://ziedelth.fr/${episode.image}',
                     loadingBuilder: (context, child, loadingProgress) {
                       if (loadingProgress == null) {
@@ -146,6 +142,12 @@ class EpisodeWidget extends StatelessWidget {
                         );
                       }
                     },
+                  ),*/
+                  child: CachedNetworkImage(
+                    imageUrl: 'https://ziedelth.fr/${episode.image}',
+                    placeholder: (context, url) => const Skeleton(height: 200),
+                    errorWidget: (context, url, error) =>
+                        const Skeleton(height: 200),
                   ),
                   onTap: () {
                     launch(episode.url);

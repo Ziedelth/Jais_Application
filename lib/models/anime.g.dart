@@ -13,9 +13,6 @@ Anime _$AnimeFromJson(Map<String, dynamic> json) {
     json['name'] as String,
     json['image'] as String,
     json['description'] as String,
-    (json['genres'] as List)
-        .map((e) => Genre.fromJson(e as Map<String, dynamic>))
-        .toList(),
   );
 }
 
@@ -25,5 +22,4 @@ Map<String, dynamic> _$AnimeToJson(Anime instance) => <String, dynamic>{
       'name': instance.name,
       'image': instance.image,
       'description': instance.description,
-      'genres': instance.genres.map((e) => e.toJson()).toList(),
     };

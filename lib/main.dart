@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -43,52 +44,48 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 0, episodesLimit = 9;
-  late Future<List<Episode>?> _request;
+  final int limit = 9;
+  int _currentIndex = 0, _currentPage = 1;
+  final ValueNotifier<List<Widget>> _request = ValueNotifier<List<Widget>>(List.filled(9, const EpisodeLoaderWidget(), growable: true));
   final ScrollController _scrollController = ScrollController();
 
-  Future<List<Episode>?> makeRequest() async {
+  Future<void> makeRequest() async {
     Logger.info(message: 'Fetching latest episodes...');
 
     try {
-      Logger.debug(message: 'Making request...');
+      final String url = 'https://ziedelth.fr/php/v1/episodes.php?limit=$limit&page=$_currentPage';
+      Logger.debug(message: 'Making request $url...');
+
       final http.Response response = await http.get(
         Uri.parse(
-          'https://ziedelth.fr/php/v1/episodes.php?limit=$episodesLimit',
+          url,
         ),
       );
 
       if (response.statusCode == 201) {
-        Logger.debug(message: 'Good response! Body: ${response.body}');
+        Logger.debug(message: 'Good response!');
+        _request.value.removeWhere((element) => element is EpisodeLoaderWidget);
+        _request.value.addAll((jsonDecode(response.body) as List<dynamic>).map((e) => EpisodeWidget(episode: Episode.fromJson(e))).toList());
 
-        return (jsonDecode(response.body) as List<dynamic>)
-            .map((e) => Episode.fromJson(e))
-            .toList();
+        setState(() => {});
       } else {
         Logger.warn(message: 'Bad response! Body: ${response.body}');
-        return null;
       }
     } catch (exception, stacktrace) {
       Logger.error(message: 'Error : $exception - ${stacktrace.toString()}');
-      return null;
     }
-  }
-
-  void update() {
-    setState(() {
-      _request = makeRequest();
-    });
   }
 
   @override
   void initState() {
     super.initState();
-    _request = makeRequest();
+    makeRequest();
 
-    _scrollController.addListener(() {
+    _scrollController.addListener(() async {
       if (_scrollController.position.extentAfter <= 0) {
-        episodesLimit += 9;
-        update();
+        _currentPage++;
+        setState(() => _request.value.addAll(List.filled(limit, const EpisodeLoaderWidget(), growable: true)));
+        await makeRequest();
       }
     });
   }
@@ -101,31 +98,19 @@ class _MyHomePageState extends State<MyHomePage> {
         child: SafeArea(
           child: Center(
             child: <Widget>[
-              FutureBuilder<List<Episode>?>(
-                future: _request,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    if (snapshot.data != null) {
-                      final List<Episode> episodes = snapshot.data!;
-
-                      return ListView.builder(
-                        controller: _scrollController,
-                        itemCount: episodes.length,
-                        itemBuilder: (context, index) {
-                          return EpisodeWidget(episode: episodes[index]);
-                        },
-                      );
-                    } else {
-                      return Container();
-                    }
-                  } else {
-                    return ListView.builder(
-                      itemCount: 5,
+              ValueListenableBuilder(
+                valueListenable: _request,
+                builder: (context, List<Widget> value, child) {
+                  return RefreshIndicator(
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      itemCount: value.length,
                       itemBuilder: (context, index) {
-                        return const EpisodeLoaderWidget();
+                        return value[index];
                       },
-                    );
-                  }
+                    ),
+                    onRefresh: () async => await makeRequest(),
+                  );
                 },
               ),
               const Loading(),
@@ -136,7 +121,10 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Theme.of(context).primaryColor,
         currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
+        onTap: (index) {
+          setState(() => _currentIndex = index);
+          _scrollController.animateTo(0.0, curve: Curves.easeOut, duration: const Duration(milliseconds: 1000));
+        },
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
