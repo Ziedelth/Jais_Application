@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:jais/components/episode_loader_widget.dart';
+import 'package:jais/components/roundborder_widget.dart';
 import 'package:jais/components/skeleton.dart';
 import 'package:jais/models/episode.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'circle_widget.dart';
 
 class EpisodeWidget extends StatelessWidget {
   final Episode episode;
@@ -131,18 +133,6 @@ class EpisodeWidget extends StatelessWidget {
               ),
               RoundBorderWidget(
                 widget: GestureDetector(
-                  /*child: Image.network(
-                    'https://ziedelth.fr/${episode.image}',
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) {
-                        return child;
-                      } else {
-                        return const Skeleton(
-                          height: 200,
-                        );
-                      }
-                    },
-                  ),*/
                   child: CachedNetworkImage(
                     imageUrl: 'https://ziedelth.fr/${episode.image}',
                     placeholder: (context, url) => const Skeleton(height: 200),
@@ -168,40 +158,6 @@ class EpisodeWidget extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class CircleWidget extends StatelessWidget {
-  final Widget widget;
-
-  const CircleWidget({
-    required this.widget,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(360),
-      child: widget,
-    );
-  }
-}
-
-class RoundBorderWidget extends StatelessWidget {
-  final Widget widget;
-
-  const RoundBorderWidget({
-    required this.widget,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: widget,
     );
   }
 }
