@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jais/components/skeleton.dart';
 
-class EpisodeLoaderWidget extends StatelessWidget {
-  const EpisodeLoaderWidget({
+class ScanLoaderWidget extends StatelessWidget {
+  const ScanLoaderWidget({
     Key? key,
   }) : super(key: key);
 
@@ -37,17 +37,9 @@ class EpisodeLoaderWidget extends StatelessWidget {
                     height: 30,
                   ),
                 ],
-              ),
+              ), // Animé
               const Padding(
                 padding: EdgeInsets.only(top: 10),
-              ),
-              Row(
-                children: const [
-                  Skeleton(
-                    width: 150,
-                    height: 20,
-                  ),
-                ],
               ),
               Row(
                 children: const [
@@ -56,21 +48,7 @@ class EpisodeLoaderWidget extends StatelessWidget {
                     height: 20,
                   ),
                 ],
-              ),
-              Row(
-                children: const [
-                  Skeleton(
-                    width: 100,
-                    height: 20,
-                  ),
-                ],
-              ),
-              const Padding(
-                padding: EdgeInsets.only(top: 10),
-              ),
-              const Skeleton(
-                height: 200,
-              ),
+              ), // Info
               const Padding(
                 padding: EdgeInsets.only(top: 10),
               ),
@@ -81,7 +59,7 @@ class EpisodeLoaderWidget extends StatelessWidget {
                     height: 20,
                   ),
                 ],
-              ),
+              ), // Time since
             ],
           ),
         ),

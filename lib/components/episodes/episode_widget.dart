@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:jais/components/roundborder_widget.dart';
 import 'package:jais/components/skeleton.dart';
 import 'package:jais/models/episode.dart';
+import 'package:jais/utils/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'circle_widget.dart';
+import '../circle_widget.dart';
 
 class EpisodeWidget extends StatelessWidget {
   final Episode episode;
@@ -26,33 +27,6 @@ class EpisodeWidget extends StatelessWidget {
     } else {
       return '$twoDigitMinutes:$twoDigitSeconds';
     }
-  }
-
-  String _printTimeSince(DateTime dateTime) {
-    final double seconds = (DateTime.now().millisecondsSinceEpoch.floor() -
-            dateTime.millisecondsSinceEpoch.floor()) /
-        1000;
-    double interval = seconds / 31536000;
-    if (interval > 1) {
-      return '${interval.floor()} an${interval >= 2 ? 's' : ''}';
-    }
-    interval = seconds / 2592000;
-    if (interval > 1) {
-      return '${interval.floor()} mois';
-    }
-    interval = seconds / 86400;
-    if (interval > 1) {
-      return '${interval.floor()} jour${interval >= 2 ? 's' : ''}';
-    }
-    interval = seconds / 3600;
-    if (interval > 1) {
-      return '${interval.floor()} heure${interval >= 2 ? 's' : ''}';
-    }
-    interval = seconds / 60;
-    if (interval > 1) {
-      return '${interval.floor()} minute${interval >= 2 ? 's' : ''}';
-    }
-    return 'A l\'instant';
   }
 
   @override
@@ -150,7 +124,7 @@ class EpisodeWidget extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    'Il y a ${_printTimeSince(DateTime.parse(episode.releaseDate))}',
+                    'Il y a ${Utils.printTimeSince(DateTime.parse(episode.releaseDate))}',
                   ),
                 ],
               ),
