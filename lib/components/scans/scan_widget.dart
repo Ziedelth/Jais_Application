@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:jais/components/circle_widget.dart';
 import 'package:jais/components/skeleton.dart';
 import 'package:jais/models/scan.dart';
-import 'package:jais/components/circle_widget.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -36,9 +36,9 @@ class ScanWidget extends StatelessWidget {
                       imageBuilder: (context, imageProvider) =>
                           CircleWidget(widget: Image(image: imageProvider)),
                       placeholder: (context, url) =>
-                      const Skeleton(width: 25, height: 25),
+                          const Skeleton(width: 25, height: 25),
                       errorWidget: (context, url, error) =>
-                      const Skeleton(width: 25, height: 25),
+                          const Skeleton(width: 25, height: 25),
                       width: 25,
                       height: 25,
                     ),
@@ -49,7 +49,9 @@ class ScanWidget extends StatelessWidget {
                       child: Text(
                         scan.anime.name,
                         style: TextStyle(
-                            color: Theme.of(context).primaryColor, fontSize: 18),
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 18,
+                        ),
                       ),
                     ),
                   ],

@@ -7,7 +7,8 @@ part 'anime.g.dart';
 class Anime {
   final int id;
   final Country country;
-  final String name, image, description;
+  final String name, image;
+  final String? description;
 
   Anime(this.id, this.country, this.name, this.image, this.description);
 

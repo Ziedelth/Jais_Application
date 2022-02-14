@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jais/utils/utils.dart';
+import 'package:jais/utils/scan_mapper.dart';
 
 class ScansView extends StatefulWidget {
   const ScansView({Key? key}) : super(key: key);
@@ -10,37 +10,40 @@ class ScansView extends StatefulWidget {
 
 class _ScansViewState extends State<ScansView> {
   final ScrollController _scrollController = ScrollController();
+  bool _isLoading = true;
 
   Future<void> rebuildScans() async {
-    await Utils.updateCurrentPageScans(
-      onSuccess: () => setState(() {}),
+    await ScanMapper.updateCurrentPage(
+      onSuccess: () => setState(() {
+        _isLoading = false;
+      }),
     );
   }
 
   @override
   void initState() {
-    Utils.clearScans();
+    super.initState();
+
+    ScanMapper.clear();
     rebuildScans();
 
     _scrollController.addListener(() async {
-      if (_scrollController.position.extentAfter <= 0) {
-        Utils.scanCurrentPage++;
-        Utils.addLoaderScans();
-        setState(() {});
+      if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
+        _isLoading = true;
+        ScanMapper.currentPage++;
+        ScanMapper.addLoader();
         await rebuildScans();
       }
     });
-
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       controller: _scrollController,
-      itemCount: Utils.scans.length,
+      itemCount: ScanMapper.list.length,
       itemBuilder: (context, index) {
-        return Utils.scans[index];
+        return ScanMapper.list[index];
       },
     );
   }

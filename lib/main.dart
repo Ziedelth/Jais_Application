@@ -4,12 +4,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:jais/components/loading_widget.dart';
 import 'package:jais/utils/logger.dart';
 import 'package:jais/utils/main_color.dart';
+import 'package:jais/views/animes_view.dart';
 import 'package:jais/views/episodes_view.dart';
 import 'package:jais/views/scans_view.dart';
-
-import 'components/loading_widget.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -68,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: <Widget>[
               const EpisodesView(),
               const ScansView(),
-              const Loading(),
+              const AnimesView(),
             ].elementAt(_currentIndex),
           ),
         ),
@@ -88,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.airplay),
-            label: 'Animés',
+            label: 'Animes',
           ),
         ],
       ),

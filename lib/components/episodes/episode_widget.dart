@@ -1,33 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:jais/components/circle_widget.dart';
 import 'package:jais/components/roundborder_widget.dart';
 import 'package:jais/components/skeleton.dart';
 import 'package:jais/models/episode.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../circle_widget.dart';
-
 class EpisodeWidget extends StatelessWidget {
   final Episode episode;
 
   const EpisodeWidget({required this.episode, Key? key}) : super(key: key);
-
-  String _printDuration(Duration duration) {
-    if (duration.isNegative) {
-      return '??:??';
-    }
-
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-
-    if ((int.tryParse(twoDigits(duration.inHours)) ?? 0) > 0) {
-      return '${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds';
-    } else {
-      return '$twoDigitMinutes:$twoDigitSeconds';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +49,9 @@ class EpisodeWidget extends StatelessWidget {
                     child: Text(
                       episode.anime.name,
                       style: TextStyle(
-                          color: Theme.of(context).primaryColor, fontSize: 18),
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 18,
+                      ),
                     ),
                   ),
                 ],
@@ -99,7 +84,9 @@ class EpisodeWidget extends StatelessWidget {
                   const Padding(
                     padding: EdgeInsets.only(left: 5),
                   ),
-                  Text(_printDuration(Duration(seconds: episode.duration))),
+                  Text(
+                    Utils.printDuration(Duration(seconds: episode.duration)),
+                  ),
                 ],
               ),
               const Padding(

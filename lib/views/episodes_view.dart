@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jais/utils/utils.dart';
+import 'package:jais/utils/episode_mapper.dart';
 
 class EpisodesView extends StatefulWidget {
   const EpisodesView({Key? key}) : super(key: key);
@@ -10,10 +10,13 @@ class EpisodesView extends StatefulWidget {
 
 class _EpisodesViewState extends State<EpisodesView> {
   final ScrollController _scrollController = ScrollController();
+  bool _isLoading = true;
 
   Future<void> rebuildEpisodes() async {
-    await Utils.updateCurrentPageEpisodes(
-      onSuccess: () => setState(() {}),
+    await EpisodeMapper.updateCurrentPage(
+      onSuccess: () => setState(() {
+        _isLoading = false;
+      }),
     );
   }
 
@@ -21,13 +24,14 @@ class _EpisodesViewState extends State<EpisodesView> {
   void initState() {
     super.initState();
 
-    Utils.clearEpisodes();
+    EpisodeMapper.clear();
     rebuildEpisodes();
 
     _scrollController.addListener(() async {
-      if (_scrollController.position.extentAfter <= 0) {
-        Utils.episodeCurrentPage++;
-        Utils.addLoaderEpisodes();
+      if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
+        _isLoading = true;
+        EpisodeMapper.currentPage++;
+        EpisodeMapper.addLoader();
         await rebuildEpisodes();
       }
     });
@@ -37,9 +41,9 @@ class _EpisodesViewState extends State<EpisodesView> {
   Widget build(BuildContext context) {
     return ListView.builder(
       controller: _scrollController,
-      itemCount: Utils.episodes.length,
+      itemCount: EpisodeMapper.list.length,
       itemBuilder: (context, index) {
-        return Utils.episodes[index];
+        return EpisodeMapper.list[index];
       },
     );
   }

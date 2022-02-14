@@ -25,8 +25,7 @@ class Scan {
     this.url,
   );
 
-  factory Scan.fromJson(Map<String, dynamic> data) =>
-      _$ScanFromJson(data);
+  factory Scan.fromJson(Map<String, dynamic> data) => _$ScanFromJson(data);
 
   Map<String, dynamic> toJson() => _$ScanToJson(this);
 }
