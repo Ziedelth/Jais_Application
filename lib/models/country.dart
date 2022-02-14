@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'country.g.dart';
 
-@JsonSerializable(explicitToJson: true, nullable: false)
+@JsonSerializable(explicitToJson: true)
 class Country {
   final int id;
   final String tag, name, flag, season;

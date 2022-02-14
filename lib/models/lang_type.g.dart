@@ -6,13 +6,11 @@ part of 'lang_type.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-LangType _$LangTypeFromJson(Map<String, dynamic> json) {
-  return LangType(
-    json['id'] as int,
-    json['name'] as String,
-    json['fr'] as String,
-  );
-}
+LangType _$LangTypeFromJson(Map<String, dynamic> json) => LangType(
+      json['id'] as int,
+      json['name'] as String,
+      json['fr'] as String,
+    );
 
 Map<String, dynamic> _$LangTypeToJson(LangType instance) => <String, dynamic>{
       'id': instance.id,

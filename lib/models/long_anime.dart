@@ -5,7 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'long_anime.g.dart';
 
-@JsonSerializable(explicitToJson: true, nullable: false)
+@JsonSerializable(explicitToJson: true)
 class LongAnime {
   final List<Season> seasons;
   final List<Genre> genres;

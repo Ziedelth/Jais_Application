@@ -6,17 +6,15 @@ part of 'scan.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Scan _$ScanFromJson(Map<String, dynamic> json) {
-  return Scan(
-    Platform.fromJson(json['platform'] as Map<String, dynamic>),
-    Anime.fromJson(json['anime'] as Map<String, dynamic>),
-    EpisodeType.fromJson(json['episodeType'] as Map<String, dynamic>),
-    LangType.fromJson(json['langType'] as Map<String, dynamic>),
-    json['releaseDate'] as String,
-    json['number'] as int,
-    json['url'] as String,
-  );
-}
+Scan _$ScanFromJson(Map<String, dynamic> json) => Scan(
+      Platform.fromJson(json['platform'] as Map<String, dynamic>),
+      Anime.fromJson(json['anime'] as Map<String, dynamic>),
+      EpisodeType.fromJson(json['episodeType'] as Map<String, dynamic>),
+      LangType.fromJson(json['langType'] as Map<String, dynamic>),
+      json['releaseDate'] as String,
+      json['number'] as int,
+      json['url'] as String,
+    );
 
 Map<String, dynamic> _$ScanToJson(Scan instance) => <String, dynamic>{
       'platform': instance.platform.toJson(),

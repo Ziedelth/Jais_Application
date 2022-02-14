@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'anime.g.dart';
 
-@JsonSerializable(explicitToJson: true, nullable: false)
+@JsonSerializable(explicitToJson: true)
 class Anime {
   final int id;
   final Country country;
