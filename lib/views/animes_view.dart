@@ -149,7 +149,7 @@ class _AnimesViewState extends State<AnimesView> {
 
                   Utils.request(
                     'https://ziedelth.fr/php/v1/get_anime.php?id=${anime.id}',
-                    201,
+                    200,
                     (p0) {
                       _longAnime = LongAnime.fromJson(jsonDecode(p0));
                       _selectedSeason = _longAnime?.seasons.isNotEmpty == true

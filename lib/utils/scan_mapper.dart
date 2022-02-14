@@ -25,7 +25,7 @@ class ScanMapper {
       {Function? onSuccess, Function? onFailure}) async {
     await Utils.request(
       'https://ziedelth.fr/php/v1/scans.php?limit=$limit&page=$currentPage',
-      201,
+      200,
       (success) {
         list.removeWhere((element) => element is ScanLoaderWidget);
         list.addAll((jsonDecode(success) as List<dynamic>)

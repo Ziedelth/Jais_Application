@@ -32,6 +32,7 @@ class _ScansViewState extends State<ScansView> {
         _isLoading = true;
         ScanMapper.currentPage++;
         ScanMapper.addLoader();
+        setState(() {});
         await rebuildScans();
       }
     });

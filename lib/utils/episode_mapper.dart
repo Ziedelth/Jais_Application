@@ -26,7 +26,7 @@ class EpisodeMapper {
       {Function? onSuccess, Function? onFailure}) async {
     await Utils.request(
       'https://ziedelth.fr/php/v1/episodes.php?limit=$limit&page=$currentPage',
-      201,
+      200,
       (success) {
         list.removeWhere((element) => element is EpisodeLoaderWidget);
         list.addAll((jsonDecode(success) as List<dynamic>)

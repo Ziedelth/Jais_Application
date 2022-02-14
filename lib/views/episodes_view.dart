@@ -32,6 +32,7 @@ class _EpisodesViewState extends State<EpisodesView> {
         _isLoading = true;
         EpisodeMapper.currentPage++;
         EpisodeMapper.addLoader();
+        setState(() {});
         await rebuildEpisodes();
       }
     });
