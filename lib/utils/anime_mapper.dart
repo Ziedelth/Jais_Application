@@ -19,7 +19,7 @@ class AnimeMapper {
 
   static Future<void> update({Function? onSuccess, Function? onFailure}) async {
     await Utils.request(
-      'https://ziedelth.fr/php/v1/animes.php',
+      'https://ziedelth.fr/php/v1/jais/animes.php',
       200,
       (success) {
         list.removeWhere((element) => element is AnimeLoaderWidget);

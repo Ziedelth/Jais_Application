@@ -24,7 +24,7 @@ class ScanMapper {
   static Future<void> updateCurrentPage(
       {Function? onSuccess, Function? onFailure}) async {
     await Utils.request(
-      'https://ziedelth.fr/php/v1/scans.php?limit=$limit&page=$currentPage',
+      'https://ziedelth.fr/php/v1/jais/scans.php?limit=$limit&page=$currentPage',
       200,
       (success) {
         list.removeWhere((element) => element is ScanLoaderWidget);

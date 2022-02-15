@@ -1,10 +1,10 @@
 import 'dart:ui';
 
 class MainColor {
-  static const int mainColor = 0xFFAD090A;
-  static const int redMainColor = 173;
-  static const int greenMainColor = 9;
-  static const int blueMainColor = 10;
+  static const int mainColor = 0xFFf6a65f;
+  static const int redMainColor = 246;
+  static const int greenMainColor = 166;
+  static const int blueMainColor = 95;
 
   static final Map<int, Color> mainColors = {
     50: const Color.fromRGBO(

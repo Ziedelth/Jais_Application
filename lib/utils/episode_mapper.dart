@@ -25,7 +25,7 @@ class EpisodeMapper {
   static Future<void> updateCurrentPage(
       {Function? onSuccess, Function? onFailure}) async {
     await Utils.request(
-      'https://ziedelth.fr/php/v1/episodes.php?limit=$limit&page=$currentPage',
+      'https://ziedelth.fr/php/v1/jais/episodes.php?limit=$limit&page=$currentPage',
       200,
       (success) {
         list.removeWhere((element) => element is EpisodeLoaderWidget);
