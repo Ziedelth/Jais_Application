@@ -1,7 +1,5 @@
 import 'package:http/http.dart' as http;
 
-import 'logger.dart';
-
 class Utils {
   static String printTimeSince(DateTime dateTime) {
     final double seconds = (DateTime.now().millisecondsSinceEpoch.floor() -
@@ -60,8 +58,6 @@ class Utils {
   static Future<void> request(String url, int successCode,
       Function(String) onSuccess, Function(String) onFailure) async {
     try {
-      Logger.debug(message: 'Making request $url...');
-
       final http.Response response = await http.get(
         Uri.parse(
           url,
@@ -69,15 +65,12 @@ class Utils {
       );
 
       if (response.statusCode != successCode) {
-        Logger.warn(message: 'Bad response! Body: ${response.body}');
         onFailure(response.body);
         return;
       }
 
-      Logger.info(message: 'Good response!');
       onSuccess(response.body);
     } catch (exception, stacktrace) {
-      Logger.error(message: 'Error : $exception - ${stacktrace.toString()}');
       onFailure(stacktrace.toString());
     }
   }

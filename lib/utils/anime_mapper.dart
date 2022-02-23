@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:jais/components/animes/anime_loader_widget.dart';
 import 'package:jais/components/animes/anime_widget.dart';
 import 'package:jais/models/anime.dart';
-import 'package:jais/utils/logger.dart';
 import 'package:jais/utils/utils.dart';
 
 class AnimeMapper {
@@ -37,12 +36,10 @@ class AnimeMapper {
 
   static void onSearch(String value) {
     if (value.isEmpty) {
-      Logger.info(message: "Clear anime search");
       filtered = list;
       return;
     }
 
-    Logger.info(message: "Search anime: $value");
     filtered = list
         .where((element) =>
             element is AnimeWidget &&

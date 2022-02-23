@@ -4,18 +4,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:jais/utils/logger.dart';
 import 'package:jais/utils/main_color.dart';
 import 'package:jais/views/animes_view.dart';
-import 'package:jais/views/episodes_view.dart';
-import 'package:jais/views/scans_view.dart';
+import 'package:jais/views/home_view.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await GetStorage.init();
-  Logger.init();
 
   FirebaseMessaging.instance.subscribeToTopic("animes");
   // FirebaseMessaging.instance.unsubscribeFromTopic("animes");
@@ -26,8 +23,6 @@ Future<void> main() async {
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   await GetStorage.init();
-  Logger.init();
-  Logger.debug(message: 'A bg message just showed up :  ${message.messageId}');
 }
 
 class MyApp extends StatelessWidget {
@@ -65,28 +60,26 @@ class _MyHomePageState extends State<MyHomePage> {
         child: SafeArea(
           child: Center(
             child: <Widget>[
-              const EpisodesView(),
-              const ScansView(),
+              const HomeView(),
               const AnimesView(),
             ].elementAt(_currentIndex),
           ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        backgroundColor: Colors.black,
         selectedItemColor: Theme.of(context).primaryColor,
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Épisodes',
+            label: 'Accueil',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'Scans',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.airplay),
+            icon: Icon(Icons.collections_bookmark),
             label: 'Animes',
           ),
         ],

@@ -41,11 +41,11 @@ class _EpisodesViewState extends State<EpisodesView> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      addAutomaticKeepAlives: false,
+      addRepaintBoundaries: false,
       controller: _scrollController,
       itemCount: EpisodeMapper.list.length,
-      itemBuilder: (context, index) {
-        return EpisodeMapper.list[index];
-      },
+      itemBuilder: (context, index) => EpisodeMapper.list[index],
     );
   }
 }

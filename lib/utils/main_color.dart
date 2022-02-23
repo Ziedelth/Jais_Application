@@ -5,6 +5,12 @@ class MainColor {
   static const int redMainColor = 246;
   static const int greenMainColor = 166;
   static const int blueMainColor = 95;
+  static const Color mainColorO = Color.fromRGBO(
+    redMainColor,
+    greenMainColor,
+    blueMainColor,
+    1.0,
+  );
 
   static final Map<int, Color> mainColors = {
     50: const Color.fromRGBO(

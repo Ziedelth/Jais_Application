@@ -10,6 +10,9 @@ LongAnime _$LongAnimeFromJson(Map<String, dynamic> json) => LongAnime(
       (json['seasons'] as List<dynamic>)
           .map((e) => Season.fromJson(e as Map<String, dynamic>))
           .toList(),
+      (json['scans'] as List<dynamic>)
+          .map((e) => Scan.fromJson(e as Map<String, dynamic>))
+          .toList(),
       (json['genres'] as List<dynamic>)
           .map((e) => Genre.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -20,8 +23,10 @@ LongAnime _$LongAnimeFromJson(Map<String, dynamic> json) => LongAnime(
       json['description'] as String?,
     );
 
-Map<String, dynamic> _$LongAnimeToJson(LongAnime instance) => <String, dynamic>{
+Map<String, dynamic> _$LongAnimeToJson(LongAnime instance) =>
+    <String, dynamic>{
       'seasons': instance.seasons.map((e) => e.toJson()).toList(),
+      'scans': instance.scans.map((e) => e.toJson()).toList(),
       'genres': instance.genres.map((e) => e.toJson()).toList(),
       'id': instance.id,
       'country': instance.country.toJson(),
