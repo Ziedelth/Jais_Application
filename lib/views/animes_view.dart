@@ -78,6 +78,8 @@ class _AnimesViewState extends State<AnimesView> {
         const Padding(padding: EdgeInsets.only(top: 10)),
         Expanded(
           child: ListView.builder(
+            addAutomaticKeepAlives: false,
+            addRepaintBoundaries: false,
             itemCount: AnimeMapper.filtered.length,
             itemBuilder: (context, index) {
               final Widget widget = AnimeMapper.filtered[index];
@@ -102,13 +104,13 @@ class _AnimesViewState extends State<AnimesView> {
                   Utils.request(
                     'https://ziedelth.fr/php/v1/jais/get_anime.php?id=${anime.id}&sort=asc',
                     200,
-                    (p0) {
+                        (p0) {
                       _longAnime = LongAnime.fromJson(jsonDecode(p0));
                       _hasTap = true;
                       Navigator.pop(context);
                       setState(() {});
                     },
-                    (p0) => null,
+                        (p0) => null,
                   );
                 },
               );
@@ -348,6 +350,8 @@ class _EpisodesDetailsViewState extends State<EpisodesDetailsView> {
         ),
         Expanded(
           child: ListView.builder(
+            addAutomaticKeepAlives: false,
+            addRepaintBoundaries: false,
             controller: ScrollController(),
             itemCount: _selectedSeason!.episodes.length,
             itemBuilder: (context, index) => EpisodeWidget(
@@ -386,6 +390,8 @@ class ScansDetailsView extends StatelessWidget {
       children: [
         Expanded(
           child: ListView.builder(
+            addAutomaticKeepAlives: false,
+            addRepaintBoundaries: false,
             controller: ScrollController(),
             itemCount: _longAnime.scans.length,
             itemBuilder: (context, index) => ScanWidget(

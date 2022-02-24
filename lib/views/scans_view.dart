@@ -41,6 +41,8 @@ class _ScansViewState extends State<ScansView> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      addAutomaticKeepAlives: false,
+      addRepaintBoundaries: false,
       controller: _scrollController,
       itemCount: ScanMapper.list.length,
       itemBuilder: (context, index) {

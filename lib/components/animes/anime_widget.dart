@@ -30,18 +30,24 @@ class AnimeWidget extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text(
-                          anime.name,
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 18,
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            anime.name,
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 18,
+                            ),
                           ),
                         ),
-                        Text(
-                          anime.description ??
-                              'Aucune description pour le moment',
-                          maxLines: 5,
-                          overflow: TextOverflow.ellipsis,
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            anime.description ??
+                                'Aucune description pour le moment',
+                            maxLines: 5,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ],
                     ),
