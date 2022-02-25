@@ -33,8 +33,12 @@ class ScanWidget extends StatelessWidget {
                   children: [
                     CachedNetworkImage(
                       imageUrl: 'https://ziedelth.fr/${scan.platform.image}',
-                      imageBuilder: (context, imageProvider) =>
-                          CircleWidget(widget: Image(image: imageProvider)),
+                      imageBuilder: (context, imageProvider) => CircleWidget(
+                        widget: Image(
+                          image: imageProvider,
+                          fit: BoxFit.fill,
+                        ),
+                      ),
                       placeholder: (context, url) =>
                           const Skeleton(width: 25, height: 25),
                       errorWidget: (context, url, error) =>

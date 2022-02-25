@@ -56,8 +56,10 @@ class AnimeWidget extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 10),
                     child: CachedNetworkImage(
                       imageUrl: 'https://ziedelth.fr/${anime.image}',
-                      imageBuilder: (context, imageProvider) =>
-                          Image(image: imageProvider),
+                      imageBuilder: (context, imageProvider) => Image(
+                        image: imageProvider,
+                        fit: BoxFit.fill,
+                      ),
                       placeholder: (context, url) =>
                           const Skeleton(width: 75, height: 100),
                       errorWidget: (context, url, error) =>

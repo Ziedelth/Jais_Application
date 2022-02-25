@@ -33,8 +33,12 @@ class EpisodeWidget extends StatelessWidget {
                 children: [
                   CachedNetworkImage(
                     imageUrl: 'https://ziedelth.fr/${episode.platform.image}',
-                    imageBuilder: (context, imageProvider) =>
-                        CircleWidget(widget: Image(image: imageProvider)),
+                    imageBuilder: (context, imageProvider) => CircleWidget(
+                      widget: Image(
+                        image: imageProvider,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
                     placeholder: (context, url) =>
                         const Skeleton(width: 25, height: 25),
                     errorWidget: (context, url, error) =>
@@ -96,6 +100,10 @@ class EpisodeWidget extends StatelessWidget {
                 widget: GestureDetector(
                   child: CachedNetworkImage(
                     imageUrl: 'https://ziedelth.fr/${episode.image}',
+                    imageBuilder: (context, imageProvider) => Image(
+                      image: imageProvider,
+                      fit: BoxFit.fill,
+                    ),
                     placeholder: (context, url) => const Skeleton(height: 200),
                     errorWidget: (context, url, error) =>
                         const Skeleton(height: 200),
