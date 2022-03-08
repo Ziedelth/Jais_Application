@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'season.g.dart';
 
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class Season {
   final int season;
   final List<Episode> episodes;

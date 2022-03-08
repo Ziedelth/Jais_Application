@@ -35,7 +35,7 @@ class Utils {
       return '${interval.floor()} minute${interval >= 2 ? 's' : ''}';
     }
 
-    return 'A l\'instant';
+    return 'a l\'instant';
   }
 
   static String printDuration(Duration duration) {
@@ -55,19 +55,13 @@ class Utils {
     }
   }
 
-  static Future<void> request(String url, int successCode,
-      Function(String) onSuccess, Function(String) onFailure) async {
+  static Future<void> request(String url, Function(String) onSuccess, Function(String) onFailure) async {
     try {
       final http.Response response = await http.get(
         Uri.parse(
           url,
         ),
       );
-
-      if (response.statusCode != successCode) {
-        onFailure(response.body);
-        return;
-      }
 
       onSuccess(response.body);
     } catch (exception, stacktrace) {

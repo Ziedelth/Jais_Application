@@ -32,7 +32,7 @@ class ScanWidget extends StatelessWidget {
                 Row(
                   children: [
                     CachedNetworkImage(
-                      imageUrl: 'https://ziedelth.fr/${scan.platform.image}',
+                      imageUrl: 'https://ziedelth.fr/${scan.platformImage}',
                       imageBuilder: (context, imageProvider) => CircleWidget(
                         widget: Image(
                           image: imageProvider,
@@ -51,7 +51,7 @@ class ScanWidget extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        scan.anime.name,
+                        scan.anime,
                         style: TextStyle(
                           color: Theme.of(context).primaryColor,
                           fontSize: 18,
@@ -66,7 +66,7 @@ class ScanWidget extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      '${scan.episodeType.fr} ${scan.number} ${scan.langType.fr} ',
+                      '${scan.episodeType} ${scan.number} ${scan.langType} ',
                     ),
                   ],
                 ),

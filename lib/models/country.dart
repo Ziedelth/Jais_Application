@@ -2,10 +2,13 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'country.g.dart';
 
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class Country {
   final int id;
-  final String tag, name, flag, season;
+  final String tag;
+  final String name;
+  final String flag;
+  final String season;
 
   Country(this.id, this.tag, this.name, this.flag, this.season);
 

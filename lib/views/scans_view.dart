@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jais/utils/scan_mapper.dart';
+import 'package:jais/mappers/scan_mapper.dart';
 
 class ScansView extends StatefulWidget {
   const ScansView({Key? key}) : super(key: key);

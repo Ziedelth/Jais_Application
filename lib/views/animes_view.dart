@@ -8,7 +8,7 @@ import 'package:jais/components/scans/scan_widget.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/long_anime.dart';
 import 'package:jais/models/season.dart';
-import 'package:jais/utils/anime_mapper.dart';
+import 'package:jais/mappers/anime_mapper.dart';
 import 'package:jais/utils/main_color.dart';
 import 'package:jais/utils/utils.dart';
 
@@ -102,8 +102,7 @@ class _AnimesViewState extends State<AnimesView> {
                   );
 
                   Utils.request(
-                    'https://ziedelth.fr/php/v1/jais/get_anime.php?id=${anime.id}&sort=asc',
-                    200,
+                    'https://ziedelth.fr/api/v1/country/fr/anime/${anime.id}',
                         (p0) {
                       _longAnime = LongAnime.fromJson(jsonDecode(p0));
                       _hasTap = true;
@@ -243,9 +242,7 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView>
                               child: Column(
                                 children: [
                                   Text(
-                                    widget._longAnime.genres
-                                        .map((e) => e.fr)
-                                        .join(', '),
+                                    widget._longAnime.genres,
                                     style: TextStyle(fontSize: 18),
                                   ),
                                   Padding(

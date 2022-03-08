@@ -3,14 +3,14 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'anime.g.dart';
 
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class Anime {
   final int id;
-  final Country country;
-  final String name, image;
+  final String name;
   final String? description;
+  final String image;
 
-  Anime(this.id, this.country, this.name, this.image, this.description);
+  Anime(this.id, this.name, this.description, this.image);
 
   factory Anime.fromJson(Map<String, dynamic> data) => _$AnimeFromJson(data);
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jais/utils/episode_mapper.dart';
+import 'package:jais/mappers/episode_mapper.dart';
 
 class EpisodesView extends StatefulWidget {
   const EpisodesView({Key? key}) : super(key: key);

@@ -7,30 +7,33 @@ part of 'long_anime.dart';
 // **************************************************************************
 
 LongAnime _$LongAnimeFromJson(Map<String, dynamic> json) => LongAnime(
+      json['id'] as int,
+      json['country_id'] as int,
+      json['release_date'] as String,
+      json['code'] as String,
+      json['name'] as String,
+      json['image'] as String,
+      json['description'] as String?,
+      json['country_season'] as String,
+      json['genres'] as String,
       (json['seasons'] as List<dynamic>)
           .map((e) => Season.fromJson(e as Map<String, dynamic>))
           .toList(),
       (json['scans'] as List<dynamic>)
           .map((e) => Scan.fromJson(e as Map<String, dynamic>))
           .toList(),
-      (json['genres'] as List<dynamic>)
-          .map((e) => Genre.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      json['id'] as int,
-      Country.fromJson(json['country'] as Map<String, dynamic>),
-      json['name'] as String,
-      json['image'] as String,
-      json['description'] as String?,
     );
 
-Map<String, dynamic> _$LongAnimeToJson(LongAnime instance) =>
-    <String, dynamic>{
-      'seasons': instance.seasons.map((e) => e.toJson()).toList(),
-      'scans': instance.scans.map((e) => e.toJson()).toList(),
-      'genres': instance.genres.map((e) => e.toJson()).toList(),
+Map<String, dynamic> _$LongAnimeToJson(LongAnime instance) => <String, dynamic>{
       'id': instance.id,
-      'country': instance.country.toJson(),
+      'country_id': instance.countryId,
+      'release_date': instance.releaseDate,
+      'code': instance.code,
       'name': instance.name,
       'image': instance.image,
       'description': instance.description,
+      'country_season': instance.countrySeason,
+      'genres': instance.genres,
+      'seasons': instance.seasons.map((e) => e.toJson()).toList(),
+      'scans': instance.scans.map((e) => e.toJson()).toList(),
     };

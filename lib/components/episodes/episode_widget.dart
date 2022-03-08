@@ -32,7 +32,7 @@ class EpisodeWidget extends StatelessWidget {
               Row(
                 children: [
                   CachedNetworkImage(
-                    imageUrl: 'https://ziedelth.fr/${episode.platform.image}',
+                    imageUrl: 'https://ziedelth.fr/${episode.platformImage}',
                     imageBuilder: (context, imageProvider) => CircleWidget(
                       widget: Image(
                         image: imageProvider,
@@ -51,7 +51,7 @@ class EpisodeWidget extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      episode.anime.name,
+                      episode.anime,
                       style: TextStyle(
                         color: Theme.of(context).primaryColor,
                         fontSize: 18,
@@ -78,7 +78,7 @@ class EpisodeWidget extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    '${episode.anime.country.season} ${episode.season} • ${episode.episodeType.fr} ${episode.number} ${episode.langType.fr} ',
+                    '${episode.countrySeason} ${episode.season} • ${episode.episodeType} ${episode.number} ${episode.langType} ',
                   ),
                 ],
               ),
