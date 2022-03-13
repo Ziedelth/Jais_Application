@@ -4,6 +4,7 @@ import 'package:jais/components/scans/scan_widget.dart';
 import 'package:jais/models/anime_details.dart';
 import 'package:jais/models/season.dart';
 import 'package:jais/utils/main_color.dart';
+import 'package:jais/utils/user.dart';
 
 class AnimeDetailsView extends StatefulWidget {
   final AnimeDetails _animeDetails;
@@ -92,7 +93,7 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView>
         Row(
           children: [
             BackButton(
-              onPressed: () => widget._callback(),
+              onPressed: widget._callback,
             ),
             Expanded(
               flex: 5,
@@ -149,20 +150,21 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView>
                 ],
               ),
             ),
-            Expanded(
-              child: IconButton(
-                icon: Icon(
-                  _notifications
-                      ? Icons.notifications_on
-                      : Icons.notifications_off,
-                  color: _notifications ? Colors.green : Colors.red,
+            if (User.isConnected)
+              Expanded(
+                child: IconButton(
+                  icon: Icon(
+                    _notifications
+                        ? Icons.notifications_on
+                        : Icons.notifications_off,
+                    color: _notifications ? Colors.green : Colors.red,
+                  ),
+                  onPressed: () {
+                    _notifications = !_notifications;
+                    setState(() {});
+                  },
                 ),
-                onPressed: () {
-                  _notifications = !_notifications;
-                  setState(() {});
-                },
               ),
-            ),
           ],
         ),
         const Divider(

@@ -13,7 +13,7 @@ import 'package:jais/views/settings_view.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
-  MobileAds.instance.initialize();
+  await MobileAds.instance.initialize();
   await JaisNotifications.init();
   runApp(const MyApp());
 }
