@@ -7,7 +7,10 @@ class JaisNotifications {
   static final GetStorage getStorage = GetStorage('Notifications');
   static const KEY = "topics";
 
-  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async => await Firebase.initializeApp();
+  static Future<void> initFirebase() async => await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async => await initFirebase();
   static List<String> getTopics() => getStorage.hasData(KEY) ? getStorage.read(KEY) : List<String>.empty(growable: true);
 
   static addTopic(String topic) {
@@ -44,11 +47,14 @@ class JaisNotifications {
   }
 
   static Future<void> init() async {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-
+    await initFirebase();
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    addTopic("animes");
+    final bool firstInit = !getStorage.hasData('init');
+
+    if (firstInit) {
+      addTopic("animes");
+    }
+
+    getStorage.write('init', true);
   }
 }
