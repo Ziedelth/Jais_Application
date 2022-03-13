@@ -1,32 +1,20 @@
 import 'dart:async';
 
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:jais/utils/main_color.dart';
+import 'package:jais/utils/notifications.dart';
 import 'package:jais/views/animes_view.dart';
 import 'package:jais/views/home_view.dart';
-
-import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
-
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  await JaisNotifications.init();
   FirebaseMessaging.instance.subscribeToTopic("animes");
 
   runApp(const MyApp());
-}
-
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  await GetStorage.init();
 }
 
 class MyApp extends StatelessWidget {
