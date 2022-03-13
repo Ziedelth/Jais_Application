@@ -1,4 +1,3 @@
-import 'package:jais/models/anime.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'scan.g.dart';

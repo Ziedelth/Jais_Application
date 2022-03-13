@@ -1,12 +1,11 @@
-import 'package:jais/models/country.dart';
 import 'package:jais/models/scan.dart';
 import 'package:jais/models/season.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'long_anime.g.dart';
+part 'anime_details.g.dart';
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
-class LongAnime {
+class AnimeDetails {
   final int id;
   final int countryId;
   final String releaseDate;
@@ -19,7 +18,7 @@ class LongAnime {
   final List<Season> seasons;
   final List<Scan> scans;
 
-  LongAnime(
+  AnimeDetails(
       this.id,
       this.countryId,
       this.releaseDate,
@@ -32,8 +31,8 @@ class LongAnime {
       this.seasons,
       this.scans);
 
-  factory LongAnime.fromJson(Map<String, dynamic> data) =>
-      _$LongAnimeFromJson(data);
+  factory AnimeDetails.fromJson(Map<String, dynamic> data) =>
+      _$AnimeDetailsFromJson(data);
 
-  Map<String, dynamic> toJson() => _$LongAnimeToJson(this);
+  Map<String, dynamic> toJson() => _$AnimeDetailsToJson(this);
 }

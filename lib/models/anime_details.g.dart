@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'long_anime.dart';
+part of 'anime_details.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-LongAnime _$LongAnimeFromJson(Map<String, dynamic> json) => LongAnime(
+AnimeDetails _$AnimeDetailsFromJson(Map<String, dynamic> json) => AnimeDetails(
       json['id'] as int,
       json['country_id'] as int,
       json['release_date'] as String,
@@ -24,7 +24,8 @@ LongAnime _$LongAnimeFromJson(Map<String, dynamic> json) => LongAnime(
           .toList(),
     );
 
-Map<String, dynamic> _$LongAnimeToJson(LongAnime instance) => <String, dynamic>{
+Map<String, dynamic> _$AnimeDetailsToJson(AnimeDetails instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'country_id': instance.countryId,
       'release_date': instance.releaseDate,

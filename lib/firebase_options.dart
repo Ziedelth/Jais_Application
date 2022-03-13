@@ -54,7 +54,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '866259759032',
     projectId: 'jais-cc41c',
     storageBucket: 'jais-cc41c.appspot.com',
-    iosClientId: '866259759032-shkks1eac2ptmhq97einp0d54shqi8ku.apps.googleusercontent.com',
+    iosClientId:
+        '866259759032-shkks1eac2ptmhq97einp0d54shqi8ku.apps.googleusercontent.com',
     iosBundleId: 'fr.ziedelth.jais',
   );
 }

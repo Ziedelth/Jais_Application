@@ -1,4 +1,3 @@
-import 'package:jais/models/country.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'anime.g.dart';

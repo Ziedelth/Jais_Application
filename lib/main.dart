@@ -4,15 +4,19 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:jais/utils/jais_ad.dart';
 import 'package:jais/utils/main_color.dart';
 import 'package:jais/views/animes_view.dart';
 import 'package:jais/views/home_view.dart';
+import 'package:jais/views/settings_view.dart';
 
 import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
+  MobileAds.instance.initialize();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -57,6 +61,12 @@ class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
 
   @override
+  void initState() {
+    JaisAd.createVideo();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
@@ -66,6 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: <Widget>[
               const HomeView(),
               const AnimesView(),
+              const SettingsView(),
             ].elementAt(_currentIndex),
           ),
         ),
@@ -85,6 +96,10 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.collections_bookmark),
             label: 'Animes',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings_rounded),
+            label: 'Paramètres',
           ),
         ],
       ),

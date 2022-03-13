@@ -55,7 +55,8 @@ class Utils {
     }
   }
 
-  static Future<void> request(String url, Function(String) onSuccess, Function(String) onFailure) async {
+  static Future<void> request(String url, Function(String) onSuccess,
+      Function(String) onFailure) async {
     try {
       final http.Response response = await http.get(
         Uri.parse(
