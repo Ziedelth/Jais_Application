@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:jais/components/episodes/episode_widget.dart';
+import 'package:jais/components/jlist.dart';
 import 'package:jais/components/scans/scan_widget.dart';
 import 'package:jais/models/anime_details.dart';
 import 'package:jais/models/season.dart';
 import 'package:jais/utils/main_color.dart';
 import 'package:jais/utils/user.dart';
+import 'package:jais/utils/utils.dart';
 
 class AnimeDetailsView extends StatefulWidget {
   final AnimeDetails _animeDetails;
@@ -37,24 +39,7 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView>
     if (widget._animeDetails.seasons.isNotEmpty &&
         widget._animeDetails.scans.isNotEmpty) {
       return [
-        TabBar(
-          controller: _tabController,
-          indicatorColor: Colors.black,
-          labelColor: MainColor.mainColorO,
-          unselectedLabelColor: Colors.grey,
-          tabs: <Widget>[
-            Tab(
-              icon: const Icon(
-                Icons.airplay,
-              ),
-            ),
-            Tab(
-              icon: const Icon(
-                Icons.bookmark_border,
-              ),
-            )
-          ],
-        ),
+        Utils.getTabBar(_tabController),
         Expanded(
           child: TabBarView(
             controller: _tabController,
@@ -67,23 +52,16 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView>
       ];
     }
 
-    if (widget._animeDetails.seasons.isNotEmpty) {
-      return [
+    return [
+      if (widget._animeDetails.seasons.isNotEmpty)
         Expanded(
           child: EpisodesDetailsView(widget._animeDetails),
         ),
-      ];
-    }
-
-    if (widget._animeDetails.scans.isNotEmpty) {
-      return [
+      if (widget._animeDetails.scans.isNotEmpty)
         Expanded(
           child: ScansDetailsView(widget._animeDetails),
         ),
-      ];
-    }
-
-    return [];
+    ];
   }
 
   @override
@@ -232,14 +210,12 @@ class _EpisodesDetailsViewState extends State<EpisodesDetailsView> {
               .toList(),
         ),
         Expanded(
-          child: ListView.builder(
-            addAutomaticKeepAlives: false,
-            addRepaintBoundaries: false,
-            controller: ScrollController(),
-            itemCount: _selectedSeason!.episodes.length,
-            itemBuilder: (context, index) => EpisodeWidget(
-              episode: _selectedSeason!.episodes[index],
-            ),
+          child: JList(
+            children: _selectedSeason!.episodes
+                .map<Widget>(
+                  (element) => EpisodeWidget(episode: element),
+                )
+                .toList(),
           ),
         ),
       ],
@@ -272,14 +248,12 @@ class ScansDetailsView extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-          child: ListView.builder(
-            addAutomaticKeepAlives: false,
-            addRepaintBoundaries: false,
-            controller: ScrollController(),
-            itemCount: _animeDetails.scans.length,
-            itemBuilder: (context, index) => ScanWidget(
-              scan: _animeDetails.scans[index],
-            ),
+          child: JList(
+            children: _animeDetails.scans
+                .map<Widget>(
+                  (element) => ScanWidget(scan: element),
+                )
+                .toList(),
           ),
         ),
       ],

@@ -75,15 +75,15 @@ class _MyHomePageState extends State<MyHomePage> {
         onTap: (index) => setState(() => _currentIndex = index),
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Accueil',
+            icon: Icon(Icons.bookmark),
+            label: 'Episodes & Scans',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.collections_bookmark),
+            icon: Icon(Icons.live_tv),
             label: 'Animes',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings_rounded),
+            icon: Icon(Icons.settings),
             label: 'Paramètres',
           ),
         ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jais/components/jlist.dart';
 import 'package:jais/mappers/episode_mapper.dart';
 
 class EpisodesView extends StatefulWidget {
@@ -40,12 +41,9 @@ class _EpisodesViewState extends State<EpisodesView> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      addAutomaticKeepAlives: false,
-      addRepaintBoundaries: false,
+    return JList(
+      children: EpisodeMapper.list,
       controller: _scrollController,
-      itemCount: EpisodeMapper.list.length,
-      itemBuilder: (context, index) => EpisodeMapper.list[index],
     );
   }
 }

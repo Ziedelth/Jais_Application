@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:jais/utils/main_color.dart';
 
 class Utils {
   static String printTimeSince(DateTime dateTime) {
@@ -68,5 +70,30 @@ class Utils {
     } catch (exception, stacktrace) {
       onFailure(stacktrace.toString());
     }
+  }
+
+  static List<Widget> getTabs() {
+    return [
+      Tab(
+        icon: const Icon(
+          Icons.subscriptions,
+        ),
+      ),
+      Tab(
+        icon: const Icon(
+          Icons.library_books,
+        ),
+      )
+    ];
+  }
+
+  static TabBar getTabBar(TabController controller) {
+    return TabBar(
+      controller: controller,
+      indicatorColor: Colors.black,
+      labelColor: MainColor.mainColorO,
+      unselectedLabelColor: Colors.grey,
+      tabs: getTabs(),
+    );
   }
 }

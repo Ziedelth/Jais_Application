@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jais/components/jlist.dart';
 import 'package:jais/mappers/scan_mapper.dart';
 
 class ScansView extends StatefulWidget {
@@ -40,14 +41,9 @@ class _ScansViewState extends State<ScansView> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      addAutomaticKeepAlives: false,
-      addRepaintBoundaries: false,
+    return JList(
+      children: ScanMapper.list,
       controller: _scrollController,
-      itemCount: ScanMapper.list.length,
-      itemBuilder: (context, index) {
-        return ScanMapper.list[index];
-      },
     );
   }
 }

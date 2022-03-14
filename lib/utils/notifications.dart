@@ -8,10 +8,16 @@ class JaisNotifications {
   static const KEY = "topics";
 
   static Future<void> initFirebase() async => await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async => await initFirebase();
-  static List<String> getTopics() => getStorage.hasData(KEY) ? getStorage.read(KEY) : List<String>.empty(growable: true);
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+
+  static Future<void> _firebaseMessagingBackgroundHandler(
+          RemoteMessage message) async =>
+      await initFirebase();
+
+  static List<String> getTopics() => getStorage.hasData(KEY)
+      ? getStorage.read(KEY)
+      : List<String>.empty(growable: true);
 
   static addTopic(String topic) {
     List<String> list = getTopics();

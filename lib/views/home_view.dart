@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jais/utils/main_color.dart';
+import 'package:jais/utils/utils.dart';
 import 'package:jais/views/episodes_view.dart';
 import 'package:jais/views/scans_view.dart';
 
@@ -30,24 +30,7 @@ class _HomeViewState extends State<HomeView>
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TabBar(
-          controller: _tabController,
-          indicatorColor: Colors.black,
-          labelColor: MainColor.mainColorO,
-          unselectedLabelColor: Colors.grey,
-          tabs: <Widget>[
-            Tab(
-              icon: const Icon(
-                Icons.airplay,
-              ),
-            ),
-            Tab(
-              icon: const Icon(
-                Icons.bookmark_border,
-              ),
-            )
-          ],
-        ),
+        Utils.getTabBar(_tabController),
         Expanded(
           child: TabBarView(
             controller: _tabController,
