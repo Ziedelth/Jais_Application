@@ -17,30 +17,31 @@ class _NotationWidgetState extends State<NotationWidget> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        GestureDetector(
-          child: Icon(
-            Icons.thumb_up,
-            color: Colors.grey,
-          ),
-          onTap: widget.onUp,
-        ),
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Text(
-              '${widget.up ?? 0}',
-              style: TextStyle(
-                fontWeight: FontWeight.w900,
-              ),
+        Padding(
+          padding: EdgeInsets.only(right: 7.5),
+          child: GestureDetector(
+            child: Icon(
+              Icons.thumb_up,
+              color: Colors.grey,
             ),
+            onTap: widget.onUp,
           ),
         ),
-        GestureDetector(
-          child: Icon(
-            Icons.thumb_down,
-            color: Colors.grey,
+        Text(
+          '${widget.up ?? 0}',
+          style: TextStyle(
+            fontWeight: FontWeight.w900,
           ),
-          onTap: widget.onDown,
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 7.5),
+          child: GestureDetector(
+            child: Icon(
+              Icons.thumb_down,
+              color: Colors.grey,
+            ),
+            onTap: widget.onDown,
+          ),
         ),
       ],
     );

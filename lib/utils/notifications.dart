@@ -3,8 +3,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:jais/utils/firebase_options.dart';
 
-class JaisNotifications {
-  static final GetStorage getStorage = GetStorage('Notifications');
+class JNotifications {
+  static final GetStorage getStorage = GetStorage();
   static const KEY = "topics";
 
   static Future<void> initFirebase() async => await Firebase.initializeApp(
@@ -16,33 +16,41 @@ class JaisNotifications {
       await initFirebase();
 
   static List<String> getTopics() => getStorage.hasData(KEY)
-      ? getStorage.read(KEY)
+      ? getStorage.read(KEY)!.map<String>((element) => element.toString()).toList()
       : List<String>.empty(growable: true);
 
-  static addTopic(String topic) {
-    List<String> list = getTopics();
+  static hasTopic(String topic) => getTopics().contains(topic);
 
-    if (!list.contains(topic)) {
-      list.add(topic);
-      FirebaseMessaging.instance.subscribeToTopic(topic);
+  static addTopic(String topic) {
+    final List<String> list = getTopics();
+
+    if (hasTopic(topic)) {
+      return;
     }
 
+    if (topic != "animes") {
+      list.remove("animes");
+    }
+
+    list.add(topic);
+    FirebaseMessaging.instance.subscribeToTopic(topic);
     getStorage.write(KEY, list);
   }
 
   static removeTopic(String topic) {
-    List<String> list = getTopics();
+    final List<String> list = getTopics();
 
-    if (list.contains(topic)) {
-      list.remove(topic);
-      FirebaseMessaging.instance.unsubscribeFromTopic(topic);
+    if (!hasTopic(topic)) {
+      return;
     }
 
+    list.remove(topic);
+    FirebaseMessaging.instance.unsubscribeFromTopic(topic);
     getStorage.write(KEY, list);
   }
 
   static removeAllTopics() {
-    List<String> list = getTopics();
+    final List<String> list = getTopics();
 
     for (String topic in list) {
       FirebaseMessaging.instance.unsubscribeFromTopic(topic);

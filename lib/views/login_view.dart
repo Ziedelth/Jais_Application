@@ -129,6 +129,7 @@ class _LoginViewState extends State<LoginView> {
         const Divider(
           height: 2,
         ),
+        Spacer(),
         TextField(
           onSubmitted: (value) => requestLogin(),
           controller: _emailController,
@@ -157,12 +158,14 @@ class _LoginViewState extends State<LoginView> {
             ),
           ),
         ),
+        Spacer(),
         ElevatedButton(
           onPressed: requestLogin,
           child: Text(
             'Se connecter',
           ),
         ),
+        Spacer(),
       ],
     );
   }

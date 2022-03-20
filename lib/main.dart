@@ -16,7 +16,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
   await MobileAds.instance.initialize();
-  await JaisNotifications.init();
+  await JNotifications.init();
   runApp(const MyApp());
 }
 

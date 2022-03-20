@@ -15,9 +15,7 @@ class _EpisodesViewState extends State<EpisodesView> {
 
   Future<void> rebuildEpisodes() async {
     await EpisodeMapper.updateCurrentPage(
-      onSuccess: () => setState(() {
-        _isLoading = false;
-      }),
+      onSuccess: () => setState(() => _isLoading = false),
     );
   }
 

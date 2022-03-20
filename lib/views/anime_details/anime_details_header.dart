@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jais/components/jdialog.dart';
 import 'package:jais/mappers/user_mapper.dart';
 import 'package:jais/models/anime_details.dart';
+import 'package:jais/utils/notifications.dart';
 
 class AnimeDetailsHeader extends StatefulWidget {
   const AnimeDetailsHeader(this._callback, this._animeDetails, {Key? key})
@@ -15,10 +16,10 @@ class AnimeDetailsHeader extends StatefulWidget {
 }
 
 class _AnimeDetailsHeaderState extends State<AnimeDetailsHeader> {
-  bool _notifications = false;
-
   @override
   Widget build(BuildContext context) {
+    final bool hasTopic = JNotifications.hasTopic(widget._animeDetails.code);
+
     return Row(
       children: [
         BackButton(
@@ -77,12 +78,22 @@ class _AnimeDetailsHeaderState extends State<AnimeDetailsHeader> {
           Expanded(
             child: IconButton(
               icon: Icon(
-                _notifications
-                    ? Icons.notifications_on
-                    : Icons.notifications_off,
-                color: _notifications ? Colors.green : Colors.red,
+                hasTopic ? Icons.notifications_on : Icons.notifications_off,
+                color: hasTopic ? Colors.green : Colors.red,
               ),
-              onPressed: () => setState(() => _notifications = !_notifications),
+              onPressed: () {
+                if (hasTopic) {
+                  JNotifications.removeTopic(widget._animeDetails.code);
+                  setState(() {});
+                  return;
+                }
+
+                if (!hasTopic) {
+                  JNotifications.addTopic(widget._animeDetails.code);
+                  setState(() {});
+                  return;
+                }
+              },
             ),
           ),
       ],

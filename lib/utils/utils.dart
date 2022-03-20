@@ -1,7 +1,11 @@
 import 'package:http/http.dart' as http;
 
 class Utils {
-  static String printTimeSince(DateTime dateTime) {
+  static String printTimeSince(DateTime? dateTime) {
+    if (dateTime == null) {
+      return 'erreur';
+    }
+
     final double seconds = (DateTime.now().millisecondsSinceEpoch.floor() -
             dateTime.millisecondsSinceEpoch.floor()) /
         1000;

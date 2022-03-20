@@ -1,7 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:jais/components/full_button.dart';
+import 'package:jais/components/jdialog.dart';
+import 'package:jais/components/roundborder_widget.dart';
+import 'package:jais/components/skeleton.dart';
 import 'package:jais/mappers/user_mapper.dart';
 import 'package:jais/utils/jais_ad.dart';
+import 'package:jais/utils/notifications.dart';
+import 'package:jais/utils/utils.dart';
 import 'package:jais/views/login_view.dart';
 
 class SettingsView extends StatefulWidget {
@@ -21,6 +27,8 @@ class _SettingsViewState extends State<SettingsView> {
         () => setState(() => _hasLoginTap = false),
       );
     }
+
+    final bool hasTopic = JNotifications.hasTopic("animes");
 
     return Column(
       children: [
@@ -51,7 +59,49 @@ class _SettingsViewState extends State<SettingsView> {
               FullWidget(
                 widget: ElevatedButton(
                   child: Text('Mon profil'),
-                  onPressed: null,
+                  onPressed: () => JDialog.show(
+                    context,
+                    children: [
+                      CachedNetworkImage(
+                        imageUrl:
+                            'https://ziedelth.fr/${UserMapper.user?.image ?? 'images/default_member.jpg'}',
+                        imageBuilder: (context, imageProvider) =>
+                            RoundBorderWidget(
+                          widget: Image(
+                            image: imageProvider,
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        placeholder: (context, url) =>
+                            const Skeleton(height: 200),
+                        errorWidget: (context, url, error) =>
+                            const Skeleton(height: 200),
+                        fit: BoxFit.fill,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 10),
+                        child: Text(
+                          '${UserMapper.user?.pseudo}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                      Divider(
+                        height: 1,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 10),
+                        child: Text(
+                          'Inscription il y a ${Utils.printTimeSince(DateTime.tryParse(UserMapper.user?.timestamp ?? '0'))}',
+                        ),
+                      ),
+                      Text(
+                        '${UserMapper.user?.about ?? ''}',
+                      ),
+                    ],
+                  ),
                 ),
               ),
               FullWidget(
@@ -65,6 +115,74 @@ class _SettingsViewState extends State<SettingsView> {
               ),
             ],
           ),
+        if (UserMapper.isConnected())
+          SectionWidget(
+            icon: Icon(Icons.notifications),
+            title: 'Notifications',
+            widgets: [
+              FullWidget(
+                widget: ElevatedButton(
+                  child: Text('Par défaut'),
+                  onPressed: hasTopic
+                      ? null
+                      : () {
+                          JNotifications.removeAllTopics();
+                          JNotifications.addTopic("animes");
+                          setState(() {});
+                        },
+                  onLongPress: hasTopic
+                      ? null
+                      : () => JDialog.show(
+                            context,
+                            children: [
+                              Text(
+                                'Mode par défaut des notifications',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              Divider(
+                                height: 1,
+                              ),
+                              Text(
+                                  "Ce mode vous avertit de toutes les mises à jour récentes, qu'il s'agisse d'épisodes ou de scans."),
+                            ],
+                          ),
+                ),
+              ),
+              FullWidget(
+                widget: ElevatedButton(
+                  child: Text('Personnalisé'),
+                  onPressed: hasTopic
+                      ? () {
+                          JNotifications.removeAllTopics();
+                          setState(() {});
+                        }
+                      : null,
+                  onLongPress: hasTopic
+                      ? () => JDialog.show(
+                            context,
+                            children: [
+                              Text(
+                                'Personnalisation des notifications',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              Divider(
+                                height: 1,
+                              ),
+                              Text(
+                                  "Choissisez les animes dont vous souhaitez être informé à chaque mise à jour récentes."),
+                            ],
+                          )
+                      : null,
+                ),
+              ),
+            ],
+          ),
         SectionWidget(
           icon: Icon(Icons.thumb_up_alt),
           title: 'Soutien',
@@ -72,7 +190,7 @@ class _SettingsViewState extends State<SettingsView> {
             FullWidget(
               widget: ElevatedButton(
                 child: Text('Soutenir'),
-                onPressed: () => JaisAd.showVideo(),
+                onPressed: JaisAd.showVideo,
               ),
             ),
           ],

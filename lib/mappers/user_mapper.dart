@@ -7,6 +7,7 @@ import 'package:jais/utils/utils.dart';
 
 class UserMapper {
   static final GetStorage getStorage = GetStorage();
+  static const KEY = "token";
   static String? token;
   static User? user;
 
@@ -17,7 +18,7 @@ class UserMapper {
 
     token = json['token'];
     user = User.fromJson(json['user']);
-    getStorage.write("token", token);
+    getStorage.write(KEY, token);
   }
 
   static Future<void> tryToLogin({VoidCallback? callback}) async {
@@ -26,11 +27,14 @@ class UserMapper {
       return;
     }
 
-    if (!getStorage.hasData("token")) {
+    debugPrint('Has token saved: ${getStorage.hasData(KEY)}');
+
+    if (!getStorage.hasData(KEY)) {
       return;
     }
 
-    final String localToken = getStorage.read("token");
+    final String localToken = getStorage.read(KEY);
+    debugPrint('Local token: $localToken');
 
     await Utils.post(
       'https://ziedelth.fr/api/v1/member/login/token',
@@ -62,6 +66,6 @@ class UserMapper {
 
     token = null;
     user = null;
-    getStorage.remove("token");
+    getStorage.remove(KEY);
   }
 }

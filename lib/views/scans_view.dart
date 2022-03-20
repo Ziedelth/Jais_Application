@@ -15,9 +15,7 @@ class _ScansViewState extends State<ScansView> {
 
   Future<void> rebuildScans() async {
     await ScanMapper.updateCurrentPage(
-      onSuccess: () => setState(() {
-        _isLoading = false;
-      }),
+      onSuccess: () => setState(() => _isLoading = false),
     );
   }
 
