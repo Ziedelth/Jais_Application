@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class NotationWidget extends StatefulWidget {
-  const NotationWidget({Key? key}) : super(key: key);
+  const NotationWidget({this.onUp, this.onDown, Key? key}) : super(key: key);
+
+  final VoidCallback? onUp;
+  final VoidCallback? onDown;
 
   @override
   _NotationWidgetState createState() => _NotationWidgetState();
@@ -12,7 +15,10 @@ class _NotationWidgetState extends State<NotationWidget> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(Icons.thumb_up),
+        IconButton(
+          onPressed: widget.onUp,
+          icon: Icon(Icons.thumb_up),
+        ),
         Expanded(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10),
@@ -24,7 +30,10 @@ class _NotationWidgetState extends State<NotationWidget> {
             ),
           ),
         ),
-        Icon(Icons.thumb_down),
+        IconButton(
+          onPressed: widget.onDown,
+          icon: Icon(Icons.thumb_down),
+        ),
       ],
     );
   }
