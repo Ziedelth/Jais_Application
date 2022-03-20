@@ -41,7 +41,7 @@ class _AnimesViewState extends State<AnimesView> {
       ),
     );
 
-    Utils.request(
+    Utils.get(
       'https://ziedelth.fr/api/v1/country/${Country.name}/anime/${anime.id}',
       (success) {
         try {

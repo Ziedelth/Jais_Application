@@ -35,7 +35,7 @@ class Utils {
       return '${interval.floor()} minute${interval >= 2 ? 's' : ''}';
     }
 
-    return 'a l\'instant';
+    return 'à l\'instant';
   }
 
   static String printDuration(Duration duration) {
@@ -55,14 +55,29 @@ class Utils {
     }
   }
 
-  // It's a function that makes a request to an API.
-  static Future<void> request(String url, Function(String) onSuccess,
+  static Future<void> get(String url, Function(String) onSuccess,
       Function(String) onFailure) async {
     try {
       final http.Response response = await http.get(
         Uri.parse(
           url,
         ),
+      );
+
+      onSuccess(response.body);
+    } catch (exception, stacktrace) {
+      onFailure(stacktrace.toString());
+    }
+  }
+
+  static Future<void> post(String url, headers, Function(String) onSuccess,
+      Function(String) onFailure) async {
+    try {
+      final http.Response response = await http.post(
+        Uri.parse(
+          url,
+        ),
+        body: headers,
       );
 
       onSuccess(response.body);

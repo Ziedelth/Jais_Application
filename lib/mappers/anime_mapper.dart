@@ -29,7 +29,7 @@ class AnimeMapper {
       return;
     }
 
-    await Utils.request(
+    await Utils.get(
       'https://ziedelth.fr/api/v1/country/${Country.name}/animes',
       (success) {
         list.removeWhere((element) => element is AnimeLoaderWidget);

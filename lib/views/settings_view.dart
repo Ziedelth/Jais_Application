@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jais/components/full_button.dart';
+import 'package:jais/mappers/user_mapper.dart';
 import 'package:jais/utils/jais_ad.dart';
-import 'package:jais/utils/user.dart';
+import 'package:jais/views/login_view.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({Key? key}) : super(key: key);
@@ -11,11 +12,19 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
+  bool _hasLoginTap = false;
+
   @override
   Widget build(BuildContext context) {
+    if (_hasLoginTap) {
+      return LoginView(
+        () => setState(() => _hasLoginTap = false),
+      );
+    }
+
     return Column(
       children: [
-        if (!User.isConnected)
+        if (!UserMapper.isConnected())
           SectionWidget(
             icon: Icon(Icons.person),
             title: 'Identification',
@@ -23,13 +32,35 @@ class _SettingsViewState extends State<SettingsView> {
               FullWidget(
                 widget: ElevatedButton(
                   child: Text('Inscription'),
-                  onPressed: () => null,
+                  onPressed: null,
                 ),
               ),
               FullWidget(
                 widget: ElevatedButton(
-                  child: Text('Se connecter'),
-                  onPressed: () => null,
+                  child: Text('Connexion'),
+                  onPressed: () => setState(() => _hasLoginTap = true),
+                ),
+              ),
+            ],
+          ),
+        if (UserMapper.isConnected())
+          SectionWidget(
+            icon: Icon(Icons.person),
+            title: 'Profil',
+            widgets: [
+              FullWidget(
+                widget: ElevatedButton(
+                  child: Text('Mon profil'),
+                  onPressed: null,
+                ),
+              ),
+              FullWidget(
+                widget: ElevatedButton(
+                  child: Text('Déconnexion'),
+                  onPressed: () {
+                    UserMapper.logout();
+                    setState(() {});
+                  },
                 ),
               ),
             ],
@@ -41,9 +72,7 @@ class _SettingsViewState extends State<SettingsView> {
             FullWidget(
               widget: ElevatedButton(
                 child: Text('Soutenir'),
-                onPressed: () {
-                  JaisAd.showVideo();
-                },
+                onPressed: () => JaisAd.showVideo(),
               ),
             ),
           ],

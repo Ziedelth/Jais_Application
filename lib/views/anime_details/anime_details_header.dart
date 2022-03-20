@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:jais/components/jdialog.dart';
+import 'package:jais/mappers/user_mapper.dart';
 import 'package:jais/models/anime_details.dart';
-import 'package:jais/utils/main_color.dart';
-import 'package:jais/utils/user.dart';
 
 class AnimeDetailsHeader extends StatefulWidget {
   const AnimeDetailsHeader(this._callback, this._animeDetails, {Key? key})
@@ -43,50 +43,37 @@ class _AnimeDetailsHeaderState extends State<AnimeDetailsHeader> {
                 padding: EdgeInsets.symmetric(horizontal: 5),
                 child: IconButton(
                   icon: Icon(Icons.help),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        backgroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          side: BorderSide(color: MainColor.mainColorO),
+                  onPressed: () => JDialog.show(
+                    context,
+                    children: [
+                      if (widget._animeDetails.genres != null)
+                        Column(
+                          children: [
+                            Text(
+                              widget._animeDetails.genres!,
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 10,
+                              ),
+                              child: Divider(
+                                height: 5,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
                         ),
-                        content: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              if (widget._animeDetails.genres != null)
-                                Column(
-                                  children: [
-                                    Text(
-                                      widget._animeDetails.genres!,
-                                      style: TextStyle(fontSize: 18),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 10,
-                                      ),
-                                      child: Divider(
-                                        height: 5,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              Text(widget._animeDetails.description ??
-                                  'No description'),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
+                      Text(
+                          widget._animeDetails.description ?? 'No description'),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
         ),
-        if (User.isConnected)
+        if (UserMapper.isConnected())
           Expanded(
             child: IconButton(
               icon: Icon(

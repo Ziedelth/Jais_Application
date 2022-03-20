@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:jais/mappers/user_mapper.dart';
 import 'package:jais/utils/jais_ad.dart';
 import 'package:jais/utils/main_color.dart';
 import 'package:jais/utils/notifications.dart';
@@ -59,6 +60,27 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     JaisAd.createVideo();
+
+    UserMapper.tryToLogin(callback: () {
+      if (UserMapper.user == null) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'De retour, ${UserMapper.user?.pseudo}',
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+
     super.initState();
   }
 
