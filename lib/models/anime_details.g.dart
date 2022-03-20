@@ -15,7 +15,7 @@ AnimeDetails _$AnimeDetailsFromJson(Map<String, dynamic> json) => AnimeDetails(
       json['image'] as String,
       json['description'] as String?,
       json['country_season'] as String,
-      json['genres'] as String,
+      json['genres'] as String?,
       (json['seasons'] as List<dynamic>)
           .map((e) => Season.fromJson(e as Map<String, dynamic>))
           .toList(),

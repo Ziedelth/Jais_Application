@@ -7,7 +7,8 @@ import 'package:jais/utils/jais_ad.dart';
 import 'package:jais/utils/main_color.dart';
 import 'package:jais/utils/notifications.dart';
 import 'package:jais/views/animes_view.dart';
-import 'package:jais/views/home_view.dart';
+import 'package:jais/views/episodes_view.dart';
+import 'package:jais/views/scans_view.dart';
 import 'package:jais/views/settings_view.dart';
 
 Future<void> main() async {
@@ -43,7 +44,17 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final List<Widget> _widgets = const <Widget>[
+    EpisodesView(),
+    ScansView(),
+    AnimesView(),
+    SettingsView(),
+  ];
+
+  final PageController _pageController = PageController(initialPage: 0);
   int _currentIndex = 0;
+
+  void _changeTab(int index) => setState(() => _currentIndex = index);
 
   @override
   void initState() {
@@ -57,12 +68,10 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Container(
         color: Colors.black,
         child: SafeArea(
-          child: Center(
-            child: <Widget>[
-              const HomeView(),
-              const AnimesView(),
-              const SettingsView(),
-            ].elementAt(_currentIndex),
+          child: PageView(
+            controller: _pageController,
+            onPageChanged: _changeTab,
+            children: _widgets,
           ),
         ),
       ),
@@ -72,11 +81,16 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.black,
         selectedItemColor: Theme.of(context).primaryColor,
         currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
+        onTap: (index) => _pageController.animateToPage(index,
+            duration: Duration(milliseconds: 500), curve: Curves.ease),
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.bookmark),
-            label: 'Episodes & Scans',
+            icon: Icon(Icons.subscriptions),
+            label: 'Episodes',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.library_books),
+            label: 'Scans',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.live_tv),

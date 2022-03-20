@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:jais/components/circle_widget.dart';
+import 'package:jais/components/notation_widget.dart';
 import 'package:jais/components/roundborder_widget.dart';
 import 'package:jais/components/skeleton.dart';
 import 'package:jais/models/episode.dart';
@@ -107,10 +108,9 @@ class EpisodeWidget extends StatelessWidget {
                     placeholder: (context, url) => const Skeleton(height: 200),
                     errorWidget: (context, url, error) =>
                         const Skeleton(height: 200),
+                    fit: BoxFit.fill,
                   ),
-                  onTap: () {
-                    launch(episode.url);
-                  },
+                  onTap: () => launch(episode.url),
                 ),
               ),
               const Padding(
@@ -118,8 +118,14 @@ class EpisodeWidget extends StatelessWidget {
               ),
               Row(
                 children: [
-                  Text(
-                    'Il y a ${Utils.printTimeSince(DateTime.parse(episode.releaseDate))}',
+                  Expanded(
+                    flex: 4,
+                    child: Text(
+                      'Il y a ${Utils.printTimeSince(DateTime.parse(episode.releaseDate))}',
+                    ),
+                  ),
+                  Expanded(
+                    child: NotationWidget(),
                   ),
                 ],
               ),

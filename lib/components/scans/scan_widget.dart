@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:jais/components/circle_widget.dart';
+import 'package:jais/components/notation_widget.dart';
 import 'package:jais/components/skeleton.dart';
 import 'package:jais/models/scan.dart';
 import 'package:jais/utils/utils.dart';
@@ -75,8 +76,14 @@ class ScanWidget extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    Text(
-                      'Il y a ${Utils.printTimeSince(DateTime.parse(scan.releaseDate))}',
+                    Expanded(
+                      flex: 4,
+                      child: Text(
+                        'Il y a ${Utils.printTimeSince(DateTime.parse(scan.releaseDate))}',
+                      ),
+                    ),
+                    Expanded(
+                      child: NotationWidget(),
                     ),
                   ],
                 ),

@@ -14,7 +14,7 @@ class AnimeDetails {
   final String image;
   final String? description;
   final String countrySeason;
-  final String genres;
+  final String? genres;
   final List<Season> seasons;
   final List<Scan> scans;
 

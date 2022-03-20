@@ -15,12 +15,20 @@ class AnimeMapper {
   static List<Widget> list = defaultList;
   static List<Widget> filtered = list;
 
+  // It's a way to reset the list of animes.
   static void clear() {
     list = defaultList;
     filtered = list;
   }
 
+  // It's a way to update the list of animes.
   static Future<void> update({Function? onSuccess, Function? onFailure}) async {
+    if (list.where((element) => element is AnimeWidget).isNotEmpty) {
+      filtered = list;
+      onSuccess?.call();
+      return;
+    }
+
     await Utils.request(
       'https://ziedelth.fr/api/v1/country/${Country.name}/animes',
       (success) {
@@ -37,6 +45,7 @@ class AnimeMapper {
     );
   }
 
+  // It's a way to filter the list of animes.
   static void onSearch(String value) {
     if (value.isEmpty) {
       filtered = list;
