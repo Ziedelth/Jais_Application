@@ -24,12 +24,17 @@ class EpisodeMapper {
     list.addAll(defaultList);
   }
 
+  // Remove all anime loader widgets from list
+  static void removeLoader() {
+    list.removeWhere((element) => element is EpisodeLoaderWidget);
+  }
+
   static Future<void> updateCurrentPage(
       {Function? onSuccess, Function? onFailure}) async {
     await Utils.get(
       'https://ziedelth.fr/api/v1/country/${Country.name}/page/$currentPage/limit/$limit/episodes',
       (success) {
-        list.removeWhere((element) => element is EpisodeLoaderWidget);
+        removeLoader();
         list.addAll((jsonDecode(success) as List<dynamic>)
             .map((e) => EpisodeWidget(episode: Episode.fromJson(e)))
             .toList());

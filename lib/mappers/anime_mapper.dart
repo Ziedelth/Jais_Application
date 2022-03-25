@@ -15,10 +15,16 @@ class AnimeMapper {
   static List<Widget> list = defaultList;
   static List<Widget> filtered = list;
 
-  // It's a way to reset the list of animes.
+  // Clear the current list with the default list
   static void clear() {
     list = defaultList;
     filtered = list;
+  }
+
+  // Remove all anime loader widgets from the list.
+  static void removeLoaders() {
+    list.removeWhere((element) => element is AnimeLoaderWidget);
+    filtered.removeWhere((element) => element is AnimeLoaderWidget);
   }
 
   // It's a way to update the list of animes.
@@ -32,11 +38,11 @@ class AnimeMapper {
     await Utils.get(
       'https://ziedelth.fr/api/v1/country/${Country.name}/animes',
       (success) {
-        list.removeWhere((element) => element is AnimeLoaderWidget);
-        list.addAll((jsonDecode(success) as List<dynamic>)
-            .map((e) => AnimeWidget(anime: Anime.fromJson(e)))
-            .toList());
-        filtered = list;
+        removeLoaders();
+        filtered = list
+          ..addAll((jsonDecode(success) as List<dynamic>)
+              .map((e) => AnimeWidget(anime: Anime.fromJson(e)))
+              .toList());
         onSuccess?.call();
       },
       (failure) {
@@ -45,17 +51,17 @@ class AnimeMapper {
     );
   }
 
-  // It's a way to filter the list of animes.
-  static void onSearch(String value) {
-    if (value.isEmpty) {
+  static void filter(String query) {
+    if (query.isEmpty) {
       filtered = list;
       return;
     }
 
-    filtered = list
-        .where((element) =>
-            element is AnimeWidget &&
-            element.anime.name.toLowerCase().contains(value.toLowerCase()))
-        .toList();
+    filtered = list.where((element) => element is AnimeWidget).toList()
+      ..retainWhere((element) => (element as AnimeWidget)
+          .anime
+          .name
+          .toLowerCase()
+          .contains(query.toLowerCase()));
   }
 }

@@ -24,12 +24,17 @@ class ScanMapper {
     list.addAll(defaultList);
   }
 
+  // Remove all scan loader widgets from list
+  static void removeLoader() {
+    list.removeWhere((element) => element is ScanLoaderWidget);
+  }
+
   static Future<void> updateCurrentPage(
       {Function? onSuccess, Function? onFailure}) async {
     await Utils.get(
       "https://ziedelth.fr/api/v1/country/${Country.name}/page/$currentPage/limit/$limit/scans",
       (success) {
-        list.removeWhere((element) => element is ScanLoaderWidget);
+        removeLoader();
         list.addAll((jsonDecode(success) as List<dynamic>)
             .map((e) => ScanWidget(scan: Scan.fromJson(e)))
             .toList());

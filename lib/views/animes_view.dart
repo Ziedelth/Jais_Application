@@ -31,7 +31,8 @@ class _AnimesViewState extends State<AnimesView> {
     });
   }
 
-  void _onTap(Anime anime) {
+  // Show loader dialog with a builder context
+  Future<void> _showLoader(BuildContext context) async {
     showDialog(
       barrierDismissible: false,
       context: context,
@@ -40,6 +41,10 @@ class _AnimesViewState extends State<AnimesView> {
         actions: [],
       ),
     );
+  }
+
+  void _onTap(Anime anime) {
+    _showLoader(context);
 
     Utils.get(
       'https://ziedelth.fr/api/v1/country/${Country.name}/anime/${anime.id}',

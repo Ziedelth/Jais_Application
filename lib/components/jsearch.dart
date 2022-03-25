@@ -15,7 +15,7 @@ class _JSearchState extends State<JSearch> {
   final TextEditingController _textEditingController = TextEditingController();
 
   void _search(value) => setState(() {
-        AnimeMapper.onSearch(value);
+        AnimeMapper.filter(value);
         widget.callback?.call();
       });
 
