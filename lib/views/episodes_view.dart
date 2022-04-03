@@ -15,7 +15,11 @@ class _EpisodesViewState extends State<EpisodesView> {
 
   Future<void> rebuildEpisodes() async {
     await updateCurrentPage(
-      onSuccess: () => setState(() => _isLoading = false),
+      onSuccess: () {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
+      },
     );
   }
 
@@ -31,7 +35,11 @@ class _EpisodesViewState extends State<EpisodesView> {
         _isLoading = true;
         currentPage++;
         addLoader();
-        setState(() {});
+
+        if (mounted) {
+          setState(() {});
+        }
+
         await rebuildEpisodes();
       }
     });

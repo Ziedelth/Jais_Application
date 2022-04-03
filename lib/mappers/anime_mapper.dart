@@ -31,18 +31,27 @@ Future<void> update({Function()? onSuccess, Function()? onFailure}) async {
   await get(
     'https://ziedelth.fr/api/v1/country/${Country.name}/animes',
     (success) {
-      list.removeWhere((element) => element is AnimeLoaderWidget);
+      try {
+        list.removeWhere((element) => element is AnimeLoaderWidget);
 
-      list.addAll(
-        (jsonDecode(success) as List<Map<String, dynamic>>)
-            .map(
-              (Map<String, dynamic> e) => AnimeWidget(anime: Anime.fromJson(e)),
-            )
-            .toList(),
-      );
+        list.addAll(
+          (jsonDecode(success) as List<dynamic>)
+              .map(
+                (e) => AnimeWidget(
+                  anime: Anime.fromJson(e as Map<String, dynamic>),
+                ),
+              )
+              .toList(),
+        );
 
-      filtered = list;
-      onSuccess?.call();
+        filtered = list;
+        onSuccess?.call();
+      } catch (exception, stackTrace) {
+        // Print exception and stack trace to the console
+        debugPrint("Exception: $exception\nStackTrace: $stackTrace");
+
+        onFailure?.call();
+      }
     },
     (failure) {
       onFailure?.call();

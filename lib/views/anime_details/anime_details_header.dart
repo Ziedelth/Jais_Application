@@ -46,29 +46,31 @@ class _AnimeDetailsHeaderState extends State<AnimeDetailsHeader> {
                   icon: const Icon(Icons.help),
                   onPressed: () => show(
                     context,
-                    children: [
-                      if (widget._animeDetails.genres != null)
-                        Column(
-                          children: [
-                            Text(
-                              widget._animeDetails.genres!,
-                              style: const TextStyle(fontSize: 18),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 10,
+                    widget: Column(
+                      children: [
+                        if (widget._animeDetails.genres != null)
+                          Column(
+                            children: [
+                              Text(
+                                widget._animeDetails.genres!,
+                                style: const TextStyle(fontSize: 18),
                               ),
-                              child: Divider(
-                                height: 5,
-                                color: Colors.white,
+                              const Padding(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 10,
+                                ),
+                                child: Divider(
+                                  height: 5,
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
+                        Text(
+                          widget._animeDetails.description ?? 'No description',
                         ),
-                      Text(
-                        widget._animeDetails.description ?? 'No description',
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

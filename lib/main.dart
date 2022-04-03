@@ -92,10 +92,15 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Container(
         color: Colors.black,
         child: SafeArea(
-          child: PageView(
-            controller: _pageController,
-            onPageChanged: _changeTab,
-            children: _widgets,
+          child: Stack(
+            children: [
+
+              PageView(
+                controller: _pageController,
+                onPageChanged: _changeTab,
+                children: _widgets,
+              ),
+            ],
           ),
         ),
       ),

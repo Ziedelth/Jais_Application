@@ -14,7 +14,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async =>
     initFirebase();
 
 List<String> getTopics() => getStorage.hasData(key)
-    ? getStorage.read(key) as List<String>
+    ? (getStorage.read(key) as List<dynamic>).map((e) => e.toString()).toList()
     : List<String>.empty(growable: true);
 
 bool hasTopic(String topic) => getTopics().contains(topic);

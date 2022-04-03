@@ -64,18 +64,20 @@ class _AnimesViewState extends State<AnimesView> {
   }
 
   void _updateFilter() {
-    setState(() {
-      _widgets = filtered
-          .map<Widget>(
-            (element) => element is! AnimeWidget
-                ? element
-                : GestureDetector(
-                    child: element,
-                    onTap: () => _onTap(element.anime),
-                  ),
-          )
-          .toList();
-    });
+    if (mounted) {
+      setState(() {
+        _widgets = filtered
+            .map<Widget>(
+              (element) => element is! AnimeWidget
+                  ? element
+                  : GestureDetector(
+                      child: element,
+                      onTap: () => _onTap(element.anime),
+                    ),
+            )
+            .toList();
+      });
+    }
   }
 
   @override

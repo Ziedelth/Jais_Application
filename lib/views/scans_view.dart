@@ -15,7 +15,11 @@ class _ScansViewState extends State<ScansView> {
 
   Future<void> rebuildScans() async {
     await updateCurrentPage(
-      onSuccess: () => setState(() => _isLoading = false),
+      onSuccess: () {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
+      },
     );
   }
 
@@ -31,7 +35,11 @@ class _ScansViewState extends State<ScansView> {
         _isLoading = true;
         currentPage++;
         addLoader();
-        setState(() {});
+
+        if (mounted) {
+          setState(() {});
+        }
+
         await rebuildScans();
       }
     });

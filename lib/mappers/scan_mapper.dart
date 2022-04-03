@@ -34,15 +34,24 @@ Future<void> updateCurrentPage({
   await get(
     "https://ziedelth.fr/api/v1/country/${Country.name}/page/$currentPage/limit/$limit/scans",
     (success) {
-      removeLoader();
-      list.addAll(
-        (jsonDecode(success) as List<Map<String, dynamic>>)
-            .map(
-              (Map<String, dynamic> e) => ScanWidget(scan: Scan.fromJson(e)),
-            )
-            .toList(),
-      );
-      onSuccess?.call();
+      try {
+        removeLoader();
+        list.addAll(
+          (jsonDecode(success) as List<dynamic>)
+              .map(
+                (e) => ScanWidget(
+                  scan: Scan.fromJson(e as Map<String, dynamic>),
+                ),
+              )
+              .toList(),
+        );
+        onSuccess?.call();
+      } catch (exception, stackTrace) {
+        // Print exception and stack trace to the console
+        debugPrint("Exception: $exception\nStackTrace: $stackTrace");
+
+        onFailure?.call();
+      }
     },
     (failure) {
       onFailure?.call();

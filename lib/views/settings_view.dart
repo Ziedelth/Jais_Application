@@ -4,6 +4,7 @@ import 'package:jais/components/full_button.dart';
 import 'package:jais/components/jdialog.dart';
 import 'package:jais/components/roundborder_widget.dart';
 import 'package:jais/components/skeleton.dart';
+import 'package:jais/components/user_widget.dart';
 import 'package:jais/mappers/user_mapper.dart';
 import 'package:jais/utils/jais_ad.dart';
 import 'package:jais/utils/notifications.dart';
@@ -61,46 +62,7 @@ class _SettingsViewState extends State<SettingsView> {
                   child: const Text('Mon profil'),
                   onPressed: () => show(
                     context,
-                    children: [
-                      CachedNetworkImage(
-                        imageUrl:
-                            'https://ziedelth.fr/${user?.image ?? 'images/default_member.jpg'}',
-                        imageBuilder: (context, imageProvider) =>
-                            RoundBorderWidget(
-                          widget: Image(
-                            image: imageProvider,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        placeholder: (context, url) =>
-                            const Skeleton(height: 200),
-                        errorWidget: (context, url, error) =>
-                            const Skeleton(height: 200),
-                        fit: BoxFit.fill,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Text(
-                          '${user?.pseudo}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ),
-                      const Divider(
-                        height: 1,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Text(
-                          'Inscription il y a ${printTimeSince(DateTime.tryParse(user?.timestamp ?? '0'))}',
-                        ),
-                      ),
-                      Text(
-                        user?.about ?? '',
-                      ),
-                    ],
+                    widget: UserWidget(user!),
                   ),
                 ),
               ),
@@ -133,21 +95,23 @@ class _SettingsViewState extends State<SettingsView> {
                       ? null
                       : () => show(
                             context,
-                            children: [
-                              const Text(
-                                'Mode par défaut des notifications',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 18,
+                            widget: Column(
+                              children: const [
+                                Text(
+                                  'Mode par défaut des notifications',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 18,
+                                  ),
                                 ),
-                              ),
-                              const Divider(
-                                height: 1,
-                              ),
-                              const Text(
-                                "Ce mode vous avertit de toutes les mises à jour récentes, qu'il s'agisse d'épisodes ou de scans.",
-                              ),
-                            ],
+                                Divider(
+                                  height: 1,
+                                ),
+                                Text(
+                                  "Ce mode vous avertit de toutes les mises à jour récentes, qu'il s'agisse d'épisodes ou de scans.",
+                                ),
+                              ],
+                            ),
                           ),
                   child: const Text('Par défaut'),
                 ),
@@ -163,21 +127,23 @@ class _SettingsViewState extends State<SettingsView> {
                   onLongPress: _hasTopic
                       ? () => show(
                             context,
-                            children: [
-                              const Text(
-                                'Personnalisation des notifications',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 18,
+                            widget: Column(
+                              children: const [
+                                Text(
+                                  'Personnalisation des notifications',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 18,
+                                  ),
                                 ),
-                              ),
-                              const Divider(
-                                height: 1,
-                              ),
-                              const Text(
-                                "Choissisez les animes dont vous souhaitez être informé à chaque mise à jour récentes.",
-                              ),
-                            ],
+                                Divider(
+                                  height: 1,
+                                ),
+                                Text(
+                                  "Choissisez les animes dont vous souhaitez être informé à chaque mise à jour récentes.",
+                                ),
+                              ],
+                            ),
                           )
                       : null,
                   child: const Text('Personnalisé'),

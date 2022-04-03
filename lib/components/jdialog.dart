@@ -3,7 +3,7 @@ import 'package:jais/utils/main_color.dart';
 
 void show(
   BuildContext context, {
-  List<Widget> children = const [],
+  required Widget widget,
   List<Widget> actions = const [],
 }) {
   showDialog(
@@ -15,9 +15,7 @@ void show(
         side: const BorderSide(color: mainColorO),
       ),
       content: SingleChildScrollView(
-        child: Column(
-          children: children,
-        ),
+        child: widget,
       ),
       actions: actions,
     ),

@@ -19,34 +19,37 @@ void clear() {
   list = defaultList;
 }
 
-void addLoader() {
-  list.addAll(defaultList);
-}
-
-void removeLoader() {
-list.removeWhere((element) => element is EpisodeLoaderWidget);
-}
+void addLoader() => list.addAll(defaultList);
+void removeLoader() =>
+    list.removeWhere((element) => element is EpisodeLoaderWidget);
 
 Future<void> updateCurrentPage({
   Function()? onSuccess,
   Function()? onFailure,
-}) async {
-  await get(
-    'https://ziedelth.fr/api/v1/country/${Country.name}/page/$currentPage/limit/$limit/episodes',
-    (success) {
-      removeLoader();
-      list.addAll(
-        (jsonDecode(success) as List<Map<String, dynamic>>)
-            .map(
-              (Map<String, dynamic> e) =>
-                  EpisodeWidget(episode: Episode.fromJson(e)),
-            )
-            .toList(),
-      );
-      onSuccess?.call();
-    },
-    (failure) {
-      onFailure?.call();
-    },
-  );
-}
+}) async =>
+    get(
+      'https://ziedelth.fr/api/v1/country/${Country.name}/page/$currentPage/limit/$limit/episodes',
+      (success) {
+        try {
+          removeLoader();
+          list.addAll(
+            (jsonDecode(success) as List<dynamic>)
+                .map(
+                  (e) => EpisodeWidget(
+                    episode: Episode.fromJson(e as Map<String, dynamic>),
+                  ),
+                )
+                .toList(),
+          );
+          onSuccess?.call();
+        } catch (exception, stackTrace) {
+          // Print exception and stack trace to the console
+          debugPrint("Exception: $exception\nStackTrace: $stackTrace");
+
+          onFailure?.call();
+        }
+      },
+      (failure) {
+        onFailure?.call();
+      },
+    );
