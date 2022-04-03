@@ -23,6 +23,10 @@ void addLoader() {
   list.addAll(defaultList);
 }
 
+void removeLoader() {
+list.removeWhere((element) => element is EpisodeLoaderWidget);
+}
+
 Future<void> updateCurrentPage({
   Function()? onSuccess,
   Function()? onFailure,
@@ -30,7 +34,7 @@ Future<void> updateCurrentPage({
   await get(
     'https://ziedelth.fr/api/v1/country/${Country.name}/page/$currentPage/limit/$limit/episodes',
     (success) {
-      list.removeWhere((element) => element is EpisodeLoaderWidget);
+      removeLoader();
       list.addAll(
         (jsonDecode(success) as List<Map<String, dynamic>>)
             .map(
