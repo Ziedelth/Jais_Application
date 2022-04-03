@@ -21,7 +21,6 @@ class ScanLoaderWidget extends StatelessWidget {
           padding: const EdgeInsets.all(10),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Row(
                 children: const [

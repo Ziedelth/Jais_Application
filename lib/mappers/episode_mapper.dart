@@ -7,37 +7,49 @@ import 'package:jais/models/episode.dart';
 import 'package:jais/utils/country.dart';
 import 'package:jais/utils/utils.dart';
 
-class EpisodeMapper {
-  static const limit = 9;
-  static int currentPage = 1;
+const limit = 9;
+int currentPage = 1;
 
-  static List<Widget> get defaultList =>
-      List.filled(limit, const EpisodeLoaderWidget(), growable: true);
-  static List<Widget> list = defaultList;
+List<Widget> get defaultList =>
+    List.filled(limit, const EpisodeLoaderWidget(), growable: true);
+List<Widget> list = defaultList;
 
-  static void clear() {
-    currentPage = 1;
-    list = defaultList;
-  }
+void clear() {
+  currentPage = 1;
+  list = defaultList;
+}
 
-  static void addLoader() {
-    list.addAll(defaultList);
-  }
+void addLoader() => list.addAll(defaultList);
+void removeLoader() =>
+    list.removeWhere((element) => element is EpisodeLoaderWidget);
 
-  static Future<void> updateCurrentPage(
-      {Function? onSuccess, Function? onFailure}) async {
-    await Utils.request(
+Future<void> updateCurrentPage({
+  Function()? onSuccess,
+  Function()? onFailure,
+}) async =>
+    get(
       'https://ziedelth.fr/api/v1/country/${Country.name}/page/$currentPage/limit/$limit/episodes',
       (success) {
-        list.removeWhere((element) => element is EpisodeLoaderWidget);
-        list.addAll((jsonDecode(success) as List<dynamic>)
-            .map((e) => EpisodeWidget(episode: Episode.fromJson(e)))
-            .toList());
-        onSuccess?.call();
+        try {
+          removeLoader();
+          list.addAll(
+            (jsonDecode(success) as List<dynamic>)
+                .map(
+                  (e) => EpisodeWidget(
+                    episode: Episode.fromJson(e as Map<String, dynamic>),
+                  ),
+                )
+                .toList(),
+          );
+          onSuccess?.call();
+        } catch (exception, stackTrace) {
+          // Print exception and stack trace to the console
+          debugPrint("Exception: $exception\nStackTrace: $stackTrace");
+
+          onFailure?.call();
+        }
       },
       (failure) {
         onFailure?.call();
       },
     );
-  }
-}

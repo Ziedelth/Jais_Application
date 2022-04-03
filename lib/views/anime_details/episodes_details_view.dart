@@ -7,7 +7,7 @@ import 'package:jais/models/season.dart';
 class EpisodesDetailsView extends StatefulWidget {
   final AnimeDetails _animeDetails;
 
-  EpisodesDetailsView(this._animeDetails);
+  const EpisodesDetailsView(this._animeDetails);
 
   @override
   _EpisodesDetailsViewState createState() => _EpisodesDetailsViewState();
@@ -52,7 +52,7 @@ class _EpisodesDetailsViewState extends State<EpisodesDetailsView> {
       return Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
+          children: const [
             Icon(
               Icons.close,
               color: Colors.red,

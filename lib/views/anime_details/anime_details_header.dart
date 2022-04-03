@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:jais/components/jdialog.dart';
+import 'package:jais/mappers/user_mapper.dart';
 import 'package:jais/models/anime_details.dart';
-import 'package:jais/utils/main_color.dart';
-import 'package:jais/utils/user.dart';
+import 'package:jais/utils/notifications.dart';
 
 class AnimeDetailsHeader extends StatefulWidget {
   const AnimeDetailsHeader(this._callback, this._animeDetails, {Key? key})
@@ -15,10 +16,10 @@ class AnimeDetailsHeader extends StatefulWidget {
 }
 
 class _AnimeDetailsHeaderState extends State<AnimeDetailsHeader> {
-  bool _notifications = false;
-
   @override
   Widget build(BuildContext context) {
+    final bool _hasTopic = hasTopic(widget._animeDetails.code);
+
     return Row(
       children: [
         BackButton(
@@ -40,62 +41,62 @@ class _AnimeDetailsHeaderState extends State<AnimeDetailsHeader> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5),
+                padding: const EdgeInsets.symmetric(horizontal: 5),
                 child: IconButton(
-                  icon: Icon(Icons.help),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        backgroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          side: BorderSide(color: MainColor.mainColorO),
-                        ),
-                        content: SingleChildScrollView(
-                          child: Column(
+                  icon: const Icon(Icons.help),
+                  onPressed: () => show(
+                    context,
+                    widget: Column(
+                      children: [
+                        if (widget._animeDetails.genres != null)
+                          Column(
                             children: [
-                              if (widget._animeDetails.genres != null)
-                                Column(
-                                  children: [
-                                    Text(
-                                      widget._animeDetails.genres!,
-                                      style: TextStyle(fontSize: 18),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 10,
-                                      ),
-                                      child: Divider(
-                                        height: 5,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
+                              Text(
+                                widget._animeDetails.genres!,
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 10,
                                 ),
-                              Text(widget._animeDetails.description ??
-                                  'No description'),
+                                child: Divider(
+                                  height: 5,
+                                  color: Colors.white,
+                                ),
+                              ),
                             ],
                           ),
+                        Text(
+                          widget._animeDetails.description ?? 'No description',
                         ),
-                      ),
-                    );
-                  },
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ],
           ),
         ),
-        if (User.isConnected)
+        if (isConnected())
           Expanded(
             child: IconButton(
               icon: Icon(
-                _notifications
-                    ? Icons.notifications_on
-                    : Icons.notifications_off,
-                color: _notifications ? Colors.green : Colors.red,
+                _hasTopic ? Icons.notifications_on : Icons.notifications_off,
+                color: _hasTopic ? Colors.green : Colors.red,
               ),
-              onPressed: () => setState(() => _notifications = !_notifications),
+              onPressed: () {
+                if (_hasTopic) {
+                  removeTopic(widget._animeDetails.code);
+                  setState(() {});
+                  return;
+                }
+
+                if (!_hasTopic) {
+                  addTopic(widget._animeDetails.code);
+                  setState(() {});
+                  return;
+                }
+              },
             ),
           ),
       ],

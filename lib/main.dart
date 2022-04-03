@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:jais/mappers/user_mapper.dart';
 import 'package:jais/utils/jais_ad.dart';
 import 'package:jais/utils/main_color.dart';
 import 'package:jais/utils/notifications.dart';
@@ -15,7 +16,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
   await MobileAds.instance.initialize();
-  await JaisNotifications.init();
+  await init();
   runApp(const MyApp());
 }
 
@@ -28,8 +29,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
-        primaryColor: const Color(MainColor.mainColor),
-        primarySwatch: MaterialColor(MainColor.mainColor, MainColor.mainColors),
+        primaryColor: const Color(mainColor),
+        primarySwatch: MaterialColor(mainColor, mainColors),
       ),
       home: const MyHomePage(),
     );
@@ -51,14 +52,37 @@ class _MyHomePageState extends State<MyHomePage> {
     SettingsView(),
   ];
 
-  final PageController _pageController = PageController(initialPage: 0);
+  final PageController _pageController = PageController();
   int _currentIndex = 0;
 
   void _changeTab(int index) => setState(() => _currentIndex = index);
 
   @override
   void initState() {
-    JaisAd.createVideo();
+    createVideo();
+
+    tryToLogin(
+      callback: () {
+        if (user == null) {
+          return;
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'De retour, ${user?.pseudo}',
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
     super.initState();
   }
 
@@ -68,10 +92,15 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Container(
         color: Colors.black,
         child: SafeArea(
-          child: PageView(
-            controller: _pageController,
-            onPageChanged: _changeTab,
-            children: _widgets,
+          child: Stack(
+            children: [
+
+              PageView(
+                controller: _pageController,
+                onPageChanged: _changeTab,
+                children: _widgets,
+              ),
+            ],
           ),
         ),
       ),
@@ -81,8 +110,11 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.black,
         selectedItemColor: Theme.of(context).primaryColor,
         currentIndex: _currentIndex,
-        onTap: (index) => _pageController.animateToPage(index,
-            duration: Duration(milliseconds: 500), curve: Curves.ease),
+        onTap: (index) => _pageController.animateToPage(
+          index,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.ease,
+        ),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.subscriptions),

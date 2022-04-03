@@ -22,22 +22,23 @@ class Episode {
   final int duration;
 
   Episode(
-      this.platform,
-      this.platformUrl,
-      this.platformImage,
-      this.animeId,
-      this.anime,
-      this.releaseDate,
-      this.season,
-      this.number,
-      this.countrySeason,
-      this.episodeType,
-      this.langType,
-      this.episodeId,
-      this.title,
-      this.url,
-      this.image,
-      this.duration);
+    this.platform,
+    this.platformUrl,
+    this.platformImage,
+    this.animeId,
+    this.anime,
+    this.releaseDate,
+    this.season,
+    this.number,
+    this.countrySeason,
+    this.episodeType,
+    this.langType,
+    this.episodeId,
+    this.title,
+    this.url,
+    this.image,
+    this.duration,
+  );
 
   factory Episode.fromJson(Map<String, dynamic> data) =>
       _$EpisodeFromJson(data);

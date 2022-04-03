@@ -19,17 +19,18 @@ class AnimeDetails {
   final List<Scan> scans;
 
   AnimeDetails(
-      this.id,
-      this.countryId,
-      this.releaseDate,
-      this.code,
-      this.name,
-      this.image,
-      this.description,
-      this.countrySeason,
-      this.genres,
-      this.seasons,
-      this.scans);
+    this.id,
+    this.countryId,
+    this.releaseDate,
+    this.code,
+    this.name,
+    this.image,
+    this.description,
+    this.countrySeason,
+    this.genres,
+    this.seasons,
+    this.scans,
+  );
 
   factory AnimeDetails.fromJson(Map<String, dynamic> data) =>
       _$AnimeDetailsFromJson(data);

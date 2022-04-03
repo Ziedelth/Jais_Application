@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:jais/components/notation_widget.dart';
 import 'package:jais/components/skeleton.dart';
 import 'package:jais/models/anime.dart';
 
@@ -28,7 +29,6 @@ class AnimeWidget extends StatelessWidget {
                   Expanded(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Align(
                           alignment: Alignment.centerLeft,
@@ -67,8 +67,17 @@ class AnimeWidget extends StatelessWidget {
                       width: 75,
                       height: 100,
                     ),
-                  )
+                  ),
                 ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 5),
+                child: Row(
+                  children: const [
+                    Spacer(),
+                    NotationWidget(),
+                  ],
+                ),
               ),
             ],
           ),

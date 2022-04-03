@@ -28,7 +28,6 @@ class ScanWidget extends StatelessWidget {
             padding: const EdgeInsets.all(10),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Row(
                   children: [
@@ -79,10 +78,10 @@ class ScanWidget extends StatelessWidget {
                     Expanded(
                       flex: 4,
                       child: Text(
-                        'Il y a ${Utils.printTimeSince(DateTime.parse(scan.releaseDate))}',
+                        'Il y a ${printTimeSince(DateTime.parse(scan.releaseDate))}',
                       ),
                     ),
-                    Expanded(
+                    const Expanded(
                       child: NotationWidget(),
                     ),
                   ],

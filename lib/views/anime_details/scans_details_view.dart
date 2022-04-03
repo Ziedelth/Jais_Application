@@ -21,7 +21,7 @@ class ScansDetailsView extends StatelessWidget {
       return Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
+          children: const [
             Icon(
               Icons.close,
               color: Colors.red,

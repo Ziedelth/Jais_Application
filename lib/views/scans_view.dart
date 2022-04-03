@@ -14,10 +14,12 @@ class _ScansViewState extends State<ScansView> {
   bool _isLoading = true;
 
   Future<void> rebuildScans() async {
-    await ScanMapper.updateCurrentPage(
-      onSuccess: () => setState(() {
-        _isLoading = false;
-      }),
+    await updateCurrentPage(
+      onSuccess: () {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
+      },
     );
   }
 
@@ -25,15 +27,19 @@ class _ScansViewState extends State<ScansView> {
   void initState() {
     super.initState();
 
-    ScanMapper.clear();
+    clear();
     rebuildScans();
 
     _scrollController.addListener(() async {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
         _isLoading = true;
-        ScanMapper.currentPage++;
-        ScanMapper.addLoader();
-        setState(() {});
+        currentPage++;
+        addLoader();
+
+        if (mounted) {
+          setState(() {});
+        }
+
         await rebuildScans();
       }
     });
@@ -42,8 +48,8 @@ class _ScansViewState extends State<ScansView> {
   @override
   Widget build(BuildContext context) {
     return JList(
-      children: ScanMapper.list,
       controller: _scrollController,
+      children: list,
     );
   }
 }

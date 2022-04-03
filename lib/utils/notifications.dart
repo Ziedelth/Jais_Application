@@ -3,64 +3,69 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:jais/utils/firebase_options.dart';
 
-class JaisNotifications {
-  static final GetStorage getStorage = GetStorage('Notifications');
-  static const KEY = "topics";
+final GetStorage getStorage = GetStorage();
+const key = "topics";
 
-  static Future<void> initFirebase() async => await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
+Future<void> initFirebase() async => Firebase.initializeApp(
+      options: currentPlatform,
+    );
 
-  static Future<void> _firebaseMessagingBackgroundHandler(
-          RemoteMessage message) async =>
-      await initFirebase();
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async =>
+    initFirebase();
 
-  static List<String> getTopics() => getStorage.hasData(KEY)
-      ? getStorage.read(KEY)
-      : List<String>.empty(growable: true);
+List<String> getTopics() => getStorage.hasData(key)
+    ? (getStorage.read(key) as List<dynamic>).map((e) => e.toString()).toList()
+    : List<String>.empty(growable: true);
 
-  static addTopic(String topic) {
-    List<String> list = getTopics();
+bool hasTopic(String topic) => getTopics().contains(topic);
 
-    if (!list.contains(topic)) {
-      list.add(topic);
-      FirebaseMessaging.instance.subscribeToTopic(topic);
-    }
+void addTopic(String topic) {
+  final List<String> list = getTopics();
 
-    getStorage.write(KEY, list);
+  if (hasTopic(topic)) {
+    return;
   }
 
-  static removeTopic(String topic) {
-    List<String> list = getTopics();
-
-    if (list.contains(topic)) {
-      list.remove(topic);
-      FirebaseMessaging.instance.unsubscribeFromTopic(topic);
-    }
-
-    getStorage.write(KEY, list);
+  if (topic != "animes") {
+    list.remove("animes");
   }
 
-  static removeAllTopics() {
-    List<String> list = getTopics();
+  list.add(topic);
+  FirebaseMessaging.instance.subscribeToTopic(topic);
+  getStorage.write(key, list);
+}
 
-    for (String topic in list) {
-      FirebaseMessaging.instance.unsubscribeFromTopic(topic);
-    }
+void removeTopic(String topic) {
+  final List<String> list = getTopics();
 
-    list.clear();
-    getStorage.write(KEY, list);
+  if (!hasTopic(topic)) {
+    return;
   }
 
-  static Future<void> init() async {
-    await initFirebase();
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    final bool firstInit = !getStorage.hasData('init');
+  list.remove(topic);
+  FirebaseMessaging.instance.unsubscribeFromTopic(topic);
+  getStorage.write(key, list);
+}
 
-    if (firstInit) {
-      addTopic("animes");
-    }
+void removeAllTopics() {
+  final List<String> list = getTopics();
 
-    getStorage.write('init', true);
+  for (final String topic in list) {
+    FirebaseMessaging.instance.unsubscribeFromTopic(topic);
   }
+
+  list.clear();
+  getStorage.write(key, list);
+}
+
+Future<void> init() async {
+  await initFirebase();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  final bool firstInit = !getStorage.hasData('init');
+
+  if (firstInit) {
+    addTopic("animes");
+  }
+
+  getStorage.write('init', true);
 }

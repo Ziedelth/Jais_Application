@@ -28,7 +28,6 @@ class EpisodeWidget extends StatelessWidget {
           padding: const EdgeInsets.all(10),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Row(
                 children: [
@@ -90,7 +89,7 @@ class EpisodeWidget extends StatelessWidget {
                     padding: EdgeInsets.only(left: 5),
                   ),
                   Text(
-                    Utils.printDuration(Duration(seconds: episode.duration)),
+                    printDuration(Duration(seconds: episode.duration)),
                   ),
                 ],
               ),
@@ -121,10 +120,10 @@ class EpisodeWidget extends StatelessWidget {
                   Expanded(
                     flex: 4,
                     child: Text(
-                      'Il y a ${Utils.printTimeSince(DateTime.parse(episode.releaseDate))}',
+                      'Il y a ${printTimeSince(DateTime.parse(episode.releaseDate))}',
                     ),
                   ),
-                  Expanded(
+                  const Expanded(
                     child: NotationWidget(),
                   ),
                 ],
