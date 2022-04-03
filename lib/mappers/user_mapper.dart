@@ -5,67 +5,66 @@ import 'package:get_storage/get_storage.dart';
 import 'package:jais/models/user.dart';
 import 'package:jais/utils/utils.dart';
 
-class UserMapper {
-  static final GetStorage getStorage = GetStorage();
-  static const KEY = "token";
-  static String? token;
-  static User? user;
+final GetStorage getStorage = GetStorage();
+const key = "token";
+String? token;
+User? user;
 
-  static void fromResponse(Map<String, dynamic> json) {
-    if (!json.containsKey('token')) {
-      return;
-    }
-
-    token = json['token'];
-    user = User.fromJson(json['user']);
-    getStorage.write(KEY, token);
+void fromResponse(Map<String, dynamic> json) {
+  if (!json.containsKey('token')) {
+    return;
   }
 
-  static Future<void> tryToLogin({VoidCallback? callback}) async {
-    if (isConnected()) {
+  token = json['token'] as String;
+  user = User.fromJson(json['user'] as Map<String, dynamic>);
+  getStorage.write(key, token);
+}
+
+Future<void> tryToLogin({VoidCallback? callback}) async {
+  if (isConnected()) {
+    callback?.call();
+    return;
+  }
+
+  debugPrint('Has token saved: ${getStorage.hasData(key)}');
+
+  if (!getStorage.hasData(key)) {
+    return;
+  }
+
+  final String localToken = getStorage.read(key) as String;
+  debugPrint('Local token: $localToken');
+
+  await post(
+    'https://ziedelth.fr/api/v1/member/login/token',
+    {
+      "token": localToken,
+    },
+    (success) {
+      final Map<String, dynamic> json =
+          jsonDecode(success) as Map<String, dynamic>;
+
+      if (json.containsKey('error')) {
+        return;
+      }
+
+      fromResponse(json);
       callback?.call();
-      return;
-    }
+    },
+    (failure) => null,
+  );
+}
 
-    debugPrint('Has token saved: ${getStorage.hasData(KEY)}');
+bool isConnected() {
+  return token != null && user != null;
+}
 
-    if (!getStorage.hasData(KEY)) {
-      return;
-    }
-
-    final String localToken = getStorage.read(KEY);
-    debugPrint('Local token: $localToken');
-
-    await Utils.post(
-      'https://ziedelth.fr/api/v1/member/login/token',
-      {
-        "token": localToken,
-      },
-      (success) {
-        final Map<String, dynamic> json = jsonDecode(success);
-
-        if (json.containsKey('error')) {
-          return;
-        }
-
-        fromResponse(json);
-        callback?.call();
-      },
-      (failure) => null,
-    );
+void logout() {
+  if (!isConnected()) {
+    return;
   }
 
-  static bool isConnected() {
-    return token != null && user != null;
-  }
-
-  static void logout() {
-    if (!isConnected()) {
-      return;
-    }
-
-    token = null;
-    user = null;
-    getStorage.remove(KEY);
-  }
+  token = null;
+  user = null;
+  getStorage.remove(key);
 }

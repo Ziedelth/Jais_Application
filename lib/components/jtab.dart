@@ -16,7 +16,7 @@ class _JTabState extends State<JTab> {
     return TabBar(
       controller: widget.tabController,
       indicatorColor: Colors.black,
-      labelColor: MainColor.mainColorO,
+      labelColor: mainColorO,
       unselectedLabelColor: Colors.grey,
       tabs: const [
         Tab(

@@ -29,7 +29,6 @@ class AnimeWidget extends StatelessWidget {
                   Expanded(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Align(
                           alignment: Alignment.centerLeft,
@@ -72,9 +71,9 @@ class AnimeWidget extends StatelessWidget {
                 ],
               ),
               Padding(
-                padding: EdgeInsets.only(top: 5),
+                padding: const EdgeInsets.only(top: 5),
                 child: Row(
-                  children: [
+                  children: const [
                     Spacer(),
                     NotationWidget(),
                   ],

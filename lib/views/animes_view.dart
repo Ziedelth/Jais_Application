@@ -35,18 +35,20 @@ class _AnimesViewState extends State<AnimesView> {
     showDialog(
       barrierDismissible: false,
       context: context,
-      builder: (context) => AlertDialog(
-        content: const Loading(),
+      builder: (context) => const AlertDialog(
+        content: Loading(),
         actions: [],
       ),
     );
 
-    Utils.get(
+    get(
       'https://ziedelth.fr/api/v1/country/${Country.name}/anime/${anime.id}',
       (success) {
         try {
           Navigator.pop(context);
-          _setDetails(animeDetails: AnimeDetails.fromJson(jsonDecode(success)));
+          _setDetails(
+              animeDetails: AnimeDetails.fromJson(
+                  jsonDecode(success) as Map<String, dynamic>));
         } catch (exception, stackTrace) {
           debugPrint('$exception');
           debugPrint('$stackTrace');
@@ -58,7 +60,7 @@ class _AnimesViewState extends State<AnimesView> {
 
   void _updateFilter() {
     setState(() {
-      _widgets = AnimeMapper.filtered
+      _widgets = filtered
           .map<Widget>(
             (element) => element is! AnimeWidget
                 ? element
@@ -73,7 +75,7 @@ class _AnimesViewState extends State<AnimesView> {
 
   @override
   void initState() {
-    AnimeMapper.update(
+    update(
       onSuccess: _updateFilter,
     );
 

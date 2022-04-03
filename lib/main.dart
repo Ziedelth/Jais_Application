@@ -16,7 +16,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
   await MobileAds.instance.initialize();
-  await JNotifications.init();
+  await init();
   runApp(const MyApp());
 }
 
@@ -29,8 +29,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
-        primaryColor: const Color(MainColor.mainColor),
-        primarySwatch: MaterialColor(MainColor.mainColor, MainColor.mainColors),
+        primaryColor: const Color(mainColor),
+        primarySwatch: MaterialColor(mainColor, mainColors),
       ),
       home: const MyHomePage(),
     );
@@ -52,34 +52,36 @@ class _MyHomePageState extends State<MyHomePage> {
     SettingsView(),
   ];
 
-  final PageController _pageController = PageController(initialPage: 0);
+  final PageController _pageController = PageController();
   int _currentIndex = 0;
 
   void _changeTab(int index) => setState(() => _currentIndex = index);
 
   @override
   void initState() {
-    JaisAd.createVideo();
+    createVideo();
 
-    UserMapper.tryToLogin(callback: () {
-      if (UserMapper.user == null) {
-        return;
-      }
+    tryToLogin(
+      callback: () {
+        if (user == null) {
+          return;
+        }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'De retour, ${UserMapper.user?.pseudo}',
-              ),
-            ],
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'De retour, ${user?.pseudo}',
+                ),
+              ],
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
 
     super.initState();
   }
@@ -103,8 +105,11 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.black,
         selectedItemColor: Theme.of(context).primaryColor,
         currentIndex: _currentIndex,
-        onTap: (index) => _pageController.animateToPage(index,
-            duration: Duration(milliseconds: 500), curve: Curves.ease),
+        onTap: (index) => _pageController.animateToPage(
+          index,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.ease,
+        ),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.subscriptions),

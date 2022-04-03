@@ -18,29 +18,29 @@ class _NotationWidgetState extends State<NotationWidget> {
     return Row(
       children: [
         Padding(
-          padding: EdgeInsets.only(right: 7.5),
+          padding: const EdgeInsets.only(right: 7.5),
           child: GestureDetector(
-            child: Icon(
+            onTap: widget.onUp,
+            child: const Icon(
               Icons.thumb_up,
               color: Colors.grey,
             ),
-            onTap: widget.onUp,
           ),
         ),
         Text(
           '${widget.up ?? 0}',
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.w900,
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(left: 7.5),
+          padding: const EdgeInsets.only(left: 7.5),
           child: GestureDetector(
-            child: Icon(
+            onTap: widget.onDown,
+            child: const Icon(
               Icons.thumb_down,
               color: Colors.grey,
             ),
-            onTap: widget.onDown,
           ),
         ),
       ],

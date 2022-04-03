@@ -14,7 +14,7 @@ class _EpisodesViewState extends State<EpisodesView> {
   bool _isLoading = true;
 
   Future<void> rebuildEpisodes() async {
-    await EpisodeMapper.updateCurrentPage(
+    await updateCurrentPage(
       onSuccess: () => setState(() => _isLoading = false),
     );
   }
@@ -23,14 +23,14 @@ class _EpisodesViewState extends State<EpisodesView> {
   void initState() {
     super.initState();
 
-    EpisodeMapper.clear();
+    clear();
     rebuildEpisodes();
 
     _scrollController.addListener(() async {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
         _isLoading = true;
-        EpisodeMapper.currentPage++;
-        EpisodeMapper.addLoader();
+        currentPage++;
+        addLoader();
         setState(() {});
         await rebuildEpisodes();
       }
@@ -40,8 +40,8 @@ class _EpisodesViewState extends State<EpisodesView> {
   @override
   Widget build(BuildContext context) {
     return JList(
-      children: EpisodeMapper.list,
       controller: _scrollController,
+      children: list,
     );
   }
 }

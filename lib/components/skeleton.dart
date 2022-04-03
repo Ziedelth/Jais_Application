@@ -8,7 +8,8 @@ class Skeleton extends StatelessWidget {
     this.height,
   }) : super(key: key);
 
-  final double? width, height;
+  final double? width;
+  final double? height;
 
   @override
   Widget build(BuildContext context) {

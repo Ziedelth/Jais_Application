@@ -7,37 +7,41 @@ import 'package:jais/models/scan.dart';
 import 'package:jais/utils/country.dart';
 import 'package:jais/utils/utils.dart';
 
-class ScanMapper {
-  static const limit = 18;
-  static int currentPage = 1;
+const limit = 18;
+int currentPage = 1;
 
-  static List<Widget> get defaultList =>
-      List.filled(limit, const ScanLoaderWidget(), growable: true);
-  static List<Widget> list = defaultList;
+List<Widget> get defaultList =>
+    List.filled(limit, const ScanLoaderWidget(), growable: true);
+List<Widget> list = defaultList;
 
-  static void clear() {
-    currentPage = 1;
-    list = defaultList;
-  }
+void clear() {
+  currentPage = 1;
+  list = defaultList;
+}
 
-  static void addLoader() {
-    list.addAll(defaultList);
-  }
+void addLoader() {
+  list.addAll(defaultList);
+}
 
-  static Future<void> updateCurrentPage(
-      {Function? onSuccess, Function? onFailure}) async {
-    await Utils.get(
-      "https://ziedelth.fr/api/v1/country/${Country.name}/page/$currentPage/limit/$limit/scans",
-      (success) {
-        list.removeWhere((element) => element is ScanLoaderWidget);
-        list.addAll((jsonDecode(success) as List<dynamic>)
-            .map((e) => ScanWidget(scan: Scan.fromJson(e)))
-            .toList());
-        onSuccess?.call();
-      },
-      (failure) {
-        onFailure?.call();
-      },
-    );
-  }
+Future<void> updateCurrentPage({
+  Function()? onSuccess,
+  Function()? onFailure,
+}) async {
+  await get(
+    "https://ziedelth.fr/api/v1/country/${Country.name}/page/$currentPage/limit/$limit/scans",
+    (success) {
+      list.removeWhere((element) => element is ScanLoaderWidget);
+      list.addAll(
+        (jsonDecode(success) as List<Map<String, dynamic>>)
+            .map(
+              (Map<String, dynamic> e) => ScanWidget(scan: Scan.fromJson(e)),
+            )
+            .toList(),
+      );
+      onSuccess?.call();
+    },
+    (failure) {
+      onFailure?.call();
+    },
+  );
 }

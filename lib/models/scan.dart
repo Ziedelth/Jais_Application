@@ -17,17 +17,18 @@ class Scan {
   final String url;
 
   Scan(
-      this.platform,
-      this.platformUrl,
-      this.platformImage,
-      this.animeId,
-      this.anime,
-      this.animeImage,
-      this.releaseDate,
-      this.number,
-      this.episodeType,
-      this.langType,
-      this.url);
+    this.platform,
+    this.platformUrl,
+    this.platformImage,
+    this.animeId,
+    this.anime,
+    this.animeImage,
+    this.releaseDate,
+    this.number,
+    this.episodeType,
+    this.langType,
+    this.url,
+  );
 
   factory Scan.fromJson(Map<String, dynamic> data) => _$ScanFromJson(data);
 

@@ -14,8 +14,8 @@ class JSearch extends StatefulWidget {
 class _JSearchState extends State<JSearch> {
   final TextEditingController _textEditingController = TextEditingController();
 
-  void _search(value) => setState(() {
-        AnimeMapper.onSearch(value);
+  void _search(String value) => setState(() {
+        onSearch(value);
         widget.callback?.call();
       });
 
@@ -25,7 +25,7 @@ class _JSearchState extends State<JSearch> {
       children: [
         Expanded(
           child: Padding(
-            padding: EdgeInsets.only(left: 20),
+            padding: const EdgeInsets.only(left: 20),
             child: TextField(
               controller: _textEditingController,
               decoration: const InputDecoration(label: Text('Rechercher')),
@@ -34,11 +34,11 @@ class _JSearchState extends State<JSearch> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.search,
-              color: MainColor.mainColorO,
+              color: mainColorO,
             ),
             onPressed: () => _search(_textEditingController.text),
           ),

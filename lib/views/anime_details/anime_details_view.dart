@@ -9,7 +9,7 @@ class AnimeDetailsView extends StatefulWidget {
   final AnimeDetails _animeDetails;
   final VoidCallback _callback;
 
-  AnimeDetailsView(this._animeDetails, this._callback);
+  const AnimeDetailsView(this._animeDetails, this._callback);
 
   @override
   _AnimeDetailsViewState createState() => _AnimeDetailsViewState();

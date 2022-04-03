@@ -28,43 +28,43 @@ class _SettingsViewState extends State<SettingsView> {
       );
     }
 
-    final bool hasTopic = JNotifications.hasTopic("animes");
+    final bool _hasTopic = hasTopic("animes");
 
     return Column(
       children: [
-        if (!UserMapper.isConnected())
+        if (!isConnected())
           SectionWidget(
-            icon: Icon(Icons.person),
+            icon: const Icon(Icons.person),
             title: 'Identification',
             widgets: [
-              FullWidget(
+              const FullWidget(
                 widget: ElevatedButton(
-                  child: Text('Inscription'),
                   onPressed: null,
+                  child: Text('Inscription'),
                 ),
               ),
               FullWidget(
                 widget: ElevatedButton(
-                  child: Text('Connexion'),
+                  child: const Text('Connexion'),
                   onPressed: () => setState(() => _hasLoginTap = true),
                 ),
               ),
             ],
           ),
-        if (UserMapper.isConnected())
+        if (isConnected())
           SectionWidget(
-            icon: Icon(Icons.person),
+            icon: const Icon(Icons.person),
             title: 'Profil',
             widgets: [
               FullWidget(
                 widget: ElevatedButton(
-                  child: Text('Mon profil'),
-                  onPressed: () => JDialog.show(
+                  child: const Text('Mon profil'),
+                  onPressed: () => show(
                     context,
                     children: [
                       CachedNetworkImage(
                         imageUrl:
-                            'https://ziedelth.fr/${UserMapper.user?.image ?? 'images/default_member.jpg'}',
+                            'https://ziedelth.fr/${user?.image ?? 'images/default_member.jpg'}',
                         imageBuilder: (context, imageProvider) =>
                             RoundBorderWidget(
                           widget: Image(
@@ -79,26 +79,26 @@ class _SettingsViewState extends State<SettingsView> {
                         fit: BoxFit.fill,
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: 10),
+                        padding: const EdgeInsets.only(top: 10),
                         child: Text(
-                          '${UserMapper.user?.pseudo}',
-                          style: TextStyle(
+                          '${user?.pseudo}',
+                          style: const TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 18,
                           ),
                         ),
                       ),
-                      Divider(
+                      const Divider(
                         height: 1,
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: 10),
+                        padding: const EdgeInsets.only(top: 10),
                         child: Text(
-                          'Inscription il y a ${Utils.printTimeSince(DateTime.tryParse(UserMapper.user?.timestamp ?? '0'))}',
+                          'Inscription il y a ${printTimeSince(DateTime.tryParse(user?.timestamp ?? '0'))}',
                         ),
                       ),
                       Text(
-                        '${UserMapper.user?.about ?? ''}',
+                        user?.about ?? '',
                       ),
                     ],
                   ),
@@ -106,91 +106,93 @@ class _SettingsViewState extends State<SettingsView> {
               ),
               FullWidget(
                 widget: ElevatedButton(
-                  child: Text('Déconnexion'),
+                  child: const Text('Déconnexion'),
                   onPressed: () {
-                    UserMapper.logout();
+                    logout();
                     setState(() {});
                   },
                 ),
               ),
             ],
           ),
-        if (UserMapper.isConnected())
+        if (isConnected())
           SectionWidget(
-            icon: Icon(Icons.notifications),
+            icon: const Icon(Icons.notifications),
             title: 'Notifications',
             widgets: [
               FullWidget(
                 widget: ElevatedButton(
-                  child: Text('Par défaut'),
-                  onPressed: hasTopic
+                  onPressed: _hasTopic
                       ? null
                       : () {
-                          JNotifications.removeAllTopics();
-                          JNotifications.addTopic("animes");
+                          removeAllTopics();
+                          addTopic("animes");
                           setState(() {});
                         },
-                  onLongPress: hasTopic
+                  onLongPress: _hasTopic
                       ? null
-                      : () => JDialog.show(
+                      : () => show(
                             context,
                             children: [
-                              Text(
+                              const Text(
                                 'Mode par défaut des notifications',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 18,
                                 ),
                               ),
-                              Divider(
+                              const Divider(
                                 height: 1,
                               ),
-                              Text(
-                                  "Ce mode vous avertit de toutes les mises à jour récentes, qu'il s'agisse d'épisodes ou de scans."),
+                              const Text(
+                                "Ce mode vous avertit de toutes les mises à jour récentes, qu'il s'agisse d'épisodes ou de scans.",
+                              ),
                             ],
                           ),
+                  child: const Text('Par défaut'),
                 ),
               ),
               FullWidget(
                 widget: ElevatedButton(
-                  child: Text('Personnalisé'),
-                  onPressed: hasTopic
+                  onPressed: _hasTopic
                       ? () {
-                          JNotifications.removeAllTopics();
+                          removeAllTopics();
                           setState(() {});
                         }
                       : null,
-                  onLongPress: hasTopic
-                      ? () => JDialog.show(
+                  onLongPress: _hasTopic
+                      ? () => show(
                             context,
                             children: [
-                              Text(
+                              const Text(
                                 'Personnalisation des notifications',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 18,
                                 ),
                               ),
-                              Divider(
+                              const Divider(
                                 height: 1,
                               ),
-                              Text(
-                                  "Choissisez les animes dont vous souhaitez être informé à chaque mise à jour récentes."),
+                              const Text(
+                                "Choissisez les animes dont vous souhaitez être informé à chaque mise à jour récentes.",
+                              ),
                             ],
                           )
                       : null,
+                  child: const Text('Personnalisé'),
                 ),
               ),
             ],
           ),
-        SectionWidget(
+        const SectionWidget(
           icon: Icon(Icons.thumb_up_alt),
           title: 'Soutien',
           widgets: [
             FullWidget(
               widget: ElevatedButton(
+                onPressed: showVideo,
                 child: Text('Soutenir'),
-                onPressed: JaisAd.showVideo,
               ),
             ),
           ],
@@ -205,25 +207,25 @@ class SectionWidget extends StatelessWidget {
   final String title;
   final List<Widget>? widgets;
 
-  SectionWidget({required this.icon, required this.title, this.widgets});
+  const SectionWidget({required this.icon, required this.title, this.widgets});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.only(left: 10, top: 10),
+          padding: const EdgeInsets.only(left: 10, top: 10),
           child: FullWidget(
             icon: icon,
             widget: Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
               ),
             ),
           ),
         ),
-        Padding(
+        const Padding(
           padding: EdgeInsets.symmetric(vertical: 2.5),
           child: Divider(
             height: 1,

@@ -18,7 +18,7 @@ class AnimeDetailsHeader extends StatefulWidget {
 class _AnimeDetailsHeaderState extends State<AnimeDetailsHeader> {
   @override
   Widget build(BuildContext context) {
-    final bool hasTopic = JNotifications.hasTopic(widget._animeDetails.code);
+    final bool _hasTopic = hasTopic(widget._animeDetails.code);
 
     return Row(
       children: [
@@ -41,10 +41,10 @@ class _AnimeDetailsHeaderState extends State<AnimeDetailsHeader> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5),
+                padding: const EdgeInsets.symmetric(horizontal: 5),
                 child: IconButton(
-                  icon: Icon(Icons.help),
-                  onPressed: () => JDialog.show(
+                  icon: const Icon(Icons.help),
+                  onPressed: () => show(
                     context,
                     children: [
                       if (widget._animeDetails.genres != null)
@@ -52,9 +52,9 @@ class _AnimeDetailsHeaderState extends State<AnimeDetailsHeader> {
                           children: [
                             Text(
                               widget._animeDetails.genres!,
-                              style: TextStyle(fontSize: 18),
+                              style: const TextStyle(fontSize: 18),
                             ),
-                            Padding(
+                            const Padding(
                               padding: EdgeInsets.symmetric(
                                 vertical: 10,
                               ),
@@ -66,7 +66,8 @@ class _AnimeDetailsHeaderState extends State<AnimeDetailsHeader> {
                           ],
                         ),
                       Text(
-                          widget._animeDetails.description ?? 'No description'),
+                        widget._animeDetails.description ?? 'No description',
+                      ),
                     ],
                   ),
                 ),
@@ -74,22 +75,22 @@ class _AnimeDetailsHeaderState extends State<AnimeDetailsHeader> {
             ],
           ),
         ),
-        if (UserMapper.isConnected())
+        if (isConnected())
           Expanded(
             child: IconButton(
               icon: Icon(
-                hasTopic ? Icons.notifications_on : Icons.notifications_off,
-                color: hasTopic ? Colors.green : Colors.red,
+                _hasTopic ? Icons.notifications_on : Icons.notifications_off,
+                color: _hasTopic ? Colors.green : Colors.red,
               ),
               onPressed: () {
-                if (hasTopic) {
-                  JNotifications.removeTopic(widget._animeDetails.code);
+                if (_hasTopic) {
+                  removeTopic(widget._animeDetails.code);
                   setState(() {});
                   return;
                 }
 
-                if (!hasTopic) {
-                  JNotifications.addTopic(widget._animeDetails.code);
+                if (!_hasTopic) {
+                  addTopic(widget._animeDetails.code);
                   setState(() {});
                   return;
                 }

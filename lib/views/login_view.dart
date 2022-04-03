@@ -15,7 +15,8 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   final RegExp _emailRegex = RegExp(
-      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+  );
   final TextEditingController _emailController = TextEditingController();
   String? _emailErrorText;
   final TextEditingController _passwordController = TextEditingController();
@@ -40,7 +41,8 @@ class _LoginViewState extends State<LoginView> {
 
     if (!_emailRegex.hasMatch(email)) {
       setState(
-          () => _emailErrorText = "Le champ saisi doit être une adresse mail");
+        () => _emailErrorText = "Le champ saisi doit être une adresse mail",
+      );
       return;
     }
 
@@ -59,7 +61,7 @@ class _LoginViewState extends State<LoginView> {
       _globalErrorText = '';
     });
 
-    await Utils.post(
+    await post(
       'https://ziedelth.fr/api/v1/member/login/user',
       {
         "email": email,
@@ -67,18 +69,19 @@ class _LoginViewState extends State<LoginView> {
       },
       (success) {
         isLoading = false;
-        final Map<String, dynamic> json = jsonDecode(success);
+        final Map<String, dynamic> json =
+            jsonDecode(success) as Map<String, dynamic>;
         debugPrint('json: $json');
 
         if (json.containsKey('error')) {
-          setState(() => _globalErrorText = json['error']);
+          setState(() => _globalErrorText = json['error'] as String);
           return;
         }
 
-        UserMapper.fromResponse(json);
+        fromResponse(json);
         widget._callback.call();
 
-        if (UserMapper.user == null) {
+        if (user == null) {
           return;
         }
 
@@ -89,7 +92,7 @@ class _LoginViewState extends State<LoginView> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Bienvenue ${UserMapper.user?.pseudo}',
+                  'Bienvenue ${user?.pseudo}',
                 ),
               ],
             ),
@@ -99,7 +102,8 @@ class _LoginViewState extends State<LoginView> {
       (failure) {
         isLoading = false;
         debugPrint(failure);
-        setState(() => _globalErrorText = jsonDecode(failure)['error']);
+        setState(() => _globalErrorText =
+            (jsonDecode(failure) as Map<String, dynamic>)['error'] as String);
       },
     );
   }
@@ -129,7 +133,7 @@ class _LoginViewState extends State<LoginView> {
         const Divider(
           height: 2,
         ),
-        Spacer(),
+        const Spacer(),
         TextField(
           onSubmitted: (value) => requestLogin(),
           controller: _emailController,
@@ -150,22 +154,22 @@ class _LoginViewState extends State<LoginView> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           child: Text(
             _globalErrorText,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.red,
             ),
           ),
         ),
-        Spacer(),
+        const Spacer(),
         ElevatedButton(
           onPressed: requestLogin,
-          child: Text(
+          child: const Text(
             'Se connecter',
           ),
         ),
-        Spacer(),
+        const Spacer(),
       ],
     );
   }
