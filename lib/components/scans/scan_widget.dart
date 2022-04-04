@@ -10,8 +10,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 class ScanWidget extends StatelessWidget {
   final Scan scan;
-  final VoidCallback? onUp;
-  final VoidCallback? onDown;
+  final Function(Scan scan)? onUp;
+  final Function(Scan scan)? onDown;
 
   const ScanWidget({required this.scan, this.onUp, this.onDown, Key? key})
       : super(key: key);
@@ -88,11 +88,11 @@ class ScanWidget extends StatelessWidget {
                     if (isConnected())
                       Expanded(
                         child: NotationWidget(
-                          onUp: onUp,
                           up: scan.notation,
-                          onDown: onDown,
                           colorUp: _color(1),
                           colorDown: _color(-1),
+                          onUp: () => onUp?.call(scan),
+                          onDown: () => onDown?.call(scan),
                         ),
                       ),
                   ],

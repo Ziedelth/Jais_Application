@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 String printTimeSince(DateTime? dateTime) {
@@ -91,8 +92,8 @@ Future<void> post(
     );
 
     onSuccess(response.body);
-  } catch (exception, stacktrace) {
-    onFailure(stacktrace.toString());
+  } catch (exception, _) {
+    onFailure(exception.toString());
   }
 }
 

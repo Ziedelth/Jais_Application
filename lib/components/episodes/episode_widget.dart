@@ -11,8 +11,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 class EpisodeWidget extends StatelessWidget {
   final Episode episode;
-  final VoidCallback? onUp;
-  final VoidCallback? onDown;
+  final Function(Episode)? onUp;
+  final Function(Episode)? onDown;
 
   const EpisodeWidget({required this.episode, this.onUp, this.onDown, Key? key})
       : super(key: key);
@@ -130,11 +130,11 @@ class EpisodeWidget extends StatelessWidget {
                   if (isConnected())
                     Expanded(
                       child: NotationWidget(
-                        onUp: onUp,
                         up: episode.notation,
-                        onDown: onDown,
                         colorUp: _color(1),
                         colorDown: _color(-1),
+                        onUp: () => onUp?.call(episode),
+                        onDown: () => onDown?.call(episode),
                       ),
                     ),
                 ],

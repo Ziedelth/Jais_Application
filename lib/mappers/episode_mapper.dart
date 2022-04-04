@@ -27,6 +27,8 @@ void removeLoader() =>
 Future<void> updateCurrentPage({
   Function()? onSuccess,
   Function()? onFailure,
+  Function(Episode episode)? onUp,
+  Function(Episode episode)? onDown,
 }) async =>
     get(
       'https://ziedelth.fr/api/v1/country/${Country.name}/page/$currentPage/limit/$_limit/episodes',
@@ -38,6 +40,8 @@ Future<void> updateCurrentPage({
                 .map(
                   (e) => EpisodeWidget(
                     episode: Episode.fromJson(e as Map<String, dynamic>),
+                    onUp: onUp,
+                    onDown: onDown,
                   ),
                 )
                 .toList(),

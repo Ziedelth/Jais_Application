@@ -21,7 +21,12 @@ void clear() {
 }
 
 // It's a way to update the list of animes.
-Future<void> update({Function()? onSuccess, Function()? onFailure}) async {
+Future<void> update({
+  Function()? onSuccess,
+  Function()? onFailure,
+  Function(Anime anime)? onUp,
+  Function(Anime anime)? onDown,
+}) async {
   if (list.whereType<AnimeWidget>().isNotEmpty) {
     filtered = list;
     onSuccess?.call();
@@ -39,6 +44,8 @@ Future<void> update({Function()? onSuccess, Function()? onFailure}) async {
               .map(
                 (e) => AnimeWidget(
                   anime: Anime.fromJson(e as Map<String, dynamic>),
+                  onUp: onUp,
+                  onDown: onDown,
                 ),
               )
               .toList(),

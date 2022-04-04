@@ -6,8 +6,10 @@ import 'package:jais/components/jlist.dart';
 import 'package:jais/components/jsearch.dart';
 import 'package:jais/components/loading_widget.dart';
 import 'package:jais/mappers/anime_mapper.dart';
+import 'package:jais/mappers/user_mapper.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/anime_details.dart';
+import 'package:jais/models/statistics.dart';
 import 'package:jais/utils/country.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:jais/views/anime_details/anime_details_view.dart';
@@ -20,9 +22,51 @@ class AnimesView extends StatefulWidget {
 }
 
 class _AnimesViewState extends State<AnimesView> {
+  GlobalKey _key = GlobalKey();
   bool _hasTap = false;
   AnimeDetails? _animeDetails;
   List<Widget> _widgets = [];
+
+  Future<void> _on(Anime anime, int count) async {
+    if (!isConnected()) {
+      return;
+    }
+
+    await put(
+      'https://ziedelth.fr/api/v1/member/notation/anime',
+      {
+        'token': token,
+        'id': '${anime.id}',
+        'count': '$count',
+      },
+          (success) async {
+        await get(
+          'https://ziedelth.fr/api/v1/statistics/member/${user?.pseudo}',
+              (success) {
+            user?.statistics = Statistics.fromJson(
+              jsonDecode(success) as Map<String, dynamic>,
+            );
+
+            if (mounted) {
+              setState(() {
+                clear();
+
+                update(
+                  onSuccess: _updateFilter,
+                  onUp: (Anime anime) => _on(anime, 1),
+                  onDown: (Anime anime) => _on(anime, -1),
+                );
+
+                _key = GlobalKey();
+              });
+            }
+          },
+              (_) => null,
+        );
+      },
+          (_) => null,
+    );
+  }
 
   void _setDetails({AnimeDetails? animeDetails}) {
     setState(() {
@@ -83,6 +127,8 @@ class _AnimesViewState extends State<AnimesView> {
   void initState() {
     update(
       onSuccess: _updateFilter,
+      onUp: (Anime anime) => _on(anime, 1),
+      onDown: (Anime anime) => _on(anime, -1),
     );
 
     super.initState();
@@ -100,6 +146,7 @@ class _AnimesViewState extends State<AnimesView> {
         const Padding(padding: EdgeInsets.only(top: 10)),
         Expanded(
           child: JList(
+            key: _key,
             children: _widgets,
           ),
         )

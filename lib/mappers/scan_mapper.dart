@@ -30,6 +30,8 @@ void removeLoader() {
 Future<void> updateCurrentPage({
   Function()? onSuccess,
   Function()? onFailure,
+  Function(Scan scan)? onUp,
+  Function(Scan scan)? onDown,
 }) async {
   await get(
     "https://ziedelth.fr/api/v1/country/${Country.name}/page/$currentPage/limit/$_limit/scans",
@@ -41,6 +43,8 @@ Future<void> updateCurrentPage({
               .map(
                 (e) => ScanWidget(
                   scan: Scan.fromJson(e as Map<String, dynamic>),
+                  onUp: onUp,
+                  onDown: onDown,
                 ),
               )
               .toList(),

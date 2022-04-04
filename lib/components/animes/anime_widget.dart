@@ -7,8 +7,8 @@ import 'package:jais/models/anime.dart';
 
 class AnimeWidget extends StatelessWidget {
   final Anime anime;
-  final VoidCallback? onUp;
-  final VoidCallback? onDown;
+  final Function(Anime anime)? onUp;
+  final Function(Anime anime)? onDown;
 
   const AnimeWidget({required this.anime, this.onUp, this.onDown, Key? key})
       : super(key: key);
@@ -81,11 +81,11 @@ class AnimeWidget extends StatelessWidget {
                     children: [
                       const Spacer(),
                       NotationWidget(
-                        onUp: onUp,
                         up: anime.notation,
-                        onDown: onDown,
                         colorUp: _color(1),
                         colorDown: _color(-1),
+                        onUp: () => onUp?.call(anime),
+                        onDown: () => onDown?.call(anime),
                       ),
                     ],
                   ),
