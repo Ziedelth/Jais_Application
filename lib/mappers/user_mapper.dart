@@ -5,10 +5,11 @@ import 'package:get_storage/get_storage.dart';
 import 'package:jais/models/user.dart';
 import 'package:jais/utils/utils.dart';
 
-final GetStorage getStorage = GetStorage();
-const key = "token";
+final GetStorage _getStorage = GetStorage();
+const _key = "token";
 String? token;
 User? user;
+Map<String, dynamic>? userStatistics;
 
 void fromResponse(Map<String, dynamic> json) {
   if (!json.containsKey('token')) {
@@ -17,8 +18,10 @@ void fromResponse(Map<String, dynamic> json) {
 
   token = json['token'] as String;
   user = User.fromJson(json['user'] as Map<String, dynamic>);
-  getStorage.write(key, token);
+  _getStorage.write(_key, token);
 }
+
+bool isConnected() => token != null && user != null;
 
 Future<void> tryToLogin({VoidCallback? callback}) async {
   if (isConnected()) {
@@ -26,21 +29,16 @@ Future<void> tryToLogin({VoidCallback? callback}) async {
     return;
   }
 
-  debugPrint('Has token saved: ${getStorage.hasData(key)}');
-
-  if (!getStorage.hasData(key)) {
+  if (!_getStorage.hasData(_key)) {
     return;
   }
 
-  final String localToken = getStorage.read(key) as String;
-  debugPrint('Local token: $localToken');
+  final String localToken = _getStorage.read(_key) as String;
 
   await post(
     'https://ziedelth.fr/api/v1/member/login/token',
-    {
-      "token": localToken,
-    },
-    (success) {
+    {"token": localToken},
+    (success) async {
       final Map<String, dynamic> json =
           jsonDecode(success) as Map<String, dynamic>;
 
@@ -49,14 +47,30 @@ Future<void> tryToLogin({VoidCallback? callback}) async {
       }
 
       fromResponse(json);
-      callback?.call();
+
+      // If user is null, return
+      if (user == null) {
+        return;
+      }
+
+      await get(
+        'https://ziedelth.fr/api/v1/statistics/member/${user!.pseudo}',
+        (success) {
+          final Map<String, dynamic> json =
+              jsonDecode(success) as Map<String, dynamic>;
+
+          if (json.containsKey('error')) {
+            return;
+          }
+
+          userStatistics = json;
+          callback?.call();
+        },
+        (failure) => null,
+      );
     },
     (failure) => null,
   );
-}
-
-bool isConnected() {
-  return token != null && user != null;
 }
 
 void logout() {
@@ -66,5 +80,5 @@ void logout() {
 
   token = null;
   user = null;
-  getStorage.remove(key);
+  _getStorage.remove(_key);
 }

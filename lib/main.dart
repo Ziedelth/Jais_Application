@@ -94,7 +94,6 @@ class _MyHomePageState extends State<MyHomePage> {
         child: SafeArea(
           child: Stack(
             children: [
-
               PageView(
                 controller: _pageController,
                 onPageChanged: _changeTab,

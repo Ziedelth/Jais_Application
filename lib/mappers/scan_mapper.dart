@@ -7,20 +7,20 @@ import 'package:jais/models/scan.dart';
 import 'package:jais/utils/country.dart';
 import 'package:jais/utils/utils.dart';
 
-const limit = 18;
+const _limit = 18;
 int currentPage = 1;
 
-List<Widget> get defaultList =>
-    List.filled(limit, const ScanLoaderWidget(), growable: true);
-List<Widget> list = defaultList;
+List<Widget> get _defaultList =>
+    List.filled(_limit, const ScanLoaderWidget(), growable: true);
+List<Widget> list = _defaultList;
 
 void clear() {
   currentPage = 1;
-  list = defaultList;
+  list = _defaultList;
 }
 
 void addLoader() {
-  list.addAll(defaultList);
+  list.addAll(_defaultList);
 }
 
 void removeLoader() {
@@ -32,7 +32,7 @@ Future<void> updateCurrentPage({
   Function()? onFailure,
 }) async {
   await get(
-    "https://ziedelth.fr/api/v1/country/${Country.name}/page/$currentPage/limit/$limit/scans",
+    "https://ziedelth.fr/api/v1/country/${Country.name}/page/$currentPage/limit/$_limit/scans",
     (success) {
       try {
         removeLoader();

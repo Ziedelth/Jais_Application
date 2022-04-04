@@ -7,16 +7,16 @@ import 'package:jais/models/anime.dart';
 import 'package:jais/utils/country.dart';
 import 'package:jais/utils/utils.dart';
 
-const limit = 9;
+const _limit = 9;
 
-List<Widget> get defaultList =>
-    List.filled(limit, const AnimeLoaderWidget(), growable: true);
-List<Widget> list = defaultList;
+List<Widget> get _defaultList =>
+    List.filled(_limit, const AnimeLoaderWidget(), growable: true);
+List<Widget> list = _defaultList;
 List<Widget> filtered = list;
 
 // It's a way to reset the list of animes.
 void clear() {
-  list = defaultList;
+  list = _defaultList;
   filtered = list;
 }
 

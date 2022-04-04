@@ -15,12 +15,18 @@ class EpisodesDetailsView extends StatefulWidget {
 
 class _EpisodesDetailsViewState extends State<EpisodesDetailsView> {
   late final List<DropdownMenuItem<Season>> _dropdownItems;
-  late final List<Widget> _episodes;
+  List<Widget>? _episodes;
 
   Season? _selectedSeason;
 
-  void _changeSeason(Season? newValue) =>
-      setState(() => _selectedSeason = newValue);
+  void _changeSeason(Season? newValue) => setState(() {
+        _selectedSeason = newValue;
+        _episodes = _selectedSeason?.episodes
+            .map<Widget>(
+              (element) => EpisodeWidget(episode: element),
+            )
+            .toList();
+      });
 
   @override
   void initState() {
@@ -71,11 +77,12 @@ class _EpisodesDetailsViewState extends State<EpisodesDetailsView> {
             onChanged: _changeSeason,
             items: _dropdownItems,
           ),
-        Expanded(
-          child: JList(
-            children: _episodes,
+        if (_episodes != null)
+          Expanded(
+            child: JList(
+              children: _episodes!,
+            ),
           ),
-        ),
       ],
     );
   }

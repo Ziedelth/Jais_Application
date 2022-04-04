@@ -4,6 +4,7 @@ const int mainColor = 0xFFf6a65f;
 const int redMainColor = 246;
 const int greenMainColor = 166;
 const int blueMainColor = 95;
+
 const Color mainColorO = Color.fromRGBO(
   redMainColor,
   greenMainColor,

@@ -95,3 +95,23 @@ Future<void> post(
     onFailure(stacktrace.toString());
   }
 }
+
+Future<void> put(
+  String url,
+  Object? headers,
+  Function(String) onSuccess,
+  Function(String) onFailure,
+) async {
+  try {
+    final http.Response response = await http.put(
+      Uri.parse(
+        url,
+      ),
+      body: headers,
+    );
+
+    onSuccess(response.body);
+  } catch (exception, stacktrace) {
+    onFailure(stacktrace.toString());
+  }
+}

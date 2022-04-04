@@ -52,8 +52,10 @@ class _AnimesViewState extends State<AnimesView> {
         try {
           Navigator.pop(context);
           _setDetails(
-              animeDetails: AnimeDetails.fromJson(
-                  jsonDecode(success) as Map<String, dynamic>));
+            animeDetails: AnimeDetails.fromJson(
+              jsonDecode(success) as Map<String, dynamic>,
+            ),
+          );
         } catch (exception, stackTrace) {
           debugPrint('$exception');
           debugPrint('$stackTrace');

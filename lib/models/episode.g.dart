@@ -12,6 +12,7 @@ Episode _$EpisodeFromJson(Map<String, dynamic> json) => Episode(
       json['platform_image'] as String,
       json['anime_id'] as int,
       json['anime'] as String,
+      json['id'] as int,
       json['release_date'] as String,
       json['season'] as int,
       json['number'] as int,
@@ -23,6 +24,7 @@ Episode _$EpisodeFromJson(Map<String, dynamic> json) => Episode(
       json['url'] as String,
       json['image'] as String,
       json['duration'] as int,
+      json['notation'] as int,
     );
 
 Map<String, dynamic> _$EpisodeToJson(Episode instance) => <String, dynamic>{
@@ -31,6 +33,7 @@ Map<String, dynamic> _$EpisodeToJson(Episode instance) => <String, dynamic>{
       'platform_image': instance.platformImage,
       'anime_id': instance.animeId,
       'anime': instance.anime,
+      'id': instance.id,
       'release_date': instance.releaseDate,
       'season': instance.season,
       'number': instance.number,
@@ -42,4 +45,5 @@ Map<String, dynamic> _$EpisodeToJson(Episode instance) => <String, dynamic>{
       'url': instance.url,
       'image': instance.image,
       'duration': instance.duration,
+      'notation': instance.notation,
     };

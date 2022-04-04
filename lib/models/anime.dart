@@ -8,8 +8,9 @@ class Anime {
   final String name;
   final String? description;
   final String image;
+  final int notation;
 
-  Anime(this.id, this.name, this.description, this.image);
+  Anime(this.id, this.name, this.description, this.image, this.notation);
 
   factory Anime.fromJson(Map<String, dynamic> data) => _$AnimeFromJson(data);
 

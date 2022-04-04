@@ -9,6 +9,7 @@ class Episode {
   final String platformImage;
   final int animeId;
   final String anime;
+  final int id;
   final String releaseDate;
   final int season;
   final int number;
@@ -20,6 +21,7 @@ class Episode {
   final String url;
   final String image;
   final int duration;
+  final int notation;
 
   Episode(
     this.platform,
@@ -27,6 +29,7 @@ class Episode {
     this.platformImage,
     this.animeId,
     this.anime,
+    this.id,
     this.releaseDate,
     this.season,
     this.number,
@@ -38,6 +41,7 @@ class Episode {
     this.url,
     this.image,
     this.duration,
+    this.notation,
   );
 
   factory Episode.fromJson(Map<String, dynamic> data) =>

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:jais/components/circle_widget.dart';
 import 'package:jais/components/notation_widget.dart';
 import 'package:jais/components/skeleton.dart';
+import 'package:jais/mappers/user_mapper.dart';
 import 'package:jais/models/scan.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -81,9 +82,26 @@ class ScanWidget extends StatelessWidget {
                         'Il y a ${printTimeSince(DateTime.parse(scan.releaseDate))}',
                       ),
                     ),
-                    const Expanded(
-                      child: NotationWidget(),
-                    ),
+                    if (isConnected())
+                      Expanded(
+                        child: NotationWidget(
+                          colorUp: color(
+                            "scans",
+                            "scan_id",
+                            scan.id,
+                            1,
+                            Colors.green,
+                          ),
+                          up: scan.notation,
+                          colorDown: color(
+                            "scans",
+                            "scan_id",
+                            scan.id,
+                            -1,
+                            Colors.red,
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ],

@@ -11,6 +11,7 @@ Anime _$AnimeFromJson(Map<String, dynamic> json) => Anime(
       json['name'] as String,
       json['description'] as String?,
       json['image'] as String,
+      json['notation'] as int,
     );
 
 Map<String, dynamic> _$AnimeToJson(Anime instance) => <String, dynamic>{
@@ -18,4 +19,5 @@ Map<String, dynamic> _$AnimeToJson(Anime instance) => <String, dynamic>{
       'name': instance.name,
       'description': instance.description,
       'image': instance.image,
+      'notation': instance.notation,
     };

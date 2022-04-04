@@ -102,8 +102,10 @@ class _LoginViewState extends State<LoginView> {
       (failure) {
         isLoading = false;
         debugPrint(failure);
-        setState(() => _globalErrorText =
-            (jsonDecode(failure) as Map<String, dynamic>)['error'] as String);
+        setState(
+          () => _globalErrorText =
+              (jsonDecode(failure) as Map<String, dynamic>)['error'] as String,
+        );
       },
     );
   }

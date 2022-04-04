@@ -1,14 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:jais/components/full_button.dart';
 import 'package:jais/components/jdialog.dart';
-import 'package:jais/components/roundborder_widget.dart';
-import 'package:jais/components/skeleton.dart';
 import 'package:jais/components/user_widget.dart';
 import 'package:jais/mappers/user_mapper.dart';
 import 'package:jais/utils/jais_ad.dart';
 import 'package:jais/utils/notifications.dart';
-import 'package:jais/utils/utils.dart';
 import 'package:jais/views/login_view.dart';
 
 class SettingsView extends StatefulWidget {

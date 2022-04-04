@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:jais/components/notation_widget.dart';
 import 'package:jais/components/skeleton.dart';
+import 'package:jais/mappers/user_mapper.dart';
 import 'package:jais/models/anime.dart';
 
 class AnimeWidget extends StatelessWidget {
@@ -70,15 +71,32 @@ class AnimeWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 5),
-                child: Row(
-                  children: const [
-                    Spacer(),
-                    NotationWidget(),
-                  ],
+              if (isConnected())
+                Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: Row(
+                    children: [
+                      const Spacer(),
+                      NotationWidget(
+                        colorUp: color(
+                          "animes",
+                          "anime_id",
+                          anime.id,
+                          1,
+                          Colors.green,
+                        ),
+                        up: anime.notation,
+                        colorDown: color(
+                          "animes",
+                          "anime_id",
+                          anime.id,
+                          -1,
+                          Colors.red,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
             ],
           ),
         ),

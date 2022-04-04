@@ -7,19 +7,20 @@ import 'package:jais/models/episode.dart';
 import 'package:jais/utils/country.dart';
 import 'package:jais/utils/utils.dart';
 
-const limit = 9;
+const _limit = 9;
 int currentPage = 1;
 
-List<Widget> get defaultList =>
-    List.filled(limit, const EpisodeLoaderWidget(), growable: true);
-List<Widget> list = defaultList;
+List<Widget> get _defaultList =>
+    List.filled(_limit, const EpisodeLoaderWidget(), growable: true);
+List<Widget> list = _defaultList;
 
 void clear() {
   currentPage = 1;
-  list = defaultList;
+  list = _defaultList;
 }
 
-void addLoader() => list.addAll(defaultList);
+void addLoader() => list.addAll(_defaultList);
+
 void removeLoader() =>
     list.removeWhere((element) => element is EpisodeLoaderWidget);
 
@@ -28,7 +29,7 @@ Future<void> updateCurrentPage({
   Function()? onFailure,
 }) async =>
     get(
-      'https://ziedelth.fr/api/v1/country/${Country.name}/page/$currentPage/limit/$limit/episodes',
+      'https://ziedelth.fr/api/v1/country/${Country.name}/page/$currentPage/limit/$_limit/episodes',
       (success) {
         try {
           removeLoader();

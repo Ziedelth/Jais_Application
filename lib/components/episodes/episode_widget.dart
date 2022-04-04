@@ -4,6 +4,7 @@ import 'package:jais/components/circle_widget.dart';
 import 'package:jais/components/notation_widget.dart';
 import 'package:jais/components/roundborder_widget.dart';
 import 'package:jais/components/skeleton.dart';
+import 'package:jais/mappers/user_mapper.dart';
 import 'package:jais/models/episode.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -123,9 +124,26 @@ class EpisodeWidget extends StatelessWidget {
                       'Il y a ${printTimeSince(DateTime.parse(episode.releaseDate))}',
                     ),
                   ),
-                  const Expanded(
-                    child: NotationWidget(),
-                  ),
+                  if (isConnected())
+                    Expanded(
+                      child: NotationWidget(
+                        colorUp: color(
+                          "episodes",
+                          "episode_id",
+                          episode.id,
+                          1,
+                          Colors.green,
+                        ),
+                        up: episode.notation,
+                        colorDown: color(
+                          "episodes",
+                          "episode_id",
+                          episode.id,
+                          -1,
+                          Colors.red,
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ],

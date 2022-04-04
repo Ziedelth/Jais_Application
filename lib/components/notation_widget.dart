@@ -1,12 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:jais/mappers/user_mapper.dart';
+
+Color? color(String key, String keyId, int id, int count, Color color) {
+  return (userStatistics?[key] as List<dynamic>?)?.any(
+            (element) =>
+                element is Map<String, dynamic> &&
+                element[keyId] == id &&
+                element['count'] == count,
+          ) ==
+          true
+      ? color
+      : null;
+}
 
 class NotationWidget extends StatefulWidget {
-  const NotationWidget({this.onUp, this.up, this.onDown, Key? key})
-      : super(key: key);
-
   final VoidCallback? onUp;
+  final Color? colorUp;
   final int? up;
   final VoidCallback? onDown;
+  final Color? colorDown;
+
+  const NotationWidget({
+    this.onUp,
+    this.colorUp,
+    this.up,
+    this.onDown,
+    this.colorDown,
+    Key? key,
+  }) : super(key: key);
 
   @override
   _NotationWidgetState createState() => _NotationWidgetState();
@@ -21,9 +42,9 @@ class _NotationWidgetState extends State<NotationWidget> {
           padding: const EdgeInsets.only(right: 7.5),
           child: GestureDetector(
             onTap: widget.onUp,
-            child: const Icon(
+            child: Icon(
               Icons.thumb_up,
-              color: Colors.grey,
+              color: widget.colorUp ?? Colors.grey,
             ),
           ),
         ),
@@ -37,9 +58,9 @@ class _NotationWidgetState extends State<NotationWidget> {
           padding: const EdgeInsets.only(left: 7.5),
           child: GestureDetector(
             onTap: widget.onDown,
-            child: const Icon(
+            child: Icon(
               Icons.thumb_down,
-              color: Colors.grey,
+              color: widget.colorDown ?? Colors.grey,
             ),
           ),
         ),

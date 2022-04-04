@@ -3,8 +3,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:jais/utils/firebase_options.dart';
 
-final GetStorage getStorage = GetStorage();
-const key = "topics";
+final GetStorage _getStorage = GetStorage();
+const _key = "topics";
 
 Future<void> initFirebase() async => Firebase.initializeApp(
       options: currentPlatform,
@@ -13,8 +13,10 @@ Future<void> initFirebase() async => Firebase.initializeApp(
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async =>
     initFirebase();
 
-List<String> getTopics() => getStorage.hasData(key)
-    ? (getStorage.read(key) as List<dynamic>).map((e) => e.toString()).toList()
+List<String> getTopics() => _getStorage.hasData(_key)
+    ? (_getStorage.read(_key) as List<dynamic>)
+        .map((e) => e.toString())
+        .toList()
     : List<String>.empty(growable: true);
 
 bool hasTopic(String topic) => getTopics().contains(topic);
@@ -32,7 +34,7 @@ void addTopic(String topic) {
 
   list.add(topic);
   FirebaseMessaging.instance.subscribeToTopic(topic);
-  getStorage.write(key, list);
+  _getStorage.write(_key, list);
 }
 
 void removeTopic(String topic) {
@@ -44,7 +46,7 @@ void removeTopic(String topic) {
 
   list.remove(topic);
   FirebaseMessaging.instance.unsubscribeFromTopic(topic);
-  getStorage.write(key, list);
+  _getStorage.write(_key, list);
 }
 
 void removeAllTopics() {
@@ -55,17 +57,17 @@ void removeAllTopics() {
   }
 
   list.clear();
-  getStorage.write(key, list);
+  _getStorage.write(_key, list);
 }
 
 Future<void> init() async {
   await initFirebase();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  final bool firstInit = !getStorage.hasData('init');
+  final bool firstInit = !_getStorage.hasData('init');
 
   if (firstInit) {
     addTopic("animes");
   }
 
-  getStorage.write('init', true);
+  _getStorage.write('init', true);
 }
