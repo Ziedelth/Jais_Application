@@ -11,8 +11,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 class EpisodeWidget extends StatelessWidget {
   final Episode episode;
+  final VoidCallback? onUp;
+  final VoidCallback? onDown;
 
-  const EpisodeWidget({required this.episode, Key? key}) : super(key: key);
+  const EpisodeWidget({required this.episode, this.onUp, this.onDown, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -142,6 +144,8 @@ class EpisodeWidget extends StatelessWidget {
                           -1,
                           Colors.red,
                         ),
+                        onUp: onUp,
+                        onDown: onDown,
                       ),
                     ),
                 ],

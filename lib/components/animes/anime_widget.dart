@@ -7,8 +7,10 @@ import 'package:jais/models/anime.dart';
 
 class AnimeWidget extends StatelessWidget {
   final Anime anime;
+  final VoidCallback? onUp;
+  final VoidCallback? onDown;
 
-  const AnimeWidget({required this.anime, Key? key}) : super(key: key);
+  const AnimeWidget({required this.anime, this.onUp, this.onDown, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +95,8 @@ class AnimeWidget extends StatelessWidget {
                           -1,
                           Colors.red,
                         ),
+                        onUp: onUp,
+                        onDown: onDown,
                       ),
                     ],
                   ),

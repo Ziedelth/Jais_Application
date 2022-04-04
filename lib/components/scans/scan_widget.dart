@@ -10,8 +10,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 class ScanWidget extends StatelessWidget {
   final Scan scan;
+  final VoidCallback? onUp;
+  final VoidCallback? onDown;
 
-  const ScanWidget({required this.scan, Key? key}) : super(key: key);
+  const ScanWidget({required this.scan, this.onUp, this.onDown, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +102,8 @@ class ScanWidget extends StatelessWidget {
                             -1,
                             Colors.red,
                           ),
+                          onUp: onUp,
+                          onDown: onDown,
                         ),
                       ),
                   ],
