@@ -35,11 +35,13 @@ class _LoginViewState extends State<LoginView> {
     final String password = _passwordController.text;
 
     if (email.isEmpty) {
+      isLoading = false;
       setState(() => _emailErrorText = "L'adresse mail doit être remplie");
       return;
     }
 
     if (!_emailRegex.hasMatch(email)) {
+      isLoading = false;
       setState(
         () => _emailErrorText = "Le champ saisi doit être une adresse mail",
       );
@@ -52,6 +54,7 @@ class _LoginViewState extends State<LoginView> {
     });
 
     if (password.isEmpty) {
+      isLoading = false;
       setState(() => _passwordErrorText = "Le mot de passe doit être rempli");
       return;
     }

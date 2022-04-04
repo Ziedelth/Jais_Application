@@ -6,6 +6,7 @@ import 'package:jais/mappers/user_mapper.dart';
 import 'package:jais/utils/jais_ad.dart';
 import 'package:jais/utils/notifications.dart';
 import 'package:jais/views/login_view.dart';
+import 'package:jais/views/register_view.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({Key? key}) : super(key: key);
@@ -15,10 +16,17 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
+  bool _hasRegisterTap = false;
   bool _hasLoginTap = false;
 
   @override
   Widget build(BuildContext context) {
+    if (_hasRegisterTap) {
+      return RegisterView(
+        () => setState(() => _hasRegisterTap = false),
+      );
+    }
+
     if (_hasLoginTap) {
       return LoginView(
         () => setState(() => _hasLoginTap = false),
@@ -34,10 +42,10 @@ class _SettingsViewState extends State<SettingsView> {
             icon: const Icon(Icons.person),
             title: 'Identification',
             widgets: [
-              const FullWidget(
+              FullWidget(
                 widget: ElevatedButton(
-                  onPressed: null,
-                  child: Text('Inscription'),
+                  child: const Text('Inscription'),
+                  onPressed: () => setState(() => _hasRegisterTap = true),
                 ),
               ),
               FullWidget(
@@ -166,9 +174,7 @@ class _SettingsViewState extends State<SettingsView> {
             FullWidget(
               widget: ElevatedButton(
                 child: const Text('Test'),
-                onPressed: () {
-
-                },
+                onPressed: () {},
               ),
             ),
           ],
