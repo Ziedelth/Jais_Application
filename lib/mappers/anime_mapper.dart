@@ -47,9 +47,6 @@ Future<void> update({Function()? onSuccess, Function()? onFailure}) async {
         filtered = list;
         onSuccess?.call();
       } catch (exception, stackTrace) {
-        // Print exception and stack trace to the console
-        debugPrint("Exception: $exception\nStackTrace: $stackTrace");
-
         onFailure?.call();
       }
     },

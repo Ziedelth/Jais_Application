@@ -47,9 +47,6 @@ Future<void> updateCurrentPage({
         );
         onSuccess?.call();
       } catch (exception, stackTrace) {
-        // Print exception and stack trace to the console
-        debugPrint("Exception: $exception\nStackTrace: $stackTrace");
-
         onFailure?.call();
       }
     },

@@ -56,10 +56,7 @@ class _AnimesViewState extends State<AnimesView> {
               jsonDecode(success) as Map<String, dynamic>,
             ),
           );
-        } catch (exception, stackTrace) {
-          debugPrint('$exception');
-          debugPrint('$stackTrace');
-        }
+        } catch (_) {}
       },
       (error) => null,
     );

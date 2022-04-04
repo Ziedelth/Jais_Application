@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 RewardedAd? _rewardedAd;
@@ -17,7 +15,6 @@ void createVideo() {
 
 void showVideo() {
   if (_rewardedAd == null) {
-    debugPrint('Warning: attempt to show rewarded before loaded.');
     return;
   }
 
@@ -35,9 +32,7 @@ void showVideo() {
   _rewardedAd?.setImmersiveMode(true);
 
   _rewardedAd?.show(
-    onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
-      debugPrint('REWARD AD');
-    },
+    onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {},
   );
 
   _rewardedAd = null;

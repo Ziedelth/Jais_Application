@@ -71,7 +71,6 @@ class _LoginViewState extends State<LoginView> {
         isLoading = false;
         final Map<String, dynamic> json =
             jsonDecode(success) as Map<String, dynamic>;
-        debugPrint('json: $json');
 
         if (json.containsKey('error')) {
           setState(() => _globalErrorText = json['error'] as String);
@@ -101,7 +100,7 @@ class _LoginViewState extends State<LoginView> {
       },
       (failure) {
         isLoading = false;
-        debugPrint(failure);
+
         setState(
           () => _globalErrorText =
               (jsonDecode(failure) as Map<String, dynamic>)['error'] as String,
