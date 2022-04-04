@@ -9,7 +9,6 @@ final GetStorage _getStorage = GetStorage();
 const _key = "token";
 String? token;
 User? user;
-Map<String, dynamic>? userStatistics;
 
 void fromResponse(Map<String, dynamic> json) {
   if (!json.containsKey('token')) {
@@ -47,27 +46,6 @@ Future<void> tryToLogin({VoidCallback? callback}) async {
       }
 
       fromResponse(json);
-
-      // If user is null, return
-      if (user == null) {
-        return;
-      }
-
-      await get(
-        'https://ziedelth.fr/api/v1/statistics/member/${user!.pseudo}',
-        (success) {
-          final Map<String, dynamic> json =
-              jsonDecode(success) as Map<String, dynamic>;
-
-          if (json.containsKey('error')) {
-            return;
-          }
-
-          userStatistics = json;
-          callback?.call();
-        },
-        (failure) => null,
-      );
     },
     (failure) => null,
   );

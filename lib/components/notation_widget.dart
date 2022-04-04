@@ -1,17 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:jais/mappers/user_mapper.dart';
-
-Color? color(String key, String keyId, int id, int count, Color color) {
-  return (userStatistics?[key] as List<dynamic>?)?.any(
-            (element) =>
-                element is Map<String, dynamic> &&
-                element[keyId] == id &&
-                element['count'] == count,
-          ) ==
-          true
-      ? color
-      : null;
-}
 
 class NotationWidget extends StatefulWidget {
   final VoidCallback? onUp;

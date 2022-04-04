@@ -10,7 +10,8 @@ class AnimeWidget extends StatelessWidget {
   final VoidCallback? onUp;
   final VoidCallback? onDown;
 
-  const AnimeWidget({required this.anime, this.onUp, this.onDown, Key? key}) : super(key: key);
+  const AnimeWidget({required this.anime, this.onUp, this.onDown, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -80,23 +81,11 @@ class AnimeWidget extends StatelessWidget {
                     children: [
                       const Spacer(),
                       NotationWidget(
-                        colorUp: color(
-                          "animes",
-                          "anime_id",
-                          anime.id,
-                          1,
-                          Colors.green,
-                        ),
-                        up: anime.notation,
-                        colorDown: color(
-                          "animes",
-                          "anime_id",
-                          anime.id,
-                          -1,
-                          Colors.red,
-                        ),
                         onUp: onUp,
+                        up: anime.notation,
                         onDown: onDown,
+                        colorUp: _color(1),
+                        colorDown: _color(-1),
                       ),
                     ],
                   ),
@@ -107,4 +96,11 @@ class AnimeWidget extends StatelessWidget {
       ),
     );
   }
+
+  Color? _color(int count) => user?.statistics?.animes.any(
+            (element) => element.animeId == anime.id && element.count == count,
+          ) ==
+          true
+      ? Colors.green
+      : null;
 }

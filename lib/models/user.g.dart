@@ -13,6 +13,9 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       json['role'] as int,
       json['image'] as String?,
       json['about'] as String?,
+      statistics: json['statistics'] == null
+          ? null
+          : Statistics.fromJson(json['statistics'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
@@ -22,4 +25,5 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'role': instance.role,
       'image': instance.image,
       'about': instance.about,
+      'statistics': instance.statistics?.toJson(),
     };

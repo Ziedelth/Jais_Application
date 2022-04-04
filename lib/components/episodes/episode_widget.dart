@@ -14,7 +14,8 @@ class EpisodeWidget extends StatelessWidget {
   final VoidCallback? onUp;
   final VoidCallback? onDown;
 
-  const EpisodeWidget({required this.episode, this.onUp, this.onDown, Key? key}) : super(key: key);
+  const EpisodeWidget({required this.episode, this.onUp, this.onDown, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -129,23 +130,11 @@ class EpisodeWidget extends StatelessWidget {
                   if (isConnected())
                     Expanded(
                       child: NotationWidget(
-                        colorUp: color(
-                          "episodes",
-                          "episode_id",
-                          episode.id,
-                          1,
-                          Colors.green,
-                        ),
-                        up: episode.notation,
-                        colorDown: color(
-                          "episodes",
-                          "episode_id",
-                          episode.id,
-                          -1,
-                          Colors.red,
-                        ),
                         onUp: onUp,
+                        up: episode.notation,
                         onDown: onDown,
+                        colorUp: _color(1),
+                        colorDown: _color(-1),
                       ),
                     ),
                 ],
@@ -156,4 +145,12 @@ class EpisodeWidget extends StatelessWidget {
       ),
     );
   }
+
+  Color? _color(int count) => user?.statistics?.episodes.any(
+            (element) =>
+                element.episodeId == episode.id && element.count == count,
+          ) ==
+          true
+      ? Colors.green
+      : null;
 }

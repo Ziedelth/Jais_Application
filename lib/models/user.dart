@@ -1,3 +1,4 @@
+import 'package:jais/models/statistics.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user.g.dart';
@@ -10,8 +11,17 @@ class User {
   final int role;
   final String? image;
   final String? about;
+  Statistics? statistics;
 
-  User(this.id, this.timestamp, this.pseudo, this.role, this.image, this.about);
+  User(
+    this.id,
+    this.timestamp,
+    this.pseudo,
+    this.role,
+    this.image,
+    this.about, {
+    this.statistics,
+  });
 
   factory User.fromJson(Map<String, dynamic> data) => _$UserFromJson(data);
 

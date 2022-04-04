@@ -13,7 +13,8 @@ class ScanWidget extends StatelessWidget {
   final VoidCallback? onUp;
   final VoidCallback? onDown;
 
-  const ScanWidget({required this.scan, this.onUp, this.onDown, Key? key}) : super(key: key);
+  const ScanWidget({required this.scan, this.onUp, this.onDown, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -87,23 +88,11 @@ class ScanWidget extends StatelessWidget {
                     if (isConnected())
                       Expanded(
                         child: NotationWidget(
-                          colorUp: color(
-                            "scans",
-                            "scan_id",
-                            scan.id,
-                            1,
-                            Colors.green,
-                          ),
-                          up: scan.notation,
-                          colorDown: color(
-                            "scans",
-                            "scan_id",
-                            scan.id,
-                            -1,
-                            Colors.red,
-                          ),
                           onUp: onUp,
+                          up: scan.notation,
                           onDown: onDown,
+                          colorUp: _color(1),
+                          colorDown: _color(-1),
                         ),
                       ),
                   ],
@@ -118,4 +107,11 @@ class ScanWidget extends StatelessWidget {
       },
     );
   }
+
+  Color? _color(int count) => user?.statistics?.scans.any(
+            (element) => element.scanId == scan.id && element.count == count,
+          ) ==
+          true
+      ? Colors.green
+      : null;
 }
