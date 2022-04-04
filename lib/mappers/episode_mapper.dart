@@ -43,7 +43,7 @@ Future<void> updateCurrentPage({
                 .toList(),
           );
           onSuccess?.call();
-        } catch (exception, stackTrace) {
+        } catch (_) {
           onFailure?.call();
         }
       },

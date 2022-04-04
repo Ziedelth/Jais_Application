@@ -167,18 +167,6 @@ class _SettingsViewState extends State<SettingsView> {
             ),
           ],
         ),
-        SectionWidget(
-          icon: const Icon(Icons.bug_report),
-          title: 'Mode développeur',
-          widgets: [
-            FullWidget(
-              widget: ElevatedButton(
-                child: const Text('Test'),
-                onPressed: () {},
-              ),
-            ),
-          ],
-        ),
       ],
     );
   }

@@ -46,7 +46,7 @@ Future<void> update({Function()? onSuccess, Function()? onFailure}) async {
 
         filtered = list;
         onSuccess?.call();
-      } catch (exception, stackTrace) {
+      } catch (_) {
         onFailure?.call();
       }
     },
