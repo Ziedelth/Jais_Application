@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:jais/components/notation_widget.dart';
 import 'package:jais/components/skeleton.dart';
 import 'package:jais/mappers/user_mapper.dart';
 import 'package:jais/models/anime.dart';
@@ -78,15 +77,15 @@ class AnimeWidget extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 5),
                   child: Row(
-                    children: [
-                      const Spacer(),
-                      NotationWidget(
-                        up: anime.notation,
-                        colorUp: _color(1),
-                        colorDown: _color(-1),
-                        onUp: () => onUp?.call(anime),
-                        onDown: () => onDown?.call(anime),
-                      ),
+                    children: const [
+                      Spacer(),
+                      // NotationWidget(
+                      //   up: anime.notation,
+                      //   colorUp: _color(1),
+                      //   colorDown: _color(-1),
+                      //   onUp: () => onUp?.call(anime),
+                      //   onDown: () => onDown?.call(anime),
+                      // ),
                     ],
                   ),
                 ),
@@ -97,10 +96,10 @@ class AnimeWidget extends StatelessWidget {
     );
   }
 
-  Color? _color(int count) => user?.statistics?.animes.any(
-            (element) => element.animeId == anime.id && element.count == count,
-          ) ==
-          true
-      ? Colors.green
-      : null;
+// Color? _color(int count) => user?.statistics?.animes.any(
+//           (element) => element.animeId == anime.id && element.count == count,
+//         ) ==
+//         true
+//     ? Colors.green
+//     : null;
 }

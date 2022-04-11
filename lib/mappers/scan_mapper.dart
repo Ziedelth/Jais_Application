@@ -34,7 +34,7 @@ Future<void> updateCurrentPage({
   Function(Scan scan)? onDown,
 }) async {
   await get(
-    "https://ziedelth.fr/api/v1/country/${Country.name}/page/$currentPage/limit/$_limit/scans",
+    "https://api.ziedelth.fr/scans/country/${Country.name}/page/$currentPage/limit/$_limit",
     (success) {
       try {
         removeLoader();

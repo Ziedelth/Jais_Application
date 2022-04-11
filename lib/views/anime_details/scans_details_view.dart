@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:jais/components/jlist.dart';
 import 'package:jais/components/scans/scan_widget.dart';
-import 'package:jais/models/anime_details.dart';
+import 'package:jais/models/anime.dart';
 
 class ScansDetailsView extends StatelessWidget {
-  final AnimeDetails _animeDetails;
+  final Anime _anime;
   late final List<Widget> _scans;
 
-  ScansDetailsView(this._animeDetails) {
-    _scans = _animeDetails.scans
+  ScansDetailsView(this._anime) {
+    _scans = _anime.scans
         .map<Widget>(
           (element) => ScanWidget(scan: element),
         )
@@ -17,7 +17,7 @@ class ScansDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (_animeDetails.scans.isEmpty) {
+    if (_anime.scans.isEmpty) {
       return Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,

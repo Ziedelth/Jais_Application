@@ -3,14 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:jais/components/animes/anime_widget.dart';
 import 'package:jais/components/jlist.dart';
-import 'package:jais/components/jsearch.dart';
 import 'package:jais/components/loading_widget.dart';
 import 'package:jais/mappers/anime_mapper.dart';
-import 'package:jais/mappers/user_mapper.dart';
 import 'package:jais/models/anime.dart';
-import 'package:jais/models/anime_details.dart';
-import 'package:jais/models/statistics.dart';
-import 'package:jais/utils/country.dart';
+import 'package:jais/models/episode.dart';
+import 'package:jais/models/scan.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:jais/views/anime_details/anime_details_view.dart';
 
@@ -22,135 +19,171 @@ class AnimesView extends StatefulWidget {
 }
 
 class _AnimesViewState extends State<AnimesView> {
-  GlobalKey _key = GlobalKey();
+  final ScrollController _scrollController = ScrollController();
+  final GlobalKey _key = GlobalKey();
+  bool _isLoading = true;
+
   bool _hasTap = false;
-  AnimeDetails? _animeDetails;
-  List<Widget> _widgets = [];
+  Anime? _anime;
 
   Future<void> _on(Anime anime, int count) async {
-    if (!isConnected()) {
-      return;
-    }
-
-    await put(
-      'https://ziedelth.fr/api/v1/member/notation/anime',
-      {
-        'token': token,
-        'id': '${anime.id}',
-        'count': '$count',
-      },
-          (success) async {
-        await get(
-          'https://ziedelth.fr/api/v1/statistics/member/${user?.pseudo}',
-              (success) {
-            user?.statistics = Statistics.fromJson(
-              jsonDecode(success) as Map<String, dynamic>,
-            );
-
-            if (mounted) {
-              setState(() {
-                clear();
-
-                update(
-                  onSuccess: _updateFilter,
-                  onUp: (Anime anime) => _on(anime, 1),
-                  onDown: (Anime anime) => _on(anime, -1),
-                );
-
-                _key = GlobalKey();
-              });
-            }
-          },
-              (_) => null,
-        );
-      },
-          (_) => null,
-    );
+    // if (!isConnected()) {
+    //   return;
+    // }
+    //
+    // await put(
+    //   'https://ziedelth.fr/api/v1/member/notation/anime',
+    //   {
+    //     'token': token,
+    //     'id': '${anime.id}',
+    //     'count': '$count',
+    //   },
+    //   (success) async {
+    //     await get(
+    //       'https://ziedelth.fr/api/v1/statistics/member/${user?.pseudo}',
+    //       (success) {
+    //         user?.statistics = Statistics.fromJson(
+    //           jsonDecode(success) as Map<String, dynamic>,
+    //         );
+    //
+    //         if (mounted) {
+    //           setState(() {
+    //             clear();
+    //
+    //             update(
+    //               onSuccess: _updateFilter,
+    //               onUp: (Anime anime) => _on(anime, 1),
+    //               onDown: (Anime anime) => _on(anime, -1),
+    //             );
+    //
+    //             _key = GlobalKey();
+    //           });
+    //         }
+    //       },
+    //       (_) => null,
+    //     );
+    //   },
+    //   (_) => null,
+    // );
   }
 
-  void _setDetails({AnimeDetails? animeDetails}) {
+  void _setDetails({Anime? anime}) {
     setState(() {
-      _animeDetails = animeDetails;
-      _hasTap = animeDetails != null;
+      _anime = anime;
+      _hasTap = anime != null;
     });
   }
 
   // Show loader dialog with a builder context
-  Future<void> _showLoader(BuildContext context) async {
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) => const AlertDialog(
-        content: Loading(),
-        actions: [],
-      ),
-    );
-  }
+  Future<void> _showLoader(BuildContext context) async => showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => const AlertDialog(
+          content: Loading(),
+          actions: [],
+        ),
+      );
 
-  void _onTap(Anime anime) {
+  Future<void> _onTap(Anime anime) async {
     _showLoader(context);
+    anime.episodes.clear();
+    anime.scans.clear();
 
-    get(
-      'https://ziedelth.fr/api/v1/country/${Country.name}/anime/${anime.id}',
+    await get(
+      'https://api.ziedelth.fr/episodes/anime/${anime.id}',
       (success) {
         try {
-          Navigator.pop(context);
-          _setDetails(
-            animeDetails: AnimeDetails.fromJson(
-              jsonDecode(success) as Map<String, dynamic>,
-            ),
+          anime.episodes.addAll(
+            (jsonDecode(success) as List)
+                .map<Episode>(
+                  (e) => Episode.fromJson(e as Map<String, dynamic>),
+                )
+                .toList(),
           );
-        } catch (_) {}
+        } catch (exception, stackTrace) {
+          debugPrint('Error on episodes : $exception\n$stackTrace');
+        }
       },
       (error) => null,
     );
+
+    await get(
+      'https://api.ziedelth.fr/scans/anime/${anime.id}',
+      (success) {
+        try {
+          anime.scans.addAll(
+            (jsonDecode(success) as List)
+                .map<Scan>((e) => Scan.fromJson(e as Map<String, dynamic>))
+                .toList(),
+          );
+        } catch (exception, stackTrace) {
+          debugPrint('Error on scans : $exception\n$stackTrace');
+        }
+      },
+      (error) => null,
+    );
+
+    if (!mounted) return;
+    Navigator.pop(context);
+
+    _setDetails(
+      anime: anime,
+    );
   }
 
-  void _updateFilter() {
-    if (mounted) {
-      setState(() {
-        _widgets = filtered
-            .map<Widget>(
-              (element) => element is! AnimeWidget
-                  ? element
-                  : GestureDetector(
-                      child: element,
-                      onTap: () => _onTap(element.anime),
-                    ),
-            )
-            .toList();
-      });
-    }
+  Future<void> rebuildAnimes() async {
+    await updateCurrentPage(
+      onSuccess: () {
+        if (!mounted) {
+          return;
+        }
+
+        setState(() => _isLoading = false);
+      },
+      onUp: (Anime anime) => _on(anime, 1),
+      onDown: (Anime anime) => _on(anime, -1),
+    );
   }
 
   @override
   void initState() {
-    update(
-      onSuccess: _updateFilter,
-      onUp: (Anime anime) => _on(anime, 1),
-      onDown: (Anime anime) => _on(anime, -1),
-    );
+    clear();
+    rebuildAnimes();
+
+    _scrollController.addListener(() async {
+      if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
+        _isLoading = true;
+        currentPage++;
+        addLoader();
+
+        if (mounted) {
+          setState(() {});
+        }
+
+        await rebuildAnimes();
+      }
+    });
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_hasTap && _animeDetails != null) {
-      return AnimeDetailsView(_animeDetails!, _setDetails);
+    if (_hasTap && _anime != null) {
+      return AnimeDetailsView(_anime!, _setDetails);
     }
 
-    return Column(
-      children: [
-        JSearch(callback: _updateFilter),
-        const Padding(padding: EdgeInsets.only(top: 10)),
-        Expanded(
-          child: JList(
-            key: _key,
-            children: _widgets,
-          ),
-        )
-      ],
+    return JList(
+      key: _key,
+      controller: _scrollController,
+      children: list
+          .map<Widget>(
+            (e) => GestureDetector(
+              child: e,
+              onTap: () => e is AnimeWidget ? _onTap(e.anime) : null,
+            ),
+          )
+          .toList(),
     );
   }
 }

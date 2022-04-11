@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:jais/components/episodes/episode_widget.dart';
 import 'package:jais/components/jlist.dart';
-import 'package:jais/models/anime_details.dart';
-import 'package:jais/models/season.dart';
+import 'package:jais/models/anime.dart';
 
 class EpisodesDetailsView extends StatefulWidget {
-  final AnimeDetails _animeDetails;
+  final Anime _anime;
 
-  const EpisodesDetailsView(this._animeDetails);
+  const EpisodesDetailsView(this._anime);
 
   @override
   _EpisodesDetailsViewState createState() => _EpisodesDetailsViewState();
 }
 
 class _EpisodesDetailsViewState extends State<EpisodesDetailsView> {
-  late final List<DropdownMenuItem<Season>> _dropdownItems;
+  late final List<int> seasons;
+  late final List<DropdownMenuItem<int>> _dropdownItems;
   List<Widget>? _episodes;
+  int? _selectedSeason;
 
-  Season? _selectedSeason;
-
-  void _changeSeason(Season? newValue) => setState(() {
+  void _changeSeason(int? newValue) => setState(() {
         _selectedSeason = newValue;
-        _episodes = _selectedSeason?.episodes
+        _episodes = widget._anime.episodes
+            .where((element) => element.season == newValue)
             .map<Widget>(
               (element) => EpisodeWidget(episode: element),
             )
@@ -30,19 +30,22 @@ class _EpisodesDetailsViewState extends State<EpisodesDetailsView> {
 
   @override
   void initState() {
-    if (widget._animeDetails.seasons.isNotEmpty) {
-      _selectedSeason = widget._animeDetails.seasons.first;
+    seasons = widget._anime.episodes.map((e) => e.season).toSet().toList();
 
-      _dropdownItems = widget._animeDetails.seasons
-          .map<DropdownMenuItem<Season>>(
+    if (seasons.isNotEmpty) {
+      _selectedSeason = seasons.first;
+
+      _dropdownItems = seasons
+          .map<DropdownMenuItem<int>>(
             (e) => DropdownMenuItem(
               value: e,
-              child: Text('Saison ${e.season}'),
+              child: Text('${widget._anime.country.season} $e'),
             ),
           )
           .toList();
 
-      _episodes = _selectedSeason!.episodes
+      _episodes = widget._anime.episodes
+          .where((element) => element.season == _selectedSeason)
           .map<Widget>(
             (element) => EpisodeWidget(episode: element),
           )
@@ -54,7 +57,7 @@ class _EpisodesDetailsViewState extends State<EpisodesDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget._animeDetails.seasons.isEmpty) {
+    if (seasons.isEmpty) {
       return Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -71,8 +74,8 @@ class _EpisodesDetailsViewState extends State<EpisodesDetailsView> {
 
     return Column(
       children: [
-        if (widget._animeDetails.seasons.length > 1)
-          DropdownButton<Season>(
+        if (seasons.length > 1)
+          DropdownButton<int>(
             value: _selectedSeason,
             onChanged: _changeSeason,
             items: _dropdownItems,

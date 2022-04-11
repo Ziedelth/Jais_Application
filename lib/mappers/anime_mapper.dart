@@ -8,73 +8,50 @@ import 'package:jais/utils/country.dart';
 import 'package:jais/utils/utils.dart';
 
 const _limit = 9;
+int currentPage = 1;
 
 List<Widget> get _defaultList =>
     List.filled(_limit, const AnimeLoaderWidget(), growable: true);
 List<Widget> list = _defaultList;
-List<Widget> filtered = list;
 
-// It's a way to reset the list of animes.
 void clear() {
+  currentPage = 1;
   list = _defaultList;
-  filtered = list;
 }
 
-// It's a way to update the list of animes.
-Future<void> update({
+void addLoader() => list.addAll(_defaultList);
+
+void removeLoader() =>
+    list.removeWhere((element) => element is AnimeLoaderWidget);
+
+Future<void> updateCurrentPage({
   Function()? onSuccess,
   Function()? onFailure,
   Function(Anime anime)? onUp,
   Function(Anime anime)? onDown,
-}) async {
-  if (list.whereType<AnimeWidget>().isNotEmpty) {
-    filtered = list;
-    onSuccess?.call();
-    return;
-  }
-
-  await get(
-    'https://ziedelth.fr/api/v1/country/${Country.name}/animes',
-    (success) {
-      try {
-        list.removeWhere((element) => element is AnimeLoaderWidget);
-
-        list.addAll(
-          (jsonDecode(success) as List<dynamic>)
-              .map(
-                (e) => AnimeWidget(
-                  anime: Anime.fromJson(e as Map<String, dynamic>),
-                  onUp: onUp,
-                  onDown: onDown,
-                ),
-              )
-              .toList(),
-        );
-
-        filtered = list;
-        onSuccess?.call();
-      } catch (_) {
+}) async =>
+    get(
+      'https://api.ziedelth.fr/animes/country/${Country.name}/page/$currentPage/limit/$_limit',
+      (success) {
+        try {
+          removeLoader();
+          list.addAll(
+            (jsonDecode(success) as List<dynamic>)
+                .map(
+                  (e) => AnimeWidget(
+                    anime: Anime.fromJson(e as Map<String, dynamic>),
+                    onUp: onUp,
+                    onDown: onDown,
+                  ),
+                )
+                .toList(),
+          );
+          onSuccess?.call();
+        } catch (_) {
+          onFailure?.call();
+        }
+      },
+      (failure) {
         onFailure?.call();
-      }
-    },
-    (failure) {
-      onFailure?.call();
-    },
-  );
-}
-
-// It's a way to filter the list of animes.
-void onSearch(String value) {
-  if (value.isEmpty) {
-    filtered = list;
-    return;
-  }
-
-  filtered = list
-      .where(
-        (element) =>
-            element is AnimeWidget &&
-            element.anime.name.toLowerCase().contains(value.toLowerCase()),
-      )
-      .toList();
-}
+      },
+    );

@@ -31,7 +31,7 @@ Future<void> updateCurrentPage({
   Function(Episode episode)? onDown,
 }) async =>
     get(
-      'https://ziedelth.fr/api/v1/country/${Country.name}/page/$currentPage/limit/$_limit/episodes',
+      'https://api.ziedelth.fr/episodes/country/${Country.name}/page/$currentPage/limit/$_limit',
       (success) {
         try {
           removeLoader();

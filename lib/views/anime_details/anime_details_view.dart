@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:jais/components/jtab.dart';
-import 'package:jais/models/anime_details.dart';
+import 'package:jais/components/platform_widget.dart';
+import 'package:jais/models/anime.dart';
+import 'package:jais/models/platform.dart';
 import 'package:jais/views/anime_details/anime_details_header.dart';
 import 'package:jais/views/anime_details/episodes_details_view.dart';
 import 'package:jais/views/anime_details/scans_details_view.dart';
 
 class AnimeDetailsView extends StatefulWidget {
-  final AnimeDetails _animeDetails;
+  final Anime _anime;
   final VoidCallback _callback;
 
-  const AnimeDetailsView(this._animeDetails, this._callback);
+  const AnimeDetailsView(this._anime, this._callback);
 
   @override
   _AnimeDetailsViewState createState() => _AnimeDetailsViewState();
@@ -32,8 +34,8 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView>
   }
 
   List<Widget> buildWidgets() {
-    final bool seasonsNotEmpty = widget._animeDetails.seasons.isNotEmpty;
-    final bool scansNotEmpty = widget._animeDetails.scans.isNotEmpty;
+    final bool seasonsNotEmpty = widget._anime.episodes.map<int>((e) => e.season).toSet().isNotEmpty;
+    final bool scansNotEmpty = widget._anime.scans.isNotEmpty;
 
     if (seasonsNotEmpty && scansNotEmpty) {
       return [
@@ -42,8 +44,8 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView>
           child: TabBarView(
             controller: _tabController,
             children: [
-              EpisodesDetailsView(widget._animeDetails),
-              ScansDetailsView(widget._animeDetails),
+              EpisodesDetailsView(widget._anime),
+              ScansDetailsView(widget._anime),
             ],
           ),
         ),
@@ -53,11 +55,11 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView>
     return [
       if (seasonsNotEmpty)
         Expanded(
-          child: EpisodesDetailsView(widget._animeDetails),
+          child: EpisodesDetailsView(widget._anime),
         ),
       if (scansNotEmpty)
         Expanded(
-          child: ScansDetailsView(widget._animeDetails),
+          child: ScansDetailsView(widget._anime),
         ),
     ];
   }
@@ -66,7 +68,7 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView>
   Widget build(BuildContext context) {
     return Column(
       children: [
-        AnimeDetailsHeader(widget._callback, widget._animeDetails),
+        AnimeDetailsHeader(widget._callback, widget._anime),
         const Divider(
           height: 2,
         ),

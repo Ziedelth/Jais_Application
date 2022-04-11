@@ -1,9 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:jais/components/circle_widget.dart';
-import 'package:jais/components/notation_widget.dart';
-import 'package:jais/components/skeleton.dart';
-import 'package:jais/mappers/user_mapper.dart';
+import 'package:jais/components/platform_widget.dart';
 import 'package:jais/models/scan.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -35,27 +31,13 @@ class ScanWidget extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    CachedNetworkImage(
-                      imageUrl: 'https://ziedelth.fr/${scan.platformImage}',
-                      imageBuilder: (context, imageProvider) => CircleWidget(
-                        widget: Image(
-                          image: imageProvider,
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                      placeholder: (context, url) =>
-                          const Skeleton(width: 25, height: 25),
-                      errorWidget: (context, url, error) =>
-                          const Skeleton(width: 25, height: 25),
-                      width: 25,
-                      height: 25,
-                    ),
+                    PlatformWidget(scan.platform),
                     const Padding(
                       padding: EdgeInsets.only(left: 10),
                     ),
                     Expanded(
                       child: Text(
-                        scan.anime,
+                        scan.anime.name,
                         style: TextStyle(
                           color: Theme.of(context).primaryColor,
                           fontSize: 18,
@@ -70,7 +52,7 @@ class ScanWidget extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      '${scan.episodeType} ${scan.number} ${scan.langType} ',
+                      '${scan.episodeType.fr} ${scan.number} ${scan.langType.fr} ',
                     ),
                   ],
                 ),
@@ -85,16 +67,16 @@ class ScanWidget extends StatelessWidget {
                         'Il y a ${printTimeSince(DateTime.parse(scan.releaseDate))}',
                       ),
                     ),
-                    if (isConnected())
-                      Expanded(
-                        child: NotationWidget(
-                          up: scan.notation,
-                          colorUp: _color(1),
-                          colorDown: _color(-1),
-                          onUp: () => onUp?.call(scan),
-                          onDown: () => onDown?.call(scan),
-                        ),
-                      ),
+                    // if (isConnected())
+                    //   Expanded(
+                    //     child: NotationWidget(
+                    //       up: scan.notation,
+                    //       colorUp: _color(1),
+                    //       colorDown: _color(-1),
+                    //       onUp: () => onUp?.call(scan),
+                    //       onDown: () => onDown?.call(scan),
+                    //     ),
+                    //   ),
                   ],
                 ),
               ],
@@ -108,10 +90,10 @@ class ScanWidget extends StatelessWidget {
     );
   }
 
-  Color? _color(int count) => user?.statistics?.scans.any(
-            (element) => element.scanId == scan.id && element.count == count,
-          ) ==
-          true
-      ? Colors.green
-      : null;
+// Color? _color(int count) => user?.statistics?.scans.any(
+//           (element) => element.scanId == scan.id && element.count == count,
+//         ) ==
+//         true
+//     ? Colors.green
+//     : null;
 }

@@ -1,10 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:jais/components/circle_widget.dart';
-import 'package:jais/components/notation_widget.dart';
+import 'package:jais/components/platform_widget.dart';
 import 'package:jais/components/roundborder_widget.dart';
 import 'package:jais/components/skeleton.dart';
-import 'package:jais/mappers/user_mapper.dart';
 import 'package:jais/models/episode.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -35,27 +33,13 @@ class EpisodeWidget extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  CachedNetworkImage(
-                    imageUrl: 'https://ziedelth.fr/${episode.platformImage}',
-                    imageBuilder: (context, imageProvider) => CircleWidget(
-                      widget: Image(
-                        image: imageProvider,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                    placeholder: (context, url) =>
-                        const Skeleton(width: 25, height: 25),
-                    errorWidget: (context, url, error) =>
-                        const Skeleton(width: 25, height: 25),
-                    width: 25,
-                    height: 25,
-                  ),
+                  PlatformWidget(episode.platform),
                   const Padding(
                     padding: EdgeInsets.only(left: 10),
                   ),
                   Expanded(
                     child: Text(
-                      episode.anime,
+                      episode.anime.name,
                       style: TextStyle(
                         color: Theme.of(context).primaryColor,
                         fontSize: 18,
@@ -82,7 +66,7 @@ class EpisodeWidget extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    '${episode.countrySeason} ${episode.season} • ${episode.episodeType} ${episode.number} ${episode.langType} ',
+                    '${episode.anime.country.season} ${episode.season} • ${episode.episodeType.fr} ${episode.number} ${episode.langType.fr} ',
                   ),
                 ],
               ),
@@ -127,16 +111,16 @@ class EpisodeWidget extends StatelessWidget {
                       'Il y a ${printTimeSince(DateTime.parse(episode.releaseDate))}',
                     ),
                   ),
-                  if (isConnected())
-                    Expanded(
-                      child: NotationWidget(
-                        up: episode.notation,
-                        colorUp: _color(1),
-                        colorDown: _color(-1),
-                        onUp: () => onUp?.call(episode),
-                        onDown: () => onDown?.call(episode),
-                      ),
-                    ),
+                  // if (isConnected())
+                  //   Expanded(
+                  //     child: NotationWidget(
+                  //       up: episode.notation,
+                  //       colorUp: _color(1),
+                  //       colorDown: _color(-1),
+                  //       onUp: () => onUp?.call(episode),
+                  //       onDown: () => onDown?.call(episode),
+                  //     ),
+                  //   ),
                 ],
               ),
             ],
@@ -146,11 +130,11 @@ class EpisodeWidget extends StatelessWidget {
     );
   }
 
-  Color? _color(int count) => user?.statistics?.episodes.any(
-            (element) =>
-                element.episodeId == episode.id && element.count == count,
-          ) ==
-          true
-      ? Colors.green
-      : null;
+// Color? _color(int count) => user?.statistics?.episodes.any(
+//           (element) =>
+//               element.episodeId == episode.id && element.count == count,
+//         ) ==
+//         true
+//     ? Colors.green
+//     : null;
 }
