@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jais/components/jtab.dart';
-import 'package:jais/components/platform_widget.dart';
 import 'package:jais/models/anime.dart';
-import 'package:jais/models/platform.dart';
 import 'package:jais/views/anime_details/anime_details_header.dart';
 import 'package:jais/views/anime_details/episodes_details_view.dart';
 import 'package:jais/views/anime_details/scans_details_view.dart';
@@ -34,7 +32,8 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView>
   }
 
   List<Widget> buildWidgets() {
-    final bool seasonsNotEmpty = widget._anime.episodes.map<int>((e) => e.season).toSet().isNotEmpty;
+    final bool seasonsNotEmpty =
+        widget._anime.episodes.map<int>((e) => e.season).toSet().isNotEmpty;
     final bool scansNotEmpty = widget._anime.scans.isNotEmpty;
 
     if (seasonsNotEmpty && scansNotEmpty) {

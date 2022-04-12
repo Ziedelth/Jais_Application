@@ -10,7 +10,8 @@ class EpisodeType {
 
   EpisodeType(this.id, this.name, this.fr);
 
-  factory EpisodeType.fromJson(Map<String, dynamic> data) => _$EpisodeTypeFromJson(data);
+  factory EpisodeType.fromJson(Map<String, dynamic> data) =>
+      _$EpisodeTypeFromJson(data);
 
   Map<String, dynamic> toJson() => _$EpisodeTypeToJson(this);
 }

@@ -1,14 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:jais/components/animes/anime_widget.dart';
 import 'package:jais/components/jlist.dart';
 import 'package:jais/components/loading_widget.dart';
 import 'package:jais/mappers/anime_mapper.dart';
 import 'package:jais/models/anime.dart';
-import 'package:jais/models/episode.dart';
-import 'package:jais/models/scan.dart';
-import 'package:jais/utils/utils.dart';
 import 'package:jais/views/anime_details/anime_details_view.dart';
 
 class AnimesView extends StatefulWidget {
@@ -25,47 +20,6 @@ class _AnimesViewState extends State<AnimesView> {
 
   bool _hasTap = false;
   Anime? _anime;
-
-  Future<void> _on(Anime anime, int count) async {
-    // if (!isConnected()) {
-    //   return;
-    // }
-    //
-    // await put(
-    //   'https://ziedelth.fr/api/v1/member/notation/anime',
-    //   {
-    //     'token': token,
-    //     'id': '${anime.id}',
-    //     'count': '$count',
-    //   },
-    //   (success) async {
-    //     await get(
-    //       'https://ziedelth.fr/api/v1/statistics/member/${user?.pseudo}',
-    //       (success) {
-    //         user?.statistics = Statistics.fromJson(
-    //           jsonDecode(success) as Map<String, dynamic>,
-    //         );
-    //
-    //         if (mounted) {
-    //           setState(() {
-    //             clear();
-    //
-    //             update(
-    //               onSuccess: _updateFilter,
-    //               onUp: (Anime anime) => _on(anime, 1),
-    //               onDown: (Anime anime) => _on(anime, -1),
-    //             );
-    //
-    //             _key = GlobalKey();
-    //           });
-    //         }
-    //       },
-    //       (_) => null,
-    //     );
-    //   },
-    //   (_) => null,
-    // );
-  }
 
   void _setDetails({Anime? anime}) {
     setState(() {
@@ -86,48 +40,24 @@ class _AnimesViewState extends State<AnimesView> {
 
   Future<void> _onTap(Anime anime) async {
     _showLoader(context);
-    anime.episodes.clear();
-    anime.scans.clear();
-
-    await get(
-      'https://api.ziedelth.fr/episodes/anime/${anime.id}',
-      (success) {
-        try {
-          anime.episodes.addAll(
-            (jsonDecode(success) as List)
-                .map<Episode>(
-                  (e) => Episode.fromJson(e as Map<String, dynamic>),
-                )
-                .toList(),
-          );
-        } catch (exception, stackTrace) {
-          debugPrint('Error on episodes : $exception\n$stackTrace');
-        }
-      },
-      (error) => null,
-    );
-
-    await get(
-      'https://api.ziedelth.fr/scans/anime/${anime.id}',
-      (success) {
-        try {
-          anime.scans.addAll(
-            (jsonDecode(success) as List)
-                .map<Scan>((e) => Scan.fromJson(e as Map<String, dynamic>))
-                .toList(),
-          );
-        } catch (exception, stackTrace) {
-          debugPrint('Error on scans : $exception\n$stackTrace');
-        }
-      },
-      (error) => null,
-    );
-
+    final details = await loadDetails(anime);
     if (!mounted) return;
     Navigator.pop(context);
 
+    // If details is null, show error
+    if (details == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('An error occurred while loading details'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      return;
+    }
+
     _setDetails(
-      anime: anime,
+      anime: details,
     );
   }
 
@@ -140,15 +70,17 @@ class _AnimesViewState extends State<AnimesView> {
 
         setState(() => _isLoading = false);
       },
-      onUp: (Anime anime) => _on(anime, 1),
-      onDown: (Anime anime) => _on(anime, -1),
     );
   }
 
   @override
   void initState() {
+    super.initState();
     clear();
-    rebuildAnimes();
+
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      rebuildAnimes();
+    });
 
     _scrollController.addListener(() async {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
@@ -163,8 +95,6 @@ class _AnimesViewState extends State<AnimesView> {
         await rebuildAnimes();
       }
     });
-
-    super.initState();
   }
 
   @override
@@ -185,5 +115,13 @@ class _AnimesViewState extends State<AnimesView> {
           )
           .toList(),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    debugPrint('AnimesView.disposed');
+    _scrollController.dispose();
+    clear();
   }
 }

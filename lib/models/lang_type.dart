@@ -10,7 +10,8 @@ class LangType {
 
   LangType(this.id, this.name, this.fr);
 
-  factory LangType.fromJson(Map<String, dynamic> data) => _$LangTypeFromJson(data);
+  factory LangType.fromJson(Map<String, dynamic> data) =>
+      _$LangTypeFromJson(data);
 
   Map<String, dynamic> toJson() => _$LangTypeToJson(this);
 }

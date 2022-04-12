@@ -12,7 +12,8 @@ class Platform {
 
   Platform(this.id, this.name, this.url, this.image, this.color);
 
-  factory Platform.fromJson(Map<String, dynamic> data) => _$PlatformFromJson(data);
+  factory Platform.fromJson(Map<String, dynamic> data) =>
+      _$PlatformFromJson(data);
 
   Map<String, dynamic> toJson() => _$PlatformToJson(this);
 }
