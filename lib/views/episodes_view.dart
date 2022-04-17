@@ -10,12 +10,13 @@ class EpisodesView extends StatefulWidget {
 }
 
 class _EpisodesViewState extends State<EpisodesView> {
+  final EpisodeMapper _episodeMapper = EpisodeMapper();
   final ScrollController _scrollController = ScrollController();
   final GlobalKey _key = GlobalKey();
   bool _isLoading = true;
 
   Future<void> rebuildEpisodes() async {
-    await updateCurrentPage(
+    await _episodeMapper.updateCurrentPage(
       onSuccess: () {
         if (!mounted) return;
         setState(() => _isLoading = false);
@@ -26,7 +27,7 @@ class _EpisodesViewState extends State<EpisodesView> {
   @override
   void initState() {
     super.initState();
-    clear();
+    _episodeMapper.clear();
 
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       rebuildEpisodes();
@@ -35,8 +36,8 @@ class _EpisodesViewState extends State<EpisodesView> {
     _scrollController.addListener(() async {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
         _isLoading = true;
-        currentPage++;
-        addLoader();
+        _episodeMapper.currentPage++;
+        _episodeMapper.addLoader();
 
         if (mounted) {
           setState(() {});
@@ -52,15 +53,14 @@ class _EpisodesViewState extends State<EpisodesView> {
     return JList(
       key: _key,
       controller: _scrollController,
-      children: list,
+      children: _episodeMapper.list,
     );
   }
 
   @override
   void dispose() {
     super.dispose();
-    debugPrint('EpisodesView.disposed');
     _scrollController.dispose();
-    clear();
+    _episodeMapper.clear();
   }
 }

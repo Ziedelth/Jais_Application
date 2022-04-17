@@ -14,6 +14,7 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  final UserMapper _userMapper = UserMapper();
   final RegExp _emailRegex = RegExp(
     r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
   );
@@ -80,10 +81,10 @@ class _LoginViewState extends State<LoginView> {
           return;
         }
 
-        fromResponse(json);
+        _userMapper.fromResponse(json);
         widget._callback.call();
 
-        if (user == null) {
+        if (_userMapper.user == null) {
           return;
         }
 
@@ -94,7 +95,7 @@ class _LoginViewState extends State<LoginView> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Bienvenue ${user?.pseudo}',
+                  'Bienvenue ${_userMapper.user?.pseudo}',
                 ),
               ],
             ),

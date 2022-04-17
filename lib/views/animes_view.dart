@@ -3,7 +3,11 @@ import 'package:jais/components/animes/anime_widget.dart';
 import 'package:jais/components/jlist.dart';
 import 'package:jais/components/loading_widget.dart';
 import 'package:jais/mappers/anime_mapper.dart';
+import 'package:jais/mappers/episode_mapper.dart';
+import 'package:jais/mappers/scan_mapper.dart';
+import 'package:jais/mappers/simulcast_mapper.dart';
 import 'package:jais/models/anime.dart';
+import 'package:jais/models/simulcast.dart';
 import 'package:jais/views/anime_details/anime_details_view.dart';
 
 class AnimesView extends StatefulWidget {
@@ -14,9 +18,16 @@ class AnimesView extends StatefulWidget {
 }
 
 class _AnimesViewState extends State<AnimesView> {
+  final SimulcastMapper _simulcastMapper = SimulcastMapper();
+  final EpisodeMapper _episodeMapper = EpisodeMapper();
+  final ScanMapper _scanMapper = ScanMapper();
+  final AnimeMapper _animeMapper = AnimeMapper();
+
+  final ScrollController _simulcastsScrollController = ScrollController();
   final ScrollController _scrollController = ScrollController();
   final GlobalKey _key = GlobalKey();
   bool _isLoading = true;
+  Simulcast? _currentSimulcast;
 
   bool _hasTap = false;
   Anime? _anime;
@@ -40,7 +51,8 @@ class _AnimesViewState extends State<AnimesView> {
 
   Future<void> _onTap(Anime anime) async {
     _showLoader(context);
-    final details = await loadDetails(anime);
+    final details =
+        await _animeMapper.loadDetails(_episodeMapper, _scanMapper, anime);
     if (!mounted) return;
     Navigator.pop(context);
 
@@ -61,14 +73,22 @@ class _AnimesViewState extends State<AnimesView> {
     );
   }
 
-  Future<void> rebuildAnimes() async {
-    await updateCurrentPage(
-      onSuccess: () {
-        if (!mounted) {
-          return;
-        }
+  Future<void> rebuildAnimes({bool force = false}) async {
+    if (_currentSimulcast == null) return;
+    if (force) _animeMapper.clear();
 
-        setState(() => _isLoading = false);
+    await _animeMapper.updateCurrentPage(
+      simulcast: _currentSimulcast!,
+      onSuccess: () {
+        _isLoading = false;
+        if (!mounted) return;
+        setState(() {});
+      },
+      onFailure: () {
+        _animeMapper.removeLoader();
+        _isLoading = false;
+        if (!mounted) return;
+        setState(() {});
       },
     );
   }
@@ -76,17 +96,25 @@ class _AnimesViewState extends State<AnimesView> {
   @override
   void initState() {
     super.initState();
-    clear();
+    _animeMapper.clear();
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      rebuildAnimes();
+    WidgetsBinding.instance?.addPostFrameCallback((_) async {
+      await _simulcastMapper.update(
+        onSuccess: () {
+          // Set current simulcast to the last one
+          _currentSimulcast = _simulcastMapper.list?.last;
+          rebuildAnimes();
+          if (!mounted) return;
+          setState(() {});
+        },
+      );
     });
 
     _scrollController.addListener(() async {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
         _isLoading = true;
-        currentPage++;
-        addLoader();
+        _animeMapper.currentPage++;
+        _animeMapper.addLoader();
 
         if (mounted) {
           setState(() {});
@@ -103,25 +131,125 @@ class _AnimesViewState extends State<AnimesView> {
       return AnimeDetailsView(_anime!, _setDetails);
     }
 
-    return JList(
+    return Column(
       key: _key,
-      controller: _scrollController,
-      children: list
-          .map<Widget>(
-            (e) => GestureDetector(
-              child: e,
-              onTap: () => e is AnimeWidget ? _onTap(e.anime) : null,
-            ),
-          )
-          .toList(),
+      children: [
+        Expanded(
+          child: SimulcastsWidget(
+            scrollController: _simulcastsScrollController,
+            simulcast: _currentSimulcast,
+            simulcastMapper: _simulcastMapper,
+            onTap: (simulcast) {
+              _scrollController.animateTo(
+                0,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+
+              _currentSimulcast = simulcast;
+              rebuildAnimes(force: true);
+              if (!mounted) return;
+              setState(() {});
+            },
+          ),
+        ),
+        Expanded(
+          flex: 11,
+          child: JList(
+            controller: _scrollController,
+            children: _animeMapper.list
+                .map<Widget>(
+                  (e) => GestureDetector(
+                    child: e,
+                    onTap: () => e is AnimeWidget ? _onTap(e.anime) : null,
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+      ],
     );
   }
 
   @override
   void dispose() {
     super.dispose();
-    debugPrint('AnimesView.disposed');
     _scrollController.dispose();
-    clear();
+    _simulcastMapper.clear();
+    _episodeMapper.clear();
+    _scanMapper.clear();
+    _animeMapper.clear();
+  }
+}
+
+class SimulcastsWidget extends StatelessWidget {
+  const SimulcastsWidget({
+    Key? key,
+    required this.scrollController,
+    required this.simulcastMapper,
+    this.simulcast,
+    this.onTap,
+  }) : super(key: key);
+
+  final ScrollController scrollController;
+  final SimulcastMapper simulcastMapper;
+  final Simulcast? simulcast;
+  final Function(Simulcast)? onTap;
+
+  List<Widget> _getWidgets(BuildContext context) {
+    if (simulcastMapper.list == null) {
+      return const [];
+    }
+
+    return simulcastMapper.list!
+        .map(
+          (simulcast) => Padding(
+            padding: const EdgeInsets.all(8),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Theme.of(context).primaryColor,
+                ),
+                borderRadius: BorderRadius.circular(8),
+                color: simulcast == this.simulcast
+                    ? Theme.of(context).primaryColor
+                    : Colors.transparent,
+              ),
+              child: GestureDetector(
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Center(
+                    child: Text(
+                      simulcast.simulcast,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: simulcast == this.simulcast
+                            ? Colors.black
+                            : Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+                onTap: () => onTap?.call(simulcast),
+              ),
+            ),
+          ),
+        )
+        .toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: JList(
+            direction: Axis.horizontal,
+            controller: scrollController,
+            children: _getWidgets(context),
+          ),
+        ),
+      ],
+    );
   }
 }

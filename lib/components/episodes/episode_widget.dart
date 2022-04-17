@@ -56,6 +56,7 @@ class EpisodeWidget extends StatelessWidget {
                   Expanded(
                     child: Text(
                       episode.title ?? '＞﹏＜',
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                       ),

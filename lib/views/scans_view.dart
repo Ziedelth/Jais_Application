@@ -10,12 +10,13 @@ class ScansView extends StatefulWidget {
 }
 
 class _ScansViewState extends State<ScansView> {
+  final ScanMapper _scanMapper = ScanMapper();
   final ScrollController _scrollController = ScrollController();
   final GlobalKey _key = GlobalKey();
   bool _isLoading = true;
 
   Future<void> rebuildScans() async {
-    await updateCurrentPage(
+    await _scanMapper.updateCurrentPage(
       onSuccess: () {
         if (!mounted) {
           return;
@@ -29,7 +30,7 @@ class _ScansViewState extends State<ScansView> {
   @override
   void initState() {
     super.initState();
-    clear();
+    _scanMapper.clear();
 
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       rebuildScans();
@@ -38,8 +39,8 @@ class _ScansViewState extends State<ScansView> {
     _scrollController.addListener(() async {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
         _isLoading = true;
-        currentPage++;
-        addLoader();
+        _scanMapper.currentPage++;
+        _scanMapper.addLoader();
 
         if (mounted) {
           setState(() {});
@@ -55,15 +56,14 @@ class _ScansViewState extends State<ScansView> {
     return JList(
       key: _key,
       controller: _scrollController,
-      children: list,
+      children: _scanMapper.list,
     );
   }
 
   @override
   void dispose() {
     super.dispose();
-    debugPrint('ScansView.dispose');
     _scrollController.dispose();
-    clear();
+    _scanMapper.clear();
   }
 }

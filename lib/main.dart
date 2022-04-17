@@ -45,6 +45,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final UserMapper _userMapper = UserMapper();
+
   final List<Widget> _widgets = const <Widget>[
     EpisodesView(),
     ScansView(),
@@ -61,11 +63,9 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     createVideo();
 
-    tryToLogin(
+    _userMapper.tryToLogin(
       callback: () {
-        if (user == null) {
-          return;
-        }
+        if (_userMapper.user == null) return;
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -74,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'De retour, ${user?.pseudo}',
+                  'De retour, ${_userMapper.user?.pseudo}',
                 ),
               ],
             ),
