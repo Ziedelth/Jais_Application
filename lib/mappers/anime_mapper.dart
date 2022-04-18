@@ -202,4 +202,37 @@ class AnimeMapper {
 
     return anime;
   }
+
+  Future<List<AnimeWidget>?> search({
+    required String query,
+  }) async {
+    final url = 'v1/animes/country/${Country.name}/search/$query';
+    final urlMapper = URLMapper();
+    debugPrint('[AnimeMapper] Fetching $url');
+    final response = await urlMapper.getOwn(url);
+    debugPrint('[AnimeMapper] Response: ${response?.statusCode}');
+
+    // If the response is null or the status code is not equals to 200, then the request failed
+    if (response == null || response.statusCode != 200) {
+      debugPrint('[AnimeMapper] Request failed');
+      return null;
+    }
+
+    debugPrint('[AnimeMapper] Request success');
+    final animes = stringToAnimes(utf8.decode(response.bodyBytes));
+    debugPrint('[AnimeMapper] Animes: ${animes?.length}');
+
+    // If animes is null or empty, then the request failed
+    if (animes == null || animes.isEmpty) {
+      debugPrint('[AnimeMapper] Conversion failed');
+      return null;
+    }
+
+    debugPrint('[AnimeMapper] Conversion success');
+    // Convert the animes to widgets
+    final widgets = animesToWidgets(animes);
+
+    // Call the onSuccess callback
+    return widgets;
+  }
 }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:jais/components/roundborder_widget.dart';
 import 'package:jais/mappers/user_mapper.dart';
 import 'package:jais/utils/jais_ad.dart';
 import 'package:jais/utils/main_color.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
         primaryColor: const Color(mainColor),
         primarySwatch: MaterialColor(mainColor, mainColors),
+        backgroundColor: Colors.black,
       ),
       home: const MyHomePage(),
     );
@@ -45,14 +47,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final _animesKey = GlobalKey<AnimesViewState>();
   final UserMapper _userMapper = UserMapper();
-
-  final List<Widget> _widgets = const <Widget>[
-    EpisodesView(),
-    ScansView(),
-    AnimesView(),
-    SettingsView(),
-  ];
 
   final PageController _pageController = PageController();
   int _currentIndex = 0;
@@ -89,19 +85,59 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       resizeToAvoidBottomInset: false,
-      body: Container(
-        color: Colors.black,
-        child: SafeArea(
-          child: Stack(
-            children: [
-              PageView(
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: RoundBorderWidget(
+                      widget: Image.asset('assets/icon.jpg'),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 10,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 7.5),
+                      child: Text(
+                        'Jaïs',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (_currentIndex == 2)
+                    Expanded(
+                      child: IconButton(
+                        icon: const Icon(Icons.search),
+                        onPressed: () => _animesKey.currentState?.showSearch(),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: PageView(
                 controller: _pageController,
                 onPageChanged: _changeTab,
-                children: _widgets,
+                children: <Widget>[
+                  const EpisodesView(),
+                  const ScansView(),
+                  AnimesView(
+                    key: _animesKey,
+                  ),
+                  const SettingsView(),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(

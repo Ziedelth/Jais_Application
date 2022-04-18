@@ -9,15 +9,16 @@ import 'package:jais/mappers/simulcast_mapper.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/simulcast.dart';
 import 'package:jais/views/anime_details/anime_details_view.dart';
+import 'package:jais/views/anime_search_view.dart';
 
 class AnimesView extends StatefulWidget {
   const AnimesView({Key? key}) : super(key: key);
 
   @override
-  _AnimesViewState createState() => _AnimesViewState();
+  AnimesViewState createState() => AnimesViewState();
 }
 
-class _AnimesViewState extends State<AnimesView> {
+class AnimesViewState extends State<AnimesView> {
   final SimulcastMapper _simulcastMapper = SimulcastMapper();
   final EpisodeMapper _episodeMapper = EpisodeMapper();
   final ScanMapper _scanMapper = ScanMapper();
@@ -31,6 +32,17 @@ class _AnimesViewState extends State<AnimesView> {
 
   bool _hasTap = false;
   Anime? _anime;
+
+  void showSearch() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => AnimeSearchView(
+          animeMapper: _animeMapper,
+          onTap: _onTap,
+        ),
+      ),
+    );
+  }
 
   void _setDetails({Anime? anime}) {
     setState(() {
@@ -50,6 +62,11 @@ class _AnimesViewState extends State<AnimesView> {
       );
 
   Future<void> _onTap(Anime anime) async {
+    _hasTap = false;
+    _anime = null;
+    if (!mounted) return;
+    setState(() {});
+
     _showLoader(context);
     final details =
         await _animeMapper.loadDetails(_episodeMapper, _scanMapper, anime);
@@ -140,13 +157,10 @@ class _AnimesViewState extends State<AnimesView> {
             simulcast: _currentSimulcast,
             simulcastMapper: _simulcastMapper,
             onTap: (simulcast) {
-              _scrollController.animateTo(
-                0,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-              );
+              _scrollController.jumpTo(0);
 
               _currentSimulcast = simulcast;
+              _animeMapper.clear();
               rebuildAnimes(force: true);
               if (!mounted) return;
               setState(() {});
@@ -154,7 +168,7 @@ class _AnimesViewState extends State<AnimesView> {
           ),
         ),
         Expanded(
-          flex: 11,
+          flex: 10,
           child: JList(
             controller: _scrollController,
             children: _animeMapper.list
@@ -222,7 +236,7 @@ class SimulcastsWidget extends StatelessWidget {
                     child: Text(
                       simulcast.simulcast,
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 14,
                         color: simulcast == this.simulcast
                             ? Colors.black
                             : Colors.white,
