@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:jais/components/roundborder_widget.dart';
-import 'package:jais/mappers/user_mapper.dart';
 import 'package:jais/utils/jais_ad.dart';
 import 'package:jais/utils/main_color.dart';
 import 'package:jais/utils/notifications.dart';
 import 'package:jais/views/animes_view.dart';
 import 'package:jais/views/episodes_view.dart';
 import 'package:jais/views/scans_view.dart';
-import 'package:jais/views/settings_view.dart';
+import 'package:jais/views/watchlist_view.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,8 +29,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
-        primaryColor: const Color(mainColor),
-        primarySwatch: MaterialColor(mainColor, mainColors),
+        primaryColor: mainColors[900],
+        primarySwatch: MaterialColor(mainColors[900]!.value, mainColors),
         backgroundColor: Colors.black,
       ),
       home: const MyHomePage(),
@@ -48,38 +47,20 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _animesKey = GlobalKey<AnimesViewState>();
-  final UserMapper _userMapper = UserMapper();
-
-  final PageController _pageController = PageController();
-  int _currentIndex = 0;
+  int _currentIndex = 1;
+  late final PageController _pageController;
 
   void _changeTab(int index) => setState(() => _currentIndex = index);
 
   @override
   void initState() {
-    createVideo();
-
-    _userMapper.tryToLogin(
-      callback: () {
-        if (_userMapper.user == null) return;
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'De retour, ${_userMapper.user?.pseudo}',
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-
     super.initState();
+
+    _pageController = PageController(initialPage: _currentIndex);
+
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      createVideo();
+    });
   }
 
   @override
@@ -100,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                   Expanded(
-                    flex: 10,
+                    flex: 9,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 7.5),
                       child: Text(
@@ -109,17 +90,27 @@ class _MyHomePageState extends State<MyHomePage> {
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).primaryColor,
+                          fontFamily: 'Pacifico',
                         ),
                       ),
                     ),
                   ),
-                  if (_currentIndex == 2)
+                  if (_currentIndex == 3)
                     Expanded(
                       child: IconButton(
                         icon: const Icon(Icons.search),
                         onPressed: () => _animesKey.currentState?.showSearch(),
                       ),
                     ),
+                  Expanded(
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.card_giftcard,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      onPressed: showVideo,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -128,12 +119,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 controller: _pageController,
                 onPageChanged: _changeTab,
                 children: <Widget>[
+                  const WatchlistView(),
                   const EpisodesView(),
                   const ScansView(),
                   AnimesView(
                     key: _animesKey,
                   ),
-                  const SettingsView(),
+                  // const SettingsView(),
                 ],
               ),
             ),
@@ -143,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: BottomNavigationBar(
         showSelectedLabels: false,
         showUnselectedLabels: false,
-        backgroundColor: Colors.black,
+        // backgroundColor: Colors.black,
         selectedItemColor: Theme.of(context).primaryColor,
         currentIndex: _currentIndex,
         onTap: (index) => _pageController.animateToPage(
@@ -152,6 +144,10 @@ class _MyHomePageState extends State<MyHomePage> {
           curve: Curves.ease,
         ),
         items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.playlist_add_check),
+            label: 'Watchlist',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.subscriptions),
             label: 'Episodes',
@@ -164,10 +160,10 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.live_tv),
             label: 'Animes',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Paramètres',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.settings),
+          //   label: 'Paramètres',
+          // ),
         ],
       ),
     );

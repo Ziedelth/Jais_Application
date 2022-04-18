@@ -1,73 +1,68 @@
 import 'dart:ui';
 
-const int mainColor = 0xFFf6a65f;
-const int redMainColor = 246;
-const int greenMainColor = 166;
-const int blueMainColor = 95;
+// #F2B05E
+const _mainColor = Color(0xFFF2B05E);
 
-const Color mainColorO = Color.fromRGBO(
-  redMainColor,
-  greenMainColor,
-  blueMainColor,
-  1.0,
-);
+final int redMainColor = _mainColor.red;
+final int greenMainColor = _mainColor.green;
+final int blueMainColor = _mainColor.blue;
 
 final Map<int, Color> mainColors = {
-  50: const Color.fromRGBO(
+  50: Color.fromRGBO(
     redMainColor,
     greenMainColor,
     blueMainColor,
     .1,
   ),
-  100: const Color.fromRGBO(
+  100: Color.fromRGBO(
     redMainColor,
     greenMainColor,
     blueMainColor,
     .2,
   ),
-  200: const Color.fromRGBO(
+  200: Color.fromRGBO(
     redMainColor,
     greenMainColor,
     blueMainColor,
     .3,
   ),
-  300: const Color.fromRGBO(
+  300: Color.fromRGBO(
     redMainColor,
     greenMainColor,
     blueMainColor,
     .4,
   ),
-  400: const Color.fromRGBO(
+  400: Color.fromRGBO(
     redMainColor,
     greenMainColor,
     blueMainColor,
     .5,
   ),
-  500: const Color.fromRGBO(
+  500: Color.fromRGBO(
     redMainColor,
     greenMainColor,
     blueMainColor,
     .6,
   ),
-  600: const Color.fromRGBO(
+  600: Color.fromRGBO(
     redMainColor,
     greenMainColor,
     blueMainColor,
     .7,
   ),
-  700: const Color.fromRGBO(
+  700: Color.fromRGBO(
     redMainColor,
     greenMainColor,
     blueMainColor,
     .8,
   ),
-  800: const Color.fromRGBO(
+  800: Color.fromRGBO(
     redMainColor,
     greenMainColor,
     blueMainColor,
     .9,
   ),
-  900: const Color.fromRGBO(
+  900: Color.fromRGBO(
     redMainColor,
     greenMainColor,
     blueMainColor,

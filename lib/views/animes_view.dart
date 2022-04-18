@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jais/components/animes/anime_widget.dart';
 import 'package:jais/components/jlist.dart';
 import 'package:jais/components/loading_widget.dart';
+import 'package:jais/components/skeleton.dart';
 import 'package:jais/mappers/anime_mapper.dart';
 import 'package:jais/mappers/episode_mapper.dart';
 import 'package:jais/mappers/scan_mapper.dart';
@@ -116,29 +117,33 @@ class AnimesViewState extends State<AnimesView> {
     _animeMapper.clear();
 
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
+      _scrollController.addListener(() async {
+        if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
+          _isLoading = true;
+          _animeMapper.currentPage++;
+          _animeMapper.addLoader();
+
+          if (mounted) {
+            setState(() {});
+          }
+
+          await rebuildAnimes();
+        }
+      });
+
+      _simulcastsScrollController
+          .jumpTo(_simulcastsScrollController.position.maxScrollExtent);
+
       await _simulcastMapper.update(
         onSuccess: () {
           // Set current simulcast to the last one
           _currentSimulcast = _simulcastMapper.list?.last;
-          rebuildAnimes();
           if (!mounted) return;
           setState(() {});
         },
       );
-    });
 
-    _scrollController.addListener(() async {
-      if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
-        _isLoading = true;
-        _animeMapper.currentPage++;
-        _animeMapper.addLoader();
-
-        if (mounted) {
-          setState(() {});
-        }
-
-        await rebuildAnimes();
-      }
+      rebuildAnimes();
     });
   }
 
@@ -158,7 +163,6 @@ class AnimesViewState extends State<AnimesView> {
             simulcastMapper: _simulcastMapper,
             onTap: (simulcast) {
               _scrollController.jumpTo(0);
-
               _currentSimulcast = simulcast;
               _animeMapper.clear();
               rebuildAnimes(force: true);
@@ -212,7 +216,26 @@ class SimulcastsWidget extends StatelessWidget {
 
   List<Widget> _getWidgets(BuildContext context) {
     if (simulcastMapper.list == null) {
-      return const [];
+      return List.filled(
+        5,
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Theme.of(context).primaryColor,
+              ),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Padding(
+              padding: EdgeInsets.all(8),
+              child: Skeleton(
+                width: 80,
+              ),
+            ),
+          ),
+        ),
+      );
     }
 
     return simulcastMapper.list!
@@ -240,6 +263,9 @@ class SimulcastsWidget extends StatelessWidget {
                         color: simulcast == this.simulcast
                             ? Colors.black
                             : Colors.white,
+                        fontWeight: simulcast == this.simulcast
+                            ? FontWeight.bold
+                            : null,
                       ),
                     ),
                   ),

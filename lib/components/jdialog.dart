@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:jais/utils/main_color.dart';
 
 void show(
   BuildContext context, {
@@ -12,7 +11,7 @@ void show(
       backgroundColor: Colors.black,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
-        side: const BorderSide(color: mainColorO),
+        side: BorderSide(color: Theme.of(context).primaryColor),
       ),
       content: SingleChildScrollView(
         child: widget,
