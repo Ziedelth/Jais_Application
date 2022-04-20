@@ -67,16 +67,6 @@ class ScanWidget extends StatelessWidget {
                         'Il y a ${printTimeSince(DateTime.parse(scan.releaseDate))}',
                       ),
                     ),
-                    // if (isConnected())
-                    //   Expanded(
-                    //     child: NotationWidget(
-                    //       up: scan.notation,
-                    //       colorUp: _color(1),
-                    //       colorDown: _color(-1),
-                    //       onUp: () => onUp?.call(scan),
-                    //       onDown: () => onDown?.call(scan),
-                    //     ),
-                    //   ),
                   ],
                 ),
               ],
@@ -89,11 +79,4 @@ class ScanWidget extends StatelessWidget {
       },
     );
   }
-
-// Color? _color(int count) => user?.statistics?.scans.any(
-//           (element) => element.scanId == scan.id && element.count == count,
-//         ) ==
-//         true
-//     ? Colors.green
-//     : null;
 }

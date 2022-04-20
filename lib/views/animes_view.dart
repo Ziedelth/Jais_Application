@@ -9,6 +9,7 @@ import 'package:jais/mappers/scan_mapper.dart';
 import 'package:jais/mappers/simulcast_mapper.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/simulcast.dart';
+import 'package:jais/utils/utils.dart';
 import 'package:jais/views/anime_details/anime_details_view.dart';
 import 'package:jais/views/anime_search_view.dart';
 
@@ -27,12 +28,18 @@ class AnimesViewState extends State<AnimesView> {
 
   final ScrollController _simulcastsScrollController = ScrollController();
   final ScrollController _scrollController = ScrollController();
-  final GlobalKey _key = GlobalKey();
+  GlobalKey _key = GlobalKey();
   bool _isLoading = true;
   Simulcast? _currentSimulcast;
 
   bool _hasTap = false;
   Anime? _anime;
+
+  void _update(bool isLoading) {
+    _isLoading = false;
+    if (!mounted) return;
+    setState(() {});
+  }
 
   void showSearch() {
     Navigator.of(context).push(
@@ -97,17 +104,7 @@ class AnimesViewState extends State<AnimesView> {
 
     await _animeMapper.updateCurrentPage(
       simulcast: _currentSimulcast!,
-      onSuccess: () {
-        _isLoading = false;
-        if (!mounted) return;
-        setState(() {});
-      },
-      onFailure: () {
-        _animeMapper.removeLoader();
-        _isLoading = false;
-        if (!mounted) return;
-        setState(() {});
-      },
+      onSuccess: () => _update(false),
     );
   }
 
@@ -117,33 +114,33 @@ class AnimesViewState extends State<AnimesView> {
     _animeMapper.clear();
 
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
-      _scrollController.addListener(() async {
-        if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
-          _isLoading = true;
-          _animeMapper.currentPage++;
-          _animeMapper.addLoader();
-
-          if (mounted) {
-            setState(() {});
-          }
-
-          await rebuildAnimes();
-        }
-      });
-
-      _simulcastsScrollController
-          .jumpTo(_simulcastsScrollController.position.maxScrollExtent);
-
       await _simulcastMapper.update(
-        onSuccess: () {
+        onSuccess: () async {
           // Set current simulcast to the last one
           _currentSimulcast = _simulcastMapper.list?.last;
           if (!mounted) return;
-          setState(() {});
+          setState(() {
+            _simulcastsScrollController.animateTo(
+              _simulcastsScrollController.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            );
+          });
+
+          await rebuildAnimes();
+          _update(false);
         },
       );
+    });
 
-      rebuildAnimes();
+    _scrollController.addListener(() {
+      if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
+        _isLoading = true;
+        _animeMapper.currentPage++;
+        _animeMapper.addLoader();
+        rebuildAnimes();
+        _update(true);
+      }
     });
   }
 
@@ -151,6 +148,40 @@ class AnimesViewState extends State<AnimesView> {
   Widget build(BuildContext context) {
     if (_hasTap && _anime != null) {
       return AnimeDetailsView(_anime!, _setDetails);
+    }
+
+    if (!isOnMobile(context)) {
+      return Column(
+        key: _key,
+        children: [
+          Expanded(
+            child: SimulcastsWidget(
+              scrollController: _simulcastsScrollController,
+              simulcast: _currentSimulcast,
+              simulcastMapper: _simulcastMapper,
+              onTap: (simulcast) {
+                _scrollController.jumpTo(0);
+                _currentSimulcast = simulcast;
+                _animeMapper.clear();
+                rebuildAnimes(force: true);
+                if (!mounted) return;
+                setState(() {});
+              },
+            ),
+          ),
+          Expanded(
+            flex: 10,
+            child: GridView(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                childAspectRatio: 1.1,
+              ),
+              controller: _scrollController,
+              children: _animeMapper.list,
+            ),
+          ),
+        ],
+      );
     }
 
     return Column(

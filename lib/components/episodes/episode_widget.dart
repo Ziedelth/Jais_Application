@@ -40,6 +40,7 @@ class EpisodeWidget extends StatelessWidget {
                   Expanded(
                     child: Text(
                       episode.anime.name,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: Theme.of(context).primaryColor,
                         fontSize: 18,
@@ -96,7 +97,7 @@ class EpisodeWidget extends StatelessWidget {
                     placeholder: (context, url) => const Skeleton(height: 200),
                     errorWidget: (context, url, error) =>
                         const Skeleton(height: 200),
-                    fit: BoxFit.fill,
+                    fit: BoxFit.cover,
                   ),
                   onTap: () => launch(episode.url),
                 ),
@@ -112,16 +113,6 @@ class EpisodeWidget extends StatelessWidget {
                       'Il y a ${printTimeSince(DateTime.parse(episode.releaseDate))}',
                     ),
                   ),
-                  // if (isConnected())
-                  //   Expanded(
-                  //     child: NotationWidget(
-                  //       up: episode.notation,
-                  //       colorUp: _color(1),
-                  //       colorDown: _color(-1),
-                  //       onUp: () => onUp?.call(episode),
-                  //       onDown: () => onDown?.call(episode),
-                  //     ),
-                  //   ),
                 ],
               ),
             ],
@@ -130,12 +121,4 @@ class EpisodeWidget extends StatelessWidget {
       ),
     );
   }
-
-// Color? _color(int count) => user?.statistics?.episodes.any(
-//           (element) =>
-//               element.episodeId == episode.id && element.count == count,
-//         ) ==
-//         true
-//     ? Colors.green
-//     : null;
 }

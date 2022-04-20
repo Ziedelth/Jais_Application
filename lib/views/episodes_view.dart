@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jais/components/jlist.dart';
 import 'package:jais/mappers/episode_mapper.dart';
+import 'package:jais/utils/utils.dart';
 
 class EpisodesView extends StatefulWidget {
   const EpisodesView({Key? key}) : super(key: key);
@@ -15,12 +16,15 @@ class _EpisodesViewState extends State<EpisodesView> {
   final GlobalKey _key = GlobalKey();
   bool _isLoading = true;
 
+  void _update(bool isLoading) {
+    _isLoading = false;
+    if (!mounted) return;
+    setState(() {});
+  }
+
   Future<void> rebuildEpisodes() async {
     await _episodeMapper.updateCurrentPage(
-      onSuccess: () {
-        if (!mounted) return;
-        setState(() => _isLoading = false);
-      },
+      onSuccess: () => _update(false),
     );
   }
 
@@ -29,27 +33,36 @@ class _EpisodesViewState extends State<EpisodesView> {
     super.initState();
     _episodeMapper.clear();
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      rebuildEpisodes();
+    WidgetsBinding.instance?.addPostFrameCallback((_) async {
+      await rebuildEpisodes();
+      _update(false);
     });
 
-    _scrollController.addListener(() async {
+    _scrollController.addListener(() {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
         _isLoading = true;
         _episodeMapper.currentPage++;
         _episodeMapper.addLoader();
-
-        if (mounted) {
-          setState(() {});
-        }
-
-        await rebuildEpisodes();
+        rebuildEpisodes();
+        _update(true);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!isOnMobile(context)) {
+      return GridView(
+        key: _key,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          childAspectRatio: 1.1,
+        ),
+        controller: _scrollController,
+        children: _episodeMapper.list,
+      );
+    }
+
     return JList(
       key: _key,
       controller: _scrollController,

@@ -8,7 +8,7 @@ import 'package:jais/models/scan.dart';
 import 'package:jais/utils/country.dart';
 
 class ScanMapper {
-  static const _limit = 9;
+  static const _limit = 18;
   int currentPage = 1;
   List<Widget> list = _defaultList;
 

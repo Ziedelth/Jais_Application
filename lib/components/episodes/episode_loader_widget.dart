@@ -36,7 +36,7 @@ class EpisodeLoaderWidget extends StatelessWidget {
                     height: 30,
                   ),
                 ],
-              ), // Animé
+              ),
               const Padding(
                 padding: EdgeInsets.only(top: 10),
               ),
@@ -47,7 +47,7 @@ class EpisodeLoaderWidget extends StatelessWidget {
                     height: 20,
                   ),
                 ],
-              ), // Titre
+              ),
               Row(
                 children: const [
                   Skeleton(
@@ -55,7 +55,7 @@ class EpisodeLoaderWidget extends StatelessWidget {
                     height: 20,
                   ),
                 ],
-              ), // Info
+              ),
               Row(
                 children: const [
                   Skeleton(
@@ -63,13 +63,13 @@ class EpisodeLoaderWidget extends StatelessWidget {
                     height: 20,
                   ),
                 ],
-              ), // Durée
+              ),
               const Padding(
                 padding: EdgeInsets.only(top: 10),
               ),
               const Skeleton(
                 height: 200,
-              ), // Image
+              ),
               const Padding(
                 padding: EdgeInsets.only(top: 10),
               ),
@@ -80,7 +80,7 @@ class EpisodeLoaderWidget extends StatelessWidget {
                     height: 20,
                   ),
                 ],
-              ), // Time since
+              ),
             ],
           ),
         ),

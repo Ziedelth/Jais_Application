@@ -73,45 +73,48 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: RoundBorderWidget(
-                      widget: Image.asset('assets/icon.jpg'),
+              child: SizedBox(
+                height: 50,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: RoundBorderWidget(
+                        widget: Image.asset('assets/icon.jpg'),
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 9,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 7.5),
-                      child: Text(
-                        'Jaïs',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
-                          fontFamily: 'Pacifico',
+                    Expanded(
+                      flex: 9,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 7.5),
+                        child: Text(
+                          'Jaïs',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor,
+                            fontFamily: 'Pacifico',
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  if (_currentIndex == 3)
+                    if (_currentIndex == 3)
+                      Expanded(
+                        child: IconButton(
+                          icon: const Icon(Icons.search),
+                          onPressed: () => _animesKey.currentState?.showSearch(),
+                        ),
+                      ),
                     Expanded(
                       child: IconButton(
-                        icon: const Icon(Icons.search),
-                        onPressed: () => _animesKey.currentState?.showSearch(),
+                        icon: Icon(
+                          Icons.card_giftcard,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        onPressed: showVideo,
                       ),
                     ),
-                  Expanded(
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.card_giftcard,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      onPressed: showVideo,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             Expanded(

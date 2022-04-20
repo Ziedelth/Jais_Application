@@ -60,7 +60,7 @@ class AnimeWidget extends StatelessWidget {
                       imageUrl: 'https://ziedelth.fr/${anime.image}',
                       imageBuilder: (context, imageProvider) => Image(
                         image: imageProvider,
-                        fit: BoxFit.fill,
+                        fit: BoxFit.cover,
                       ),
                       placeholder: (context, url) =>
                           const Skeleton(width: 75, height: 100),
@@ -72,33 +72,10 @@ class AnimeWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              // if (_userMapper.isConnected())
-              //   Padding(
-              //     padding: const EdgeInsets.only(top: 5),
-              //     child: Row(
-              //       children: const [
-              //         Spacer(),
-              //         // NotationWidget(
-              //         //   up: anime.notation,
-              //         //   colorUp: _color(1),
-              //         //   colorDown: _color(-1),
-              //         //   onUp: () => onUp?.call(anime),
-              //         //   onDown: () => onDown?.call(anime),
-              //         // ),
-              //       ],
-              //     ),
-              //   ),
             ],
           ),
         ),
       ),
     );
   }
-
-// Color? _color(int count) => user?.statistics?.animes.any(
-//           (element) => element.animeId == anime.id && element.count == count,
-//         ) ==
-//         true
-//     ? Colors.green
-//     : null;
 }

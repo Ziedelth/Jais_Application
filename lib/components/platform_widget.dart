@@ -18,7 +18,7 @@ class PlatformWidget extends StatelessWidget {
       imageBuilder: (context, imageProvider) => CircleWidget(
         widget: Image(
           image: imageProvider,
-          fit: BoxFit.fill,
+          fit: BoxFit.cover,
         ),
       ),
       placeholder: (context, url) => const Skeleton(
