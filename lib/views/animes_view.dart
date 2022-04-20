@@ -28,7 +28,7 @@ class AnimesViewState extends State<AnimesView> {
 
   final ScrollController _simulcastsScrollController = ScrollController();
   final ScrollController _scrollController = ScrollController();
-  GlobalKey _key = GlobalKey();
+  final GlobalKey _key = GlobalKey();
   bool _isLoading = true;
   Simulcast? _currentSimulcast;
 

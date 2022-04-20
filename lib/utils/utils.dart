@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
-bool isOnMobile(BuildContext context) => MediaQuery.of(context).size.width < 600;
+bool isOnMobile(BuildContext context) =>
+    MediaQuery.of(context).size.width < 600;
 
 String printTimeSince(DateTime? dateTime) {
   if (dateTime == null) {

@@ -4,7 +4,7 @@ import 'package:jais/mappers/url_mapper.dart';
 void main() {
   group('URL Test', () {
     // Create URLMapper
-    final urlMapper =  URLMapper();
+    final urlMapper = URLMapper();
     // Init var with google url
     const url = 'https://www.google.com';
 
@@ -18,7 +18,7 @@ void main() {
 
     test('Own Get URL', () async {
       // Get URL
-      final urlResult = await urlMapper.getOwn('countries');
+      final urlResult = await urlMapper.getOwn('v1/countries');
 
       // Check is status code is 200
       expect(urlResult?.statusCode, 200);

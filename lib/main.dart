@@ -101,7 +101,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       Expanded(
                         child: IconButton(
                           icon: const Icon(Icons.search),
-                          onPressed: () => _animesKey.currentState?.showSearch(),
+                          onPressed: () =>
+                              _animesKey.currentState?.showSearch(),
                         ),
                       ),
                     Expanded(
