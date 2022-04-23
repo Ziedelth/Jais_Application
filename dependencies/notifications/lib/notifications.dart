@@ -1,13 +1,15 @@
+library notifications;
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:jais/utils/firebase_options.dart';
+import 'package:notifications/firebase_options.dart';
 
-final GetStorage _getStorage = GetStorage();
+final _getStorage = GetStorage();
 const _key = "topics";
 
 Future<void> initFirebase() async => Firebase.initializeApp(
-      options: currentPlatform,
+      options: DefaultFirebaseOptions.currentPlatform,
     );
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async =>

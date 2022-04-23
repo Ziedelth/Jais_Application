@@ -1,8 +1,8 @@
+library url;
+
 import 'package:http/http.dart' as http;
 
-class URLMapper {
-  static const String baseURL = "https://api.ziedelth.fr/";
-
+class URL {
   Future<http.Response?> get(
     String url, {
     Map<String, String>? headers,
@@ -13,12 +13,6 @@ class URLMapper {
       return null;
     }
   }
-
-  Future<http.Response?> getOwn(
-    String url, {
-    Map<String, String>? headers,
-  }) async =>
-      get(baseURL + url, headers: headers);
 
   Future<http.Response?> post(
     String url, {
@@ -31,11 +25,4 @@ class URLMapper {
       return null;
     }
   }
-
-  Future<http.Response?> postOwn(
-    String url, {
-    Map<String, String>? headers,
-    Map<String, String>? body,
-  }) async =>
-      post(baseURL + url, headers: headers, body: body);
 }
