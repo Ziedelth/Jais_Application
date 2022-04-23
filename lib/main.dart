@@ -1,22 +1,20 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:jais/components/roundborder_widget.dart';
 import 'package:jais/utils/jais_ad.dart';
 import 'package:jais/utils/main_color.dart';
-import 'package:jais/utils/notifications.dart';
 import 'package:jais/views/animes_view.dart';
 import 'package:jais/views/episodes_view.dart';
 import 'package:jais/views/scans_view.dart';
 import 'package:jais/views/watchlist_view.dart';
+import 'package:notifications/notifications.dart' as notifications;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await GetStorage.init();
   await MobileAds.instance.initialize();
-  await init();
+  await notifications.init();
   runApp(const MyApp());
 }
 
@@ -129,7 +127,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   AnimesView(
                     key: _animesKey,
                   ),
-                  // const SettingsView(),
                 ],
               ),
             ),
@@ -164,10 +161,6 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.live_tv),
             label: 'Animes',
           ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.settings),
-          //   label: 'Paramètres',
-          // ),
         ],
       ),
     );

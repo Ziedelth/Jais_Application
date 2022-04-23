@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:jais/components/episodes/episode_loader_widget.dart';
 import 'package:jais/components/episodes/episode_widget.dart';
-import 'package:jais/mappers/url_mapper.dart';
 import 'package:jais/models/episode.dart';
 import 'package:jais/utils/country.dart';
+import 'package:url/url.dart';
 
 class EpisodeMapper {
   static const _limit = 9;
@@ -65,12 +65,11 @@ class EpisodeMapper {
     Function(Episode episode)? onUp,
     Function(Episode episode)? onDown,
   }) async {
-    final url =
-        'v1/episodes/country/${Country.name}/page/$currentPage/limit/$_limit';
-    final urlMapper = URLMapper();
-    debugPrint('[EpisodeMapper] Fetching $url');
-
-    final response = await urlMapper.getOwn(url);
+    final link =
+        'https://api.ziedelth.fr/v1/episodes/country/${Country.name}/page/$currentPage/limit/$_limit';
+    final url = URL();
+    debugPrint('[EpisodeMapper] Fetching $link');
+    final response = await url.get(link);
     debugPrint('[EpisodeMapper] Response: ${response?.statusCode}');
 
     // If the response is null or the status code is not equals to 200, then the request failed

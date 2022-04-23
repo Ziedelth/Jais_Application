@@ -1,5 +1,4 @@
-import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
 
 bool isOnMobile(BuildContext context) =>
     MediaQuery.of(context).size.width < 600;
@@ -59,63 +58,5 @@ String printDuration(Duration duration) {
     return '$twoDigitHours:$twoDigitMinutes:$twoDigitSeconds';
   } else {
     return '$twoDigitMinutes:$twoDigitSeconds';
-  }
-}
-
-Future<void> get(
-  String url,
-  Function(String) onSuccess,
-  Function(String) onFailure,
-) async {
-  try {
-    final http.Response response = await http.get(
-      Uri.parse(
-        url,
-      ),
-    );
-
-    onSuccess(response.body);
-  } catch (exception, stacktrace) {
-    onFailure(stacktrace.toString());
-  }
-}
-
-Future<void> post(
-  String url,
-  Object? headers,
-  Function(String) onSuccess,
-  Function(String) onFailure,
-) async {
-  try {
-    final http.Response response = await http.post(
-      Uri.parse(
-        url,
-      ),
-      body: headers,
-    );
-
-    onSuccess(response.body);
-  } catch (exception, _) {
-    onFailure(exception.toString());
-  }
-}
-
-Future<void> put(
-  String url,
-  Object? headers,
-  Function(String) onSuccess,
-  Function(String) onFailure,
-) async {
-  try {
-    final http.Response response = await http.put(
-      Uri.parse(
-        url,
-      ),
-      body: headers,
-    );
-
-    onSuccess(response.body);
-  } catch (exception, stacktrace) {
-    onFailure(stacktrace.toString());
   }
 }

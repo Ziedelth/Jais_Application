@@ -15,6 +15,7 @@ Anime _$AnimeFromJson(Map<String, dynamic> json) => Anime(
       Country.fromJson(json['country'] as Map<String, dynamic>),
       json['releaseDate'] as String,
       json['name'] as String,
+      json['url'] as String?,
       json['image'] as String,
       json['description'] as String?,
     );
@@ -26,6 +27,7 @@ Map<String, dynamic> _$AnimeToJson(Anime instance) => <String, dynamic>{
       'country': instance.country.toJson(),
       'releaseDate': instance.releaseDate,
       'name': instance.name,
+      'url': instance.url,
       'image': instance.image,
       'description': instance.description,
     };

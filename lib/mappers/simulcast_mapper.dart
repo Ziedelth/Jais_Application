@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:jais/mappers/url_mapper.dart';
 import 'package:jais/models/simulcast.dart';
+import 'package:url/url.dart';
 
 class SimulcastMapper {
   List<Simulcast>? list;
@@ -29,11 +29,10 @@ class SimulcastMapper {
     Function()? onSuccess,
     Function()? onFailure,
   }) async {
-    const url = 'v1/simulcasts';
-    final urlMapper = URLMapper();
-    debugPrint('[SimulcastMapper] Fetching $url');
-
-    final response = await urlMapper.getOwn(url);
+    const link = 'https://api.ziedelth.fr/v1/simulcasts';
+    final url = URL();
+    debugPrint('[SimulcastMapper] Fetching $link');
+    final response = await url.get(link);
     debugPrint('[SimulcastMapper] Response: ${response?.statusCode}');
 
     // If the response is null or the status code is not equals to 200, then the request failed

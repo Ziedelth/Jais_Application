@@ -5,7 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:notifications/firebase_options.dart';
 
-final _getStorage = GetStorage();
+late final GetStorage _getStorage;
 const _key = "topics";
 
 Future<void> initFirebase() async => Firebase.initializeApp(
@@ -63,6 +63,8 @@ void removeAllTopics() {
 }
 
 Future<void> init() async {
+  await GetStorage.init('notifications');
+  _getStorage = GetStorage('notifications');
   await initFirebase();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   final bool firstInit = !_getStorage.hasData('init');

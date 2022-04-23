@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:jais/components/scans/scan_loader_widget.dart';
 import 'package:jais/components/scans/scan_widget.dart';
-import 'package:jais/mappers/url_mapper.dart';
 import 'package:jais/models/scan.dart';
 import 'package:jais/utils/country.dart';
+import 'package:url/url.dart';
 
 class ScanMapper {
   static const _limit = 18;
@@ -65,12 +65,11 @@ class ScanMapper {
     Function(Scan scan)? onUp,
     Function(Scan scan)? onDown,
   }) async {
-    final url =
-        'v1/scans/country/${Country.name}/page/$currentPage/limit/$_limit';
-    final urlMapper = URLMapper();
-    debugPrint('[ScanMapper] Fetching $url');
-
-    final response = await urlMapper.getOwn(url);
+    final link =
+        'https://api.ziedelth.fr/v1/scans/country/${Country.name}/page/$currentPage/limit/$_limit';
+    final url = URL();
+    debugPrint('[ScanMapper] Fetching $link');
+    final response = await url.get(link);
     debugPrint('[ScanMapper] Response: ${response?.statusCode}');
 
     // If the response is null or the status code is not equals to 200, then the request failed

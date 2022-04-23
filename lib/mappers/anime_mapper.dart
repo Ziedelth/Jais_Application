@@ -5,12 +5,12 @@ import 'package:jais/components/animes/anime_loader_widget.dart';
 import 'package:jais/components/animes/anime_widget.dart';
 import 'package:jais/mappers/episode_mapper.dart';
 import 'package:jais/mappers/scan_mapper.dart';
-import 'package:jais/mappers/url_mapper.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/episode.dart';
 import 'package:jais/models/scan.dart';
 import 'package:jais/models/simulcast.dart';
 import 'package:jais/utils/country.dart';
+import 'package:url/url.dart';
 
 class AnimeMapper {
   static const _limit = 9;
@@ -71,11 +71,11 @@ class AnimeMapper {
     Function(Anime anime)? onUp,
     Function(Anime anime)? onDown,
   }) async {
-    final url =
-        'v1/animes/country/${Country.name}/simulcast/${simulcast.id}/page/$currentPage/limit/$_limit';
-    final urlMapper = URLMapper();
-    debugPrint('[AnimeMapper] Fetching $url');
-    final response = await urlMapper.getOwn(url);
+    final link =
+        'https://api.ziedelth.fr/v1/animes/country/${Country.name}/simulcast/${simulcast.id}/page/$currentPage/limit/$_limit';
+    final url = URL();
+    debugPrint('[AnimeMapper] Fetching $link');
+    final response = await url.get(link);
     debugPrint('[AnimeMapper] Response: ${response?.statusCode}');
 
     // If the response is null or the status code is not equals to 200, then the request failed
@@ -117,10 +117,10 @@ class AnimeMapper {
     EpisodeMapper episodeMapper,
     Anime anime,
   ) async {
-    final url = 'v1/episodes/anime/${anime.id}';
-    final urlMapper = URLMapper();
-    debugPrint('[AnimeMapper] Fetching $url');
-    final response = await urlMapper.getOwn(url);
+    final link = 'https://api.ziedelth.fr/v1/episodes/anime/${anime.id}';
+    final url = URL();
+    debugPrint('[AnimeMapper] Fetching $link');
+    final response = await url.get(link);
     debugPrint('[AnimeMapper] Response: ${response?.statusCode}');
 
     // If the response is null or the status code is not equals to 200, then the request failed
@@ -146,10 +146,10 @@ class AnimeMapper {
 
 // Load scans for an anime
   Future<List<Scan>?> loadScans(ScanMapper scanMapper, Anime anime) async {
-    final url = 'v1/scans/anime/${anime.id}';
-    final urlMapper = URLMapper();
-    debugPrint('[AnimeMapper] Fetching $url');
-    final response = await urlMapper.getOwn(url);
+    final link = 'https://api.ziedelth.fr/v1/scans/anime/${anime.id}';
+    final url = URL();
+    debugPrint('[AnimeMapper] Fetching $link');
+    final response = await url.get(link);
     debugPrint('[AnimeMapper] Response: ${response?.statusCode}');
 
     // If the response is null or the status code is not equals to 200, then the request failed
@@ -206,10 +206,11 @@ class AnimeMapper {
   Future<List<AnimeWidget>?> search({
     required String query,
   }) async {
-    final url = 'v1/animes/country/${Country.name}/search/$query';
-    final urlMapper = URLMapper();
-    debugPrint('[AnimeMapper] Fetching $url');
-    final response = await urlMapper.getOwn(url);
+    final link =
+        'https://api.ziedelth.fr/v1/animes/country/${Country.name}/search/$query';
+    final url = URL();
+    debugPrint('[AnimeMapper] Fetching $link');
+    final response = await url.get(link);
     debugPrint('[AnimeMapper] Response: ${response?.statusCode}');
 
     // If the response is null or the status code is not equals to 200, then the request failed

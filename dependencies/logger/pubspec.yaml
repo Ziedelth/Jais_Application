@@ -1,0 +1,19 @@
+name: logger
+description: A new Flutter package project.
+version: 1.0.0
+homepage: https://ziedelth.fr
+
+environment:
+  sdk: ">=2.16.2 <3.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  intl: ^0.17.0
+  stack_trace: ^1.10.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  lint: ^1.8.2

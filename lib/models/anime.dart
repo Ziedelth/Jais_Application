@@ -14,6 +14,7 @@ class Anime {
   final Country country;
   final String releaseDate;
   final String name;
+  final String? url;
   final String image;
   final String? description;
 
@@ -29,6 +30,7 @@ class Anime {
     this.country,
     this.releaseDate,
     this.name,
+    this.url,
     this.image,
     this.description,
   );
