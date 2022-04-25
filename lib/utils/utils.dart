@@ -60,3 +60,16 @@ String printDuration(Duration duration) {
     return '$twoDigitMinutes:$twoDigitSeconds';
   }
 }
+
+// Show a snackbar with a message
+void showSnackBar(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(
+        message,
+        textAlign: TextAlign.center,
+      ),
+      duration: const Duration(seconds: 2),
+    ),
+  );
+}

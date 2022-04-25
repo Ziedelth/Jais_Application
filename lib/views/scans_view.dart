@@ -25,6 +25,8 @@ class _ScansViewState extends State<ScansView> {
   Future<void> rebuildScans() async {
     await _scanMapper.updateCurrentPage(
       onSuccess: () => _update(false),
+      onFailure: () =>
+          showSnackBar(context, 'An error occurred while loading scans'),
     );
   }
 

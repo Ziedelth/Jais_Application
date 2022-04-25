@@ -74,9 +74,7 @@ class ScanWidget extends StatelessWidget {
           ),
         ),
       ),
-      onTap: () {
-        launch(scan.url);
-      },
+      onTap: () => launchUrl(Uri.parse(scan.url)),
     );
   }
 }

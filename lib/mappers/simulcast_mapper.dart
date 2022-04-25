@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:jais/models/simulcast.dart';
+import 'package:logger/logger.dart' as logger;
 import 'package:url/url.dart';
 
 class SimulcastMapper {
@@ -31,29 +31,29 @@ class SimulcastMapper {
   }) async {
     const link = 'https://api.ziedelth.fr/v1/simulcasts';
     final url = URL();
-    debugPrint('[SimulcastMapper] Fetching $link');
+    logger.info('Fetching $link');
     final response = await url.get(link);
-    debugPrint('[SimulcastMapper] Response: ${response?.statusCode}');
+    logger.info('Response: ${response?.statusCode}');
 
     // If the response is null or the status code is not equals to 200, then the request failed
     if (response == null || response.statusCode != 200) {
-      debugPrint('[SimulcastMapper] Request failed');
+      logger.warning('Failed to fetch $link');
       onFailure?.call();
       return;
     }
 
-    debugPrint('[SimulcastMapper] Request success');
+    logger.info('Successfully fetched $link');
     final simulcasts = stringToSimulcasts(utf8.decode(response.bodyBytes));
-    debugPrint('[SimulcastMapper] Simulcasts: ${simulcasts?.length}');
+    logger.info('Simulcasts: $simulcasts');
 
     // If scans is null or empty, then the request failed
     if (simulcasts == null || simulcasts.isEmpty) {
-      debugPrint('[SimulcastMapper] Conversion failed');
+      logger.warning('Failed to convert in simulcasts list');
       onFailure?.call();
       return;
     }
 
-    debugPrint('[SimulcastMapper] Conversion success');
+    logger.info('Successfully converted in simulcasts list');
     list = simulcasts;
     // Call the onSuccess callback
     onSuccess?.call();

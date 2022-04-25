@@ -3,11 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:jais/components/roundborder_widget.dart';
+import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/utils/jais_ad.dart';
 import 'package:jais/utils/main_color.dart';
+import 'package:jais/utils/utils.dart';
 import 'package:jais/views/animes_view.dart';
 import 'package:jais/views/episodes_view.dart';
 import 'package:jais/views/scans_view.dart';
+import 'package:jais/views/settings_view.dart';
 import 'package:jais/views/watchlist_view.dart';
 import 'package:notifications/notifications.dart' as notifications;
 
@@ -15,6 +18,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await MobileAds.instance.initialize();
   await notifications.init();
+  await member_mapper.init();
   runApp(const MyApp());
 }
 
@@ -45,7 +49,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _animesKey = GlobalKey<AnimesViewState>();
-  int _currentIndex = 1;
+  int _currentIndex = 0;
   late final PageController _pageController;
 
   void _changeTab(int index) => setState(() => _currentIndex = index);
@@ -56,8 +60,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
     _pageController = PageController(initialPage: _currentIndex);
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) async {
       createVideo();
+
+      await member_mapper.loginWithToken();
+
+      if (!mounted) return;
+
+      if (member_mapper.isConnected()) {
+        showSnackBar(context, 'De retour, ${member_mapper.getPseudo()} !');
+      }
+
+      setState(() {});
     });
   }
 
@@ -95,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                     ),
-                    if (_currentIndex == 3)
+                    if (_currentIndex == 2)
                       Expanded(
                         child: IconButton(
                           icon: const Icon(Icons.search),
@@ -121,12 +135,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 controller: _pageController,
                 onPageChanged: _changeTab,
                 children: <Widget>[
-                  const WatchlistView(),
                   const EpisodesView(),
                   const ScansView(),
-                  AnimesView(
-                    key: _animesKey,
-                  ),
+                  AnimesView(key: _animesKey),
+                  if (member_mapper.isConnected()) const WatchlistView(),
+                  const SettingsView(),
                 ],
               ),
             ),
@@ -136,7 +149,6 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: BottomNavigationBar(
         showSelectedLabels: false,
         showUnselectedLabels: false,
-        // backgroundColor: Colors.black,
         selectedItemColor: Theme.of(context).primaryColor,
         currentIndex: _currentIndex,
         onTap: (index) => _pageController.animateToPage(
@@ -144,22 +156,27 @@ class _MyHomePageState extends State<MyHomePage> {
           duration: const Duration(milliseconds: 500),
           curve: Curves.ease,
         ),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.playlist_add_check),
-            label: 'Watchlist',
-          ),
-          BottomNavigationBarItem(
+        items: [
+          const BottomNavigationBarItem(
             icon: Icon(Icons.subscriptions),
             label: 'Episodes',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.library_books),
             label: 'Scans',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.live_tv),
             label: 'Animes',
+          ),
+          if (member_mapper.isConnected())
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.playlist_add_check),
+              label: 'Watchlist',
+            ),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Paramètres',
           ),
         ],
       ),

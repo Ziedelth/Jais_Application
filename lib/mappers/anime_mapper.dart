@@ -10,6 +10,7 @@ import 'package:jais/models/episode.dart';
 import 'package:jais/models/scan.dart';
 import 'package:jais/models/simulcast.dart';
 import 'package:jais/utils/country.dart';
+import 'package:logger/logger.dart' as logger;
 import 'package:url/url.dart';
 
 class AnimeMapper {
@@ -74,29 +75,29 @@ class AnimeMapper {
     final link =
         'https://api.ziedelth.fr/v1/animes/country/${Country.name}/simulcast/${simulcast.id}/page/$currentPage/limit/$_limit';
     final url = URL();
-    debugPrint('[AnimeMapper] Fetching $link');
+    logger.info('Fetching $link');
     final response = await url.get(link);
-    debugPrint('[AnimeMapper] Response: ${response?.statusCode}');
+    logger.info('Response: ${response?.statusCode}');
 
     // If the response is null or the status code is not equals to 200, then the request failed
     if (response == null || response.statusCode != 200) {
-      debugPrint('[AnimeMapper] Request failed');
+      logger.warning('Failed to fetch $link');
       onFailure?.call();
       return;
     }
 
-    debugPrint('[AnimeMapper] Request success');
+    logger.info('Successfully fetched $link');
     final animes = stringToAnimes(utf8.decode(response.bodyBytes));
-    debugPrint('[AnimeMapper] Animes: ${animes?.length}');
+    logger.info('Animes: $animes');
 
     // If animes is null or empty, then the request failed
-    if (animes == null || animes.isEmpty) {
-      debugPrint('[AnimeMapper] Conversion failed');
+    if (animes == null) {
+      logger.warning('Failed to convert in animes list');
       onFailure?.call();
       return;
     }
 
-    debugPrint('[AnimeMapper] Conversion success');
+    logger.info('Successfully converted in animes list');
     // Convert the animes to widgets
     final widgets = animesToWidgets(
       animes,
@@ -114,92 +115,105 @@ class AnimeMapper {
 
 // Load episodes for an anime
   Future<List<Episode>?> loadEpisodes(
-    EpisodeMapper episodeMapper,
     Anime anime,
   ) async {
-    final link = 'https://api.ziedelth.fr/v1/episodes/anime/${anime.id}';
+    final link = 'https://api.ziedelth.fr/v1/episodes/anime/${anime.url}';
     final url = URL();
-    debugPrint('[AnimeMapper] Fetching $link');
+    logger.info('Fetching $link');
     final response = await url.get(link);
-    debugPrint('[AnimeMapper] Response: ${response?.statusCode}');
+    logger.info('Response: ${response?.statusCode}');
 
     // If the response is null or the status code is not equals to 200, then the request failed
     if (response == null || response.statusCode != 200) {
-      debugPrint('[AnimeMapper] Request failed');
+      logger.warning('Failed to fetch $link');
       return null;
     }
 
-    debugPrint('[AnimeMapper] Request success');
+    logger.info('Successfully fetched $link');
     final episodes =
-        episodeMapper.stringToEpisodes(utf8.decode(response.bodyBytes));
-    debugPrint('[AnimeMapper] Episodes: ${episodes?.length}');
+        EpisodeMapper.stringToEpisodes(utf8.decode(response.bodyBytes));
+    logger.info('Episodes: $episodes');
 
     // If episodes is null or empty, then the request failed
     if (episodes == null) {
-      debugPrint('[AnimeMapper] Conversion failed');
+      logger.warning('Failed to convert in episodes list');
       return null;
     }
 
-    debugPrint('[AnimeMapper] Conversion success');
+    logger.info('Successfully converted in episodes list');
     return episodes;
   }
 
 // Load scans for an anime
-  Future<List<Scan>?> loadScans(ScanMapper scanMapper, Anime anime) async {
-    final link = 'https://api.ziedelth.fr/v1/scans/anime/${anime.id}';
+  Future<List<Scan>?> loadScans(Anime anime) async {
+    final link = 'https://api.ziedelth.fr/v1/scans/anime/${anime.url}';
     final url = URL();
-    debugPrint('[AnimeMapper] Fetching $link');
+    logger.info('Fetching $link');
     final response = await url.get(link);
-    debugPrint('[AnimeMapper] Response: ${response?.statusCode}');
+    logger.info('Response: ${response?.statusCode}');
 
     // If the response is null or the status code is not equals to 200, then the request failed
     if (response == null || response.statusCode != 200) {
-      debugPrint('[AnimeMapper] Request failed');
+      logger.warning('Failed to fetch $link');
       return null;
     }
 
-    debugPrint('[AnimeMapper] Request success');
-    final scans = scanMapper.stringToScans(utf8.decode(response.bodyBytes));
-    debugPrint('[AnimeMapper] Scans: ${scans?.length}');
+    logger.info('Successfully fetched $link');
+    final scans = ScanMapper.stringToScans(utf8.decode(response.bodyBytes));
+    logger.info('Scans: $scans');
 
     // If scans is null or empty, then the request failed
     if (scans == null) {
-      debugPrint('[AnimeMapper] Conversion failed');
+      logger.warning('Failed to convert in scans list');
       return null;
     }
 
-    debugPrint('[AnimeMapper] Conversion success');
+    logger.info('Successfully converted in scans list');
     return scans;
+  }
+
+  Future<void> __loadEpisodes(Anime anime) async {
+    logger.info('Loading episodes');
+    final episodes = await loadEpisodes(anime);
+
+    // If episodes is null, then the request failed
+    if (episodes == null) {
+      logger.warning('Failed to load episodes');
+      return;
+    }
+
+    logger.info('Successfully loaded episodes');
+    anime.episodes.clear();
+    anime.episodes.addAll(episodes);
+  }
+
+  Future<void> __loadScans(Anime anime) async {
+    logger.info('Loading scans');
+    final scans = await loadScans(anime);
+
+    // If scans is null, then the request failed
+    if (scans == null) {
+      logger.warning('Failed to load scans');
+      return;
+    }
+
+    logger.info('Successfully loaded scans');
+    anime.scans.clear();
+    anime.scans.addAll(scans);
   }
 
 // Load details of a specific anime
   Future<Anime?> loadDetails(
-    EpisodeMapper episodeMapper,
-    ScanMapper scanMapper,
     Anime anime,
   ) async {
-    final episodes = await loadEpisodes(episodeMapper, anime);
+    logger.info('Loading details of ${anime.url}');
 
-    // If episodes is null, then the request failed
-    if (episodes == null) {
-      debugPrint('[AnimeMapper] Episodes request failed');
-      return null;
-    }
+    await Future.wait([
+      __loadEpisodes(anime),
+      __loadScans(anime),
+    ]);
 
-    final scans = await loadScans(scanMapper, anime);
-
-    // If scans is null, then the request failed
-    if (scans == null) {
-      debugPrint('[AnimeMapper] Scans request failed');
-      return null;
-    }
-
-    anime.episodes.clear();
-    anime.episodes.addAll(episodes);
-
-    anime.scans.clear();
-    anime.scans.addAll(scans);
-
+    logger.info('Successfully loaded details of ${anime.url}');
     return anime;
   }
 
@@ -209,27 +223,27 @@ class AnimeMapper {
     final link =
         'https://api.ziedelth.fr/v1/animes/country/${Country.name}/search/$query';
     final url = URL();
-    debugPrint('[AnimeMapper] Fetching $link');
+    logger.info('Fetching $link');
     final response = await url.get(link);
-    debugPrint('[AnimeMapper] Response: ${response?.statusCode}');
+    logger.info('Response: ${response?.statusCode}');
 
     // If the response is null or the status code is not equals to 200, then the request failed
     if (response == null || response.statusCode != 200) {
-      debugPrint('[AnimeMapper] Request failed');
+      logger.warning('Failed to fetch $link');
       return null;
     }
 
-    debugPrint('[AnimeMapper] Request success');
+    logger.info('Successfully fetched $link');
     final animes = stringToAnimes(utf8.decode(response.bodyBytes));
-    debugPrint('[AnimeMapper] Animes: ${animes?.length}');
+    logger.info('Animes: $animes');
 
     // If animes is null or empty, then the request failed
-    if (animes == null || animes.isEmpty) {
-      debugPrint('[AnimeMapper] Conversion failed');
+    if (animes == null) {
+      logger.warning('Failed to convert in animes list');
       return null;
     }
 
-    debugPrint('[AnimeMapper] Conversion success');
+    logger.info('Successfully converted in animes list');
     // Convert the animes to widgets
     final widgets = animesToWidgets(animes);
 

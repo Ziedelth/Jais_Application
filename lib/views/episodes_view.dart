@@ -11,9 +11,9 @@ class EpisodesView extends StatefulWidget {
 }
 
 class _EpisodesViewState extends State<EpisodesView> {
-  final EpisodeMapper _episodeMapper = EpisodeMapper();
-  final ScrollController _scrollController = ScrollController();
-  final GlobalKey _key = GlobalKey();
+  final _episodeMapper = EpisodeMapper();
+  final _scrollController = ScrollController();
+  final _key = GlobalKey();
   bool _isLoading = true;
 
   void _update(bool isLoading) {
@@ -25,6 +25,8 @@ class _EpisodesViewState extends State<EpisodesView> {
   Future<void> rebuildEpisodes() async {
     await _episodeMapper.updateCurrentPage(
       onSuccess: () => _update(false),
+      onFailure: () =>
+          showSnackBar(context, 'An error occurred while loading episodes'),
     );
   }
 

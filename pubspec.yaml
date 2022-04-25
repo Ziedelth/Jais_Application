@@ -2,7 +2,7 @@ name: jais
 description: A Flutter application by Ziedelth for mobile users
 
 publish_to: 'none'
-version: 1.0.2+5
+version: 1.0.3+5
 
 environment:
   sdk: ">=2.16.2 <3.0.0"
@@ -13,8 +13,11 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_native_splash: ^2.1.6
+  get_storage: ^2.0.3
   google_mobile_ads: ^1.2.0
   json_annotation: ^4.4.0
+  logger:
+    path: dependencies/logger
   notifications:
     path: dependencies/notifications
   shimmer: ^2.0.0

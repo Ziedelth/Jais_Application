@@ -5,15 +5,16 @@ import 'package:jais/components/episodes/episode_loader_widget.dart';
 import 'package:jais/components/episodes/episode_widget.dart';
 import 'package:jais/models/episode.dart';
 import 'package:jais/utils/country.dart';
+import 'package:logger/logger.dart' as logger;
 import 'package:url/url.dart';
 
 class EpisodeMapper {
-  static const _limit = 9;
+  static const limit = 9;
   int currentPage = 1;
   List<Widget> list = _defaultList;
 
   static List<Widget> get _defaultList => List.filled(
-        _limit,
+        limit,
         const EpisodeLoaderWidget(),
         growable: true,
       );
@@ -29,7 +30,7 @@ class EpisodeMapper {
       list.removeWhere((element) => element is EpisodeLoaderWidget);
 
 // Convert a String? to a List<Episode>?
-  List<Episode>? stringToEpisodes(String? string) {
+  static List<Episode>? stringToEpisodes(String? string) {
     if (string == null) return null;
 
     try {
@@ -42,7 +43,7 @@ class EpisodeMapper {
   }
 
 // Convert a List<Episode> to List<EpisodeWidget>
-  List<EpisodeWidget> episodesToWidgets(
+  static List<EpisodeWidget> episodesToWidgets(
     List<Episode> episodes, {
     Function(Episode episode)? onUp,
     Function(Episode episode)? onDown,
@@ -66,31 +67,31 @@ class EpisodeMapper {
     Function(Episode episode)? onDown,
   }) async {
     final link =
-        'https://api.ziedelth.fr/v1/episodes/country/${Country.name}/page/$currentPage/limit/$_limit';
+        'https://api.ziedelth.fr/v1/episodes/country/${Country.name}/page/$currentPage/limit/$limit';
     final url = URL();
-    debugPrint('[EpisodeMapper] Fetching $link');
+    logger.info('Fetching $link');
     final response = await url.get(link);
-    debugPrint('[EpisodeMapper] Response: ${response?.statusCode}');
+    logger.info('Response: ${response?.statusCode}');
 
     // If the response is null or the status code is not equals to 200, then the request failed
     if (response == null || response.statusCode != 200) {
-      debugPrint('[EpisodeMapper] Request failed');
+      logger.warning('Failed to fetch episodes');
       onFailure?.call();
       return;
     }
 
-    debugPrint('[EpisodeMapper] Request success');
+    logger.info('Successfully fetched episodes');
     final episodes = stringToEpisodes(utf8.decode(response.bodyBytes));
-    debugPrint('[EpisodeMapper] Episodes: ${episodes?.length}');
+    logger.info('Episodes: $episodes');
 
     // If episodes is null or empty, then the request failed
     if (episodes == null || episodes.isEmpty) {
-      debugPrint('[EpisodeMapper] Conversion failed');
+      logger.warning('Failed to convert in episodes list');
       onFailure?.call();
       return;
     }
 
-    debugPrint('[EpisodeMapper] Conversion success');
+    logger.info('Successfully converted in episodes list');
     // Convert the episodes to widgets
     final widgets = episodesToWidgets(
       episodes,

@@ -99,7 +99,7 @@ class EpisodeWidget extends StatelessWidget {
                         const Skeleton(height: 200),
                     fit: BoxFit.cover,
                   ),
-                  onTap: () => launch(episode.url),
+                  onTap: () => launchUrl(Uri.parse(episode.url)),
                 ),
               ),
               const Padding(

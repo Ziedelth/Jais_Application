@@ -4,8 +4,6 @@ import 'package:jais/components/jlist.dart';
 import 'package:jais/components/loading_widget.dart';
 import 'package:jais/components/skeleton.dart';
 import 'package:jais/mappers/anime_mapper.dart';
-import 'package:jais/mappers/episode_mapper.dart';
-import 'package:jais/mappers/scan_mapper.dart';
 import 'package:jais/mappers/simulcast_mapper.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/simulcast.dart';
@@ -22,8 +20,6 @@ class AnimesView extends StatefulWidget {
 
 class AnimesViewState extends State<AnimesView> {
   final SimulcastMapper _simulcastMapper = SimulcastMapper();
-  final EpisodeMapper _episodeMapper = EpisodeMapper();
-  final ScanMapper _scanMapper = ScanMapper();
   final AnimeMapper _animeMapper = AnimeMapper();
 
   final ScrollController _simulcastsScrollController = ScrollController();
@@ -76,20 +72,13 @@ class AnimesViewState extends State<AnimesView> {
     setState(() {});
 
     _showLoader(context);
-    final details =
-        await _animeMapper.loadDetails(_episodeMapper, _scanMapper, anime);
+    final details = await _animeMapper.loadDetails(anime);
     if (!mounted) return;
     Navigator.pop(context);
 
     // If details is null, show error
     if (details == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('An error occurred while loading details'),
-          duration: Duration(seconds: 2),
-        ),
-      );
-
+      showSnackBar(context, 'An error occurred while loading details');
       return;
     }
 
@@ -105,6 +94,8 @@ class AnimesViewState extends State<AnimesView> {
     await _animeMapper.updateCurrentPage(
       simulcast: _currentSimulcast!,
       onSuccess: () => _update(false),
+      onFailure: () =>
+          showSnackBar(context, 'An error occurred while loading animes'),
     );
   }
 
@@ -225,8 +216,6 @@ class AnimesViewState extends State<AnimesView> {
     super.dispose();
     _scrollController.dispose();
     _simulcastMapper.clear();
-    _episodeMapper.clear();
-    _scanMapper.clear();
     _animeMapper.clear();
   }
 }
