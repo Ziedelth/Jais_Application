@@ -40,6 +40,7 @@ class _LoginViewState extends State<LoginView> {
                   labelText: 'Adresse mail',
                 ),
                 keyboardType: TextInputType.emailAddress,
+                inputFormatters: member_mapper.inputFormatters,
               ),
               const SizedBox(height: 16),
               // Password text form field
@@ -49,138 +50,150 @@ class _LoginViewState extends State<LoginView> {
                   labelText: 'Mot de passe',
                 ),
                 obscureText: true,
+                inputFormatters: member_mapper.inputFormatters,
               ),
               const SizedBox(height: 32),
               FullWidget(
                 widget: ElevatedButton(
-                  onPressed: _isLoading ? null : () async {
-                    setState(() {
-                      _isLoading = true;
-                    });
+                  onPressed: _isLoading
+                      ? null
+                      : () async {
+                          setState(() {
+                            _isLoading = true;
+                          });
 
-                    if (_emailController.text.trim().isEmpty) {
-                      setState(() {
-                        _isLoading = false;
-                      });
+                          if (_emailController.text.trim().isEmpty) {
+                            setState(() {
+                              _isLoading = false;
+                            });
 
-                      showSnackBar(context, 'Veuillez entrer une adresse mail');
-                      return;
-                    }
+                            showSnackBar(
+                              context,
+                              'Veuillez entrer une adresse mail',
+                            );
 
-                    if (!member_mapper.emailRegExp
-                        .hasMatch(_emailController.text.trim())) {
-                      setState(() {
-                        _isLoading = false;
-                      });
+                            return;
+                          }
 
-                      showSnackBar(
-                        context,
-                        'Veuillez entrer une adresse mail valide',
-                      );
-                      return;
-                    }
+                          if (!member_mapper.emailRegExp
+                              .hasMatch(_emailController.text.trim())) {
+                            setState(() {
+                              _isLoading = false;
+                            });
 
-                    if (_passwordController.text.trim().isEmpty) {
-                      setState(() {
-                        _isLoading = false;
-                      });
+                            showSnackBar(
+                              context,
+                              'Veuillez entrer une adresse mail valide',
+                            );
+                            return;
+                          }
 
-                      showSnackBar(context, 'Veuillez entrer un mot de passe');
-                      return;
-                    }
+                          if (_passwordController.text.trim().isEmpty) {
+                            setState(() {
+                              _isLoading = false;
+                            });
 
-                    if (!member_mapper.passwordRegExp
-                        .hasMatch(_passwordController.text.trim())) {
-                      setState(() {
-                        _isLoading = false;
-                      });
+                            showSnackBar(
+                              context,
+                              'Veuillez entrer un mot de passe',
+                            );
 
-                      showSnackBar(
-                        context,
-                        'Votre mot de passe doit contenir au moins 8 caractères dont 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial',
-                      );
-                      return;
-                    }
+                            return;
+                          }
 
-                    try {
-                      final response = await URL().post(
-                        "https://api.ziedelth.fr/v1/member/login",
-                        body: {
-                          "email": _emailController.text.trim(),
-                          "password": _passwordController.text.trim(),
+                          if (!member_mapper.passwordRegExp
+                              .hasMatch(_passwordController.text.trim())) {
+                            setState(() {
+                              _isLoading = false;
+                            });
+
+                            showSnackBar(
+                              context,
+                              'Votre mot de passe doit contenir au moins 8 caractères dont 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial',
+                            );
+                            return;
+                          }
+
+                          try {
+                            final response = await URL().post(
+                              "https://api.ziedelth.fr/v1/member/login",
+                              body: {
+                                "email": _emailController.text.trim(),
+                                "password": _passwordController.text.trim(),
+                              },
+                            );
+
+                            // If response is null or response code is not 200, return an error
+                            if (response == null ||
+                                response.statusCode != 200) {
+                              if (!mounted) return;
+                              setState(() {
+                                _isLoading = false;
+                              });
+
+                              showSnackBar(
+                                context,
+                                response?.body ??
+                                    'Une erreur est survenue à la connexion',
+                              );
+
+                              return;
+                            }
+
+                            // Decode response
+                            final responseBody = jsonDecode(response.body)
+                                as Map<String, dynamic>;
+
+                            // If responseBody not contains token and pseudo, return an error
+                            if (!responseBody.containsKey('token') ||
+                                !responseBody.containsKey('pseudo')) {
+                              if (!mounted) return;
+
+                              setState(() {
+                                _isLoading = false;
+                              });
+
+                              showSnackBar(
+                                context,
+                                'Une erreur est survenue à la connexion',
+                              );
+
+                              return;
+                            }
+
+                            // Save token and pseudo in shared preferences
+                            member_mapper.login(
+                              responseBody['token'] as String,
+                              responseBody['pseudo'] as String,
+                              responseBody['watchlist'] as List<dynamic>?,
+                            );
+
+                            if (!mounted) return;
+
+                            setState(() {
+                              _isLoading = false;
+                            });
+
+                            showSnackBar(
+                              context,
+                              'Bienvenue ${member_mapper.getPseudo()}',
+                            );
+
+                            Navigator.pop(context);
+                          } catch (exception, stackTrace) {
+                            setState(() {
+                              _isLoading = false;
+                            });
+
+                            logger.error(
+                              'Exception when trying to login',
+                              exception: exception,
+                              stackTrace: stackTrace,
+                            );
+
+                            showSnackBar(context, 'Une erreur est survenue');
+                          }
                         },
-                      );
-
-                      // If response is null or response code is not 200, return an error
-                      if (response == null || response.statusCode != 200) {
-                        if (!mounted) return;
-                        setState(() {
-                          _isLoading = false;
-                        });
-
-                        showSnackBar(
-                          context,
-                          response?.body ??
-                              'Une erreur est survenue à la connexion',
-                        );
-
-                        return;
-                      }
-
-                      // Decode response
-                      final responseBody =
-                          jsonDecode(response.body) as Map<String, dynamic>;
-
-                      // If responseBody not contains token and pseudo, return an error
-                      if (!responseBody.containsKey('token') ||
-                          !responseBody.containsKey('pseudo')) {
-                        if (!mounted) return;
-
-                        setState(() {
-                          _isLoading = false;
-                        });
-
-                        showSnackBar(
-                          context,
-                          'Une erreur est survenue à la connexion',
-                        );
-
-                        return;
-                      }
-
-                      // Save token and pseudo in shared preferences
-                      member_mapper.login(
-                        responseBody['token'] as String,
-                        responseBody['pseudo'] as String,
-                        responseBody['watchlist'] as List<dynamic>?,
-                      );
-
-                      if (!mounted) return;
-
-                      setState(() {
-                        _isLoading = false;
-                      });
-
-                      showSnackBar(
-                        context,
-                        'Bienvenue ${member_mapper.getPseudo()}',
-                      );
-
-                      Navigator.pop(context);
-                    } catch (exception, stackTrace) {
-                      setState(() {
-                        _isLoading = false;
-                      });
-
-                      logger.error(
-                        'Exception when trying to login',
-                        exception: exception,
-                        stackTrace: stackTrace,
-                      );
-
-                      showSnackBar(context, 'Une erreur est survenue');
-                    }
-                  },
                   child: const Text("Se connecter"),
                 ),
               ),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/services.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:logger/logger.dart' as logger;
 import 'package:url/url.dart';
@@ -18,6 +19,10 @@ final pseudoRegExp = RegExp(
 final passwordRegExp = RegExp(
   r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
 );
+
+final inputFormatters = [
+  FilteringTextInputFormatter.deny(RegExp(r'\s')),
+];
 
 late final GetStorage _getStorage;
 
@@ -70,7 +75,11 @@ Future<void> loginWithToken() async {
     }
 
     // Save token and pseudo in shared preferences
-    login(responseBody['token'] as String, responseBody['pseudo'] as String, responseBody['watchlist'] as List<dynamic>?);
+    login(
+      responseBody['token'] as String,
+      responseBody['pseudo'] as String,
+      responseBody['watchlist'] as List<dynamic>?,
+    );
   } catch (exception, stackTrace) {
     logger.error(
       'Exception when trying to login',

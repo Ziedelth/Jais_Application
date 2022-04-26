@@ -45,6 +45,7 @@ class _RegisterViewState extends State<RegisterView> {
                   labelText: 'Adresse mail',
                 ),
                 keyboardType: TextInputType.emailAddress,
+                inputFormatters: member_mapper.inputFormatters,
               ),
               const SizedBox(height: 16),
               // Pseudo text form field
@@ -53,6 +54,7 @@ class _RegisterViewState extends State<RegisterView> {
                 decoration: const InputDecoration(
                   labelText: 'Pseudonyme',
                 ),
+                inputFormatters: member_mapper.inputFormatters,
               ),
               const SizedBox(height: 16),
               // Password text form field
@@ -62,6 +64,7 @@ class _RegisterViewState extends State<RegisterView> {
                   labelText: 'Mot de passe',
                 ),
                 obscureText: true,
+                inputFormatters: member_mapper.inputFormatters,
               ),
               const SizedBox(height: 16),
               // Confirm password text form field
@@ -71,151 +74,168 @@ class _RegisterViewState extends State<RegisterView> {
                   labelText: 'Confirmer votre mot de passe',
                 ),
                 obscureText: true,
+                inputFormatters: member_mapper.inputFormatters,
               ),
               const SizedBox(height: 32),
               FullWidget(
                 widget: ElevatedButton(
-                  onPressed: _isLoading ? null : () async {
-                    setState(() {
-                      _isLoading = true;
-                    });
+                  onPressed: _isLoading
+                      ? null
+                      : () async {
+                          setState(() {
+                            _isLoading = true;
+                          });
 
-                    if (_emailController.text.trim().isEmpty) {
-                      setState(() {
-                        _isLoading = false;
-                      });
+                          if (_emailController.text.trim().isEmpty) {
+                            setState(() {
+                              _isLoading = false;
+                            });
 
-                      showSnackBar(context, 'Veuillez entrer une adresse mail');
-                      return;
-                    }
+                            showSnackBar(
+                              context,
+                              'Veuillez entrer une adresse mail',
+                            );
 
-                    if (!member_mapper.emailRegExp
-                        .hasMatch(_emailController.text.trim())) {
-                      setState(() {
-                        _isLoading = false;
-                      });
+                            return;
+                          }
 
-                      showSnackBar(
-                        context,
-                        'Veuillez entrer une adresse mail valide',
-                      );
-                      return;
-                    }
+                          if (!member_mapper.emailRegExp
+                              .hasMatch(_emailController.text.trim())) {
+                            setState(() {
+                              _isLoading = false;
+                            });
 
-                    if (_pseudoController.text.trim().isEmpty) {
-                      setState(() {
-                        _isLoading = false;
-                      });
+                            showSnackBar(
+                              context,
+                              'Veuillez entrer une adresse mail valide',
+                            );
 
-                      showSnackBar(context, 'Veuillez entrer un pseudonyme');
-                      return;
-                    }
+                            return;
+                          }
 
-                    if (!member_mapper.pseudoRegExp
-                        .hasMatch(_pseudoController.text.trim())) {
-                      setState(() {
-                        _isLoading = false;
-                      });
+                          if (_pseudoController.text.trim().isEmpty) {
+                            setState(() {
+                              _isLoading = false;
+                            });
 
-                      showSnackBar(
-                        context,
-                        'Veuillez entrer un pseudonyme valide',
-                      );
-                      return;
-                    }
+                            showSnackBar(
+                              context,
+                              'Veuillez entrer un pseudonyme',
+                            );
 
-                    if (_passwordController.text.trim().isEmpty) {
-                      setState(() {
-                        _isLoading = false;
-                      });
+                            return;
+                          }
 
-                      showSnackBar(context, 'Veuillez entrer un mot de passe');
-                      return;
-                    }
+                          if (!member_mapper.pseudoRegExp
+                              .hasMatch(_pseudoController.text.trim())) {
+                            setState(() {
+                              _isLoading = false;
+                            });
 
-                    if (!member_mapper.passwordRegExp
-                        .hasMatch(_passwordController.text.trim())) {
-                      setState(() {
-                        _isLoading = false;
-                      });
+                            showSnackBar(
+                              context,
+                              'Veuillez entrer un pseudonyme valide',
+                            );
+                            return;
+                          }
 
-                      showSnackBar(
-                        context,
-                        'Votre mot de passe doit contenir au moins 8 caractères dont 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial',
-                      );
-                      return;
-                    }
+                          if (_passwordController.text.trim().isEmpty) {
+                            setState(() {
+                              _isLoading = false;
+                            });
 
-                    if (_passwordController.text.trim() !=
-                        _passwordConfirmationController.text.trim()) {
-                      setState(() {
-                        _isLoading = false;
-                      });
+                            showSnackBar(
+                              context,
+                              'Veuillez entrer un mot de passe',
+                            );
 
-                      showSnackBar(
-                        context,
-                        'Les mots de passe ne correspondent pas',
-                      );
-                      return;
-                    }
+                            return;
+                          }
 
-                    try {
-                      final response = await URL().post(
-                        "https://api.ziedelth.fr/v1/member/register",
-                        body: {
-                          "email": _emailController.text.trim(),
-                          "pseudo": _pseudoController.text.trim(),
-                          "password": _passwordController.text.trim(),
+                          if (!member_mapper.passwordRegExp
+                              .hasMatch(_passwordController.text.trim())) {
+                            setState(() {
+                              _isLoading = false;
+                            });
+
+                            showSnackBar(
+                              context,
+                              'Votre mot de passe doit contenir au moins 8 caractères dont 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial',
+                            );
+                            return;
+                          }
+
+                          if (_passwordController.text.trim() !=
+                              _passwordConfirmationController.text.trim()) {
+                            setState(() {
+                              _isLoading = false;
+                            });
+
+                            showSnackBar(
+                              context,
+                              'Les mots de passe ne correspondent pas',
+                            );
+                            return;
+                          }
+
+                          try {
+                            final response = await URL().post(
+                              "https://api.ziedelth.fr/v1/member/register",
+                              body: {
+                                "email": _emailController.text.trim(),
+                                "pseudo": _pseudoController.text.trim(),
+                                "password": _passwordController.text.trim(),
+                              },
+                            );
+
+                            // If response is null or response code is not 201, return an error
+                            if (response == null ||
+                                response.statusCode != 201) {
+                              if (!mounted) return;
+                              setState(() {
+                                _isLoading = false;
+                              });
+
+                              showSnackBar(
+                                context,
+                                response?.body ??
+                                    'Une erreur est survenue à la création de votre compte',
+                              );
+
+                              return;
+                            }
+
+                            if (!mounted) return;
+
+                            setState(() {
+                              _isLoading = false;
+                            });
+
+                            showSnackBar(
+                              context,
+                              'Votre compte a bien été créé, vous pouvez vous connecter',
+                            );
+
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const LoginView(),
+                              ),
+                            );
+                          } catch (exception, stackTrace) {
+                            setState(() {
+                              _isLoading = false;
+                            });
+
+                            logger.error(
+                              'Exception when trying to register user',
+                              exception: exception,
+                              stackTrace: stackTrace,
+                            );
+
+                            showSnackBar(context, 'Une erreur est survenue');
+                          }
                         },
-                      );
-
-                      // If response is null or response code is not 201, return an error
-                      if (response == null || response.statusCode != 201) {
-                        if (!mounted) return;
-                        setState(() {
-                          _isLoading = false;
-                        });
-
-                        showSnackBar(
-                          context,
-                          response?.body ??
-                              'Une erreur est survenue à la création de votre compte',
-                        );
-
-                        return;
-                      }
-
-                      if (!mounted) return;
-
-                      setState(() {
-                        _isLoading = false;
-                      });
-
-                      showSnackBar(
-                        context,
-                        'Votre compte a bien été créé, vous pouvez vous connecter',
-                      );
-
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoginView(),
-                        ),
-                      );
-                    } catch (exception, stackTrace) {
-                      setState(() {
-                        _isLoading = false;
-                      });
-
-                      logger.error(
-                        'Exception when trying to register user',
-                        exception: exception,
-                        stackTrace: stackTrace,
-                      );
-
-                      showSnackBar(context, 'Une erreur est survenue');
-                    }
-                  },
                   child: const Text("S'inscrire"),
                 ),
               ),
