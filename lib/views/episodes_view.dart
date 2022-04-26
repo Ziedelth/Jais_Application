@@ -58,7 +58,7 @@ class _EpisodesViewState extends State<EpisodesView> {
         key: _key,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
-          childAspectRatio: 1.1,
+          childAspectRatio: 1.125,
         ),
         controller: _scrollController,
         children: _episodeMapper.list,

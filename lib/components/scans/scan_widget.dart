@@ -15,63 +15,41 @@ class ScanWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: Padding(
-        padding: const EdgeInsets.all(5),
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Theme.of(context).primaryColor,
-            ),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        margin: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          border: Border.all(color: Theme.of(context).primaryColor),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                Row(
-                  children: [
-                    PlatformWidget(scan.platform),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 10),
+                PlatformWidget(scan.platform),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    scan.anime.name,
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 16,
                     ),
-                    Expanded(
-                      child: Text(
-                        scan.anime.name,
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 10),
-                ),
-                Row(
-                  children: [
-                    Text(
-                      '${scan.episodeType.fr} ${scan.number} ${scan.langType.fr} ',
-                    ),
-                  ],
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 10),
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 4,
-                      child: Text(
-                        'Il y a ${printTimeSince(DateTime.parse(scan.releaseDate))}',
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ],
             ),
-          ),
+            const SizedBox(height: 10),
+            Text(
+              '${scan.episodeType.fr} ${scan.number} ${scan.langType.fr} ',
+            ),
+            const SizedBox(height: 5),
+            Text(
+              'Il y a ${printTimeSince(DateTime.parse(scan.releaseDate))}',
+            ),
+          ],
         ),
       ),
       onTap: () => launchUrl(Uri.parse(scan.url)),

@@ -165,10 +165,17 @@ class AnimesViewState extends State<AnimesView> {
             child: GridView(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
-                childAspectRatio: 1.1,
+                childAspectRatio: 3,
               ),
               controller: _scrollController,
-              children: _animeMapper.list,
+              children: _animeMapper.list
+                  .map<Widget>(
+                    (e) => GestureDetector(
+                  child: e,
+                  onTap: () => e is AnimeWidget ? _onTap(e.anime) : null,
+                ),
+              )
+                  .toList(),
             ),
           ),
         ],

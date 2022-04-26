@@ -58,7 +58,7 @@ class _ScansViewState extends State<ScansView> {
         key: _key,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
-          childAspectRatio: 3.25,
+          childAspectRatio: 4,
         ),
         controller: _scrollController,
         children: _scanMapper.list,
