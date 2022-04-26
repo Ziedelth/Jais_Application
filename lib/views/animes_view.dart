@@ -1,5 +1,6 @@
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
+import 'package:jais/components/animes/anime_list.dart';
 import 'package:jais/components/animes/anime_widget.dart';
 import 'package:jais/components/jlist.dart';
 import 'package:jais/components/loading_widget.dart';
@@ -25,7 +26,7 @@ class AnimesViewState extends State<AnimesView> {
 
   final ScrollController _simulcastsScrollController = ScrollController();
   final ScrollController _scrollController = ScrollController();
-  final GlobalKey _key = GlobalKey();
+  GlobalKey _key = GlobalKey();
   bool _isLoading = true;
   Simulcast? _currentSimulcast;
   bool _hasTap = false;
@@ -33,7 +34,7 @@ class AnimesViewState extends State<AnimesView> {
   CancelableOperation? _cancelableOperation;
 
   void _update(bool isLoading) {
-    _isLoading = false;
+    _isLoading = isLoading;
     if (!mounted) return;
     setState(() {});
   }
@@ -88,33 +89,40 @@ class AnimesViewState extends State<AnimesView> {
     );
   }
 
-  Future<void> rebuildAnimes({bool force = false}) async {
+  Future<void> rebuildAnimes({bool force = false, bool isNew = false}) async {
     if (_currentSimulcast == null) return;
     if (force) _animeMapper.clear();
 
     await _animeMapper.updateCurrentPage(
       simulcast: _currentSimulcast!,
-      onSuccess: () => _update(false),
+      onSuccess: () {
+        _update(false);
+
+        if (isNew) {
+          _key = GlobalKey();
+        }
+      },
       onFailure: () =>
           showSnackBar(context, 'An error occurred while loading animes'),
     );
   }
 
-  void setOperation() {
+  void setOperation({bool isNew = false}) {
     _cancelableOperation?.cancel();
-    _cancelableOperation = CancelableOperation.fromFuture(rebuildAnimes());
+    _cancelableOperation =
+        CancelableOperation.fromFuture(rebuildAnimes(isNew: isNew));
   }
 
   @override
   void initState() {
     super.initState();
     _animeMapper.clear();
-
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
       await _simulcastMapper.update(
         onSuccess: () async {
           // Set current simulcast to the last one
           _currentSimulcast = _simulcastMapper.list?.last;
+
           if (!mounted) return;
           setState(() {
             _simulcastsScrollController.animateTo(
@@ -124,7 +132,7 @@ class AnimesViewState extends State<AnimesView> {
             );
           });
 
-          setOperation();
+          setOperation(isNew: true);
         },
       );
     });
@@ -144,47 +152,6 @@ class AnimesViewState extends State<AnimesView> {
   Widget build(BuildContext context) {
     if (_hasTap && _anime != null) {
       return AnimeDetailsView(_anime!, _setDetails);
-    }
-
-    if (!isOnMobile(context)) {
-      return Column(
-        key: _key,
-        children: [
-          Expanded(
-            child: SimulcastsWidget(
-              scrollController: _simulcastsScrollController,
-              simulcast: _currentSimulcast,
-              simulcastMapper: _simulcastMapper,
-              onTap: (simulcast) {
-                _scrollController.jumpTo(0);
-                _currentSimulcast = simulcast;
-                _animeMapper.clear();
-                rebuildAnimes(force: true);
-                if (!mounted) return;
-                setState(() {});
-              },
-            ),
-          ),
-          Expanded(
-            flex: 10,
-            child: GridView(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                childAspectRatio: 3,
-              ),
-              controller: _scrollController,
-              children: _animeMapper.list
-                  .map<Widget>(
-                    (e) => GestureDetector(
-                  child: e,
-                  onTap: () => e is AnimeWidget ? _onTap(e.anime) : null,
-                ),
-              )
-                  .toList(),
-            ),
-          ),
-        ],
-      );
     }
 
     return Column(
@@ -207,8 +174,8 @@ class AnimesViewState extends State<AnimesView> {
         ),
         Expanded(
           flex: 10,
-          child: JList(
-            controller: _scrollController,
+          child: AnimeList(
+            scrollController: _scrollController,
             children: _animeMapper.list
                 .map<Widget>(
                   (e) => GestureDetector(

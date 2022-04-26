@@ -1,13 +1,14 @@
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
-import 'package:jais/components/jlist.dart';
+import 'package:jais/components/episodes/episode_list.dart';
 import 'package:jais/mappers/watchlist_mapper.dart';
 import 'package:jais/utils/utils.dart';
 
 class WatchlistEpisodesView extends StatefulWidget {
   final WatchlistMapper watchlistMapper;
 
-  const WatchlistEpisodesView(this.watchlistMapper, {Key? key}) : super(key: key);
+  const WatchlistEpisodesView(this.watchlistMapper, {Key? key})
+      : super(key: key);
 
   @override
   _WatchlistEpisodesViewState createState() => _WatchlistEpisodesViewState();
@@ -15,32 +16,41 @@ class WatchlistEpisodesView extends StatefulWidget {
 
 class _WatchlistEpisodesViewState extends State<WatchlistEpisodesView> {
   final _scrollController = ScrollController();
+  GlobalKey _key = GlobalKey();
   bool _isLoading = true;
   CancelableOperation? _cancelableOperation;
 
   void _update(bool isLoading) {
-    _isLoading = false;
+    _isLoading = isLoading;
     if (!mounted) return;
     setState(() {});
   }
 
-  Future<void> rebuildEpisodes() async {
+  Future<void> rebuildEpisodes({bool isNew = false}) async {
     await widget.watchlistMapper.updateEpisodesCurrentPage(
-      onSuccess: () => _update(false),
+      onSuccess: () {
+        _update(false);
+
+        if (isNew) {
+          _key = GlobalKey();
+        }
+      },
       onFailure: () =>
           showSnackBar(context, 'An error occurred while loading episodes'),
     );
   }
 
-  void setOperation() {
+  void setOperation({bool isNew = false}) {
     _cancelableOperation?.cancel();
-    _cancelableOperation = CancelableOperation.fromFuture(rebuildEpisodes());
+    _cancelableOperation =
+        CancelableOperation.fromFuture(rebuildEpisodes(isNew: isNew));
   }
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) => setOperation());
+    WidgetsBinding.instance
+        ?.addPostFrameCallback((_) => setOperation(isNew: true));
 
     _scrollController.addListener(() {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
@@ -55,8 +65,9 @@ class _WatchlistEpisodesViewState extends State<WatchlistEpisodesView> {
 
   @override
   Widget build(BuildContext context) {
-    return JList(
-      controller: _scrollController,
+    return EpisodeList(
+      scrollController: _scrollController,
+      key: _key,
       children: widget.watchlistMapper.episodesList,
     );
   }

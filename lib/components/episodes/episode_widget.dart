@@ -80,7 +80,7 @@ class EpisodeWidget extends StatelessWidget {
                 ),
                 placeholder: (context, url) => const Skeleton(height: 200),
                 errorWidget: (context, url, error) =>
-                const Skeleton(height: 200),
+                    const Skeleton(height: 200),
               ),
               onTap: () => launchUrl(Uri.parse(episode.url)),
             ),

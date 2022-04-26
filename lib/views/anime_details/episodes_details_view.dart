@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:jais/components/episodes/episode_list.dart';
 import 'package:jais/components/episodes/episode_widget.dart';
-import 'package:jais/components/jlist.dart';
 import 'package:jais/models/anime.dart';
 
 class EpisodesDetailsView extends StatefulWidget {
@@ -82,7 +82,7 @@ class _EpisodesDetailsViewState extends State<EpisodesDetailsView> {
           ),
         if (_episodes != null)
           Expanded(
-            child: JList(
+            child: EpisodeList(
               children: _episodes!,
             ),
           ),

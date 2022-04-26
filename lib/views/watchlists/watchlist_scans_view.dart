@@ -1,6 +1,6 @@
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
-import 'package:jais/components/jlist.dart';
+import 'package:jais/components/scans/scan_list.dart';
 import 'package:jais/mappers/watchlist_mapper.dart';
 import 'package:jais/utils/utils.dart';
 
@@ -15,32 +15,41 @@ class WatchlistScansView extends StatefulWidget {
 
 class _WatchlistScansViewState extends State<WatchlistScansView> {
   final _scrollController = ScrollController();
+  GlobalKey _key = GlobalKey();
   bool _isLoading = true;
   CancelableOperation? _cancelableOperation;
 
   void _update(bool isLoading) {
-    _isLoading = false;
+    _isLoading = isLoading;
     if (!mounted) return;
     setState(() {});
   }
 
-  Future<void> rebuildScans() async {
+  Future<void> rebuildScans({bool isNew = false}) async {
     await widget.watchlistMapper.updateScansCurrentPage(
-      onSuccess: () => _update(false),
+      onSuccess: () {
+        _update(false);
+
+        if (isNew) {
+          _key = GlobalKey();
+        }
+      },
       onFailure: () =>
           showSnackBar(context, 'An error occurred while loading scans'),
     );
   }
 
-  void setOperation() {
+  void setOperation({bool isNew = false}) {
     _cancelableOperation?.cancel();
-    _cancelableOperation = CancelableOperation.fromFuture(rebuildScans());
+    _cancelableOperation =
+        CancelableOperation.fromFuture(rebuildScans(isNew: isNew));
   }
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) => setOperation());
+    WidgetsBinding.instance
+        ?.addPostFrameCallback((_) => setOperation(isNew: true));
 
     _scrollController.addListener(() {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
@@ -55,8 +64,9 @@ class _WatchlistScansViewState extends State<WatchlistScansView> {
 
   @override
   Widget build(BuildContext context) {
-    return JList(
-      controller: _scrollController,
+    return ScanList(
+      scrollController: _scrollController,
+      key: _key,
       children: widget.watchlistMapper.scansList,
     );
   }

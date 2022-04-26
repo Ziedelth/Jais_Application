@@ -17,7 +17,6 @@ class _WatchlistViewState extends State<WatchlistView>
   final _watchlistMapper = WatchlistMapper(pseudo: getPseudo()!);
   late final TabController _tabController;
 
-
   @override
   void initState() {
     super.initState();

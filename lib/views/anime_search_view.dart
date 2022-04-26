@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jais/components/jlist.dart';
+import 'package:jais/components/animes/anime_list.dart';
 import 'package:jais/mappers/anime_mapper.dart';
 import 'package:jais/models/anime.dart';
 
@@ -35,30 +35,29 @@ class _AnimeSearchViewState extends State<AnimeSearchView> {
             final animes = await widget.animeMapper.search(query: value);
             if (animes == null) return;
 
-            _animeWidgets.clear();
-            _animeWidgets.addAll(
-              animes
-                  .map<Widget>(
-                    (e) => GestureDetector(
-                      child: e,
-                      onTap: () {
-                        Navigator.pop(context);
-                        widget.onTap(e.anime);
-                      },
-                    ),
-                  )
-                  .toList(),
-            );
-
-            if (!mounted) return;
-            setState(() {});
+            setState(() {
+              _animeWidgets.clear();
+              _animeWidgets.addAll(
+                animes
+                    .map<Widget>(
+                      (e) => GestureDetector(
+                        child: e,
+                        onTap: () {
+                          Navigator.pop(context);
+                          widget.onTap(e.anime);
+                        },
+                      ),
+                    )
+                    .toList(),
+              );
+            });
           },
         ),
       ),
       body: Column(
         children: [
           Expanded(
-            child: JList(
+            child: AnimeList(
               children: _animeWidgets,
             ),
           ),

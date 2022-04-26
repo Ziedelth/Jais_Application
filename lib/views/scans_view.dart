@@ -1,6 +1,6 @@
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
-import 'package:jais/components/jlist.dart';
+import 'package:jais/components/scans/scan_list.dart';
 import 'package:jais/mappers/scan_mapper.dart';
 import 'package:jais/utils/utils.dart';
 
@@ -14,35 +14,42 @@ class ScansView extends StatefulWidget {
 class _ScansViewState extends State<ScansView> {
   final ScanMapper _scanMapper = ScanMapper();
   final ScrollController _scrollController = ScrollController();
-  final GlobalKey _key = GlobalKey();
+  GlobalKey _key = GlobalKey();
   bool _isLoading = true;
   CancelableOperation? _cancelableOperation;
 
   void _update(bool isLoading) {
-    _isLoading = false;
+    _isLoading = isLoading;
     if (!mounted) return;
     setState(() {});
   }
 
-  Future<void> rebuildScans() async {
+  Future<void> rebuildScans({bool isNew = false}) async {
     await _scanMapper.updateCurrentPage(
-      onSuccess: () => _update(false),
+      onSuccess: () {
+        _update(false);
+
+        if (isNew) {
+          _key = GlobalKey();
+        }
+      },
       onFailure: () =>
           showSnackBar(context, 'An error occurred while loading scans'),
     );
   }
 
-  void setOperation() {
+  void setOperation({bool isNew = false}) {
     _cancelableOperation?.cancel();
-    _cancelableOperation = CancelableOperation.fromFuture(rebuildScans());
+    _cancelableOperation =
+        CancelableOperation.fromFuture(rebuildScans(isNew: isNew));
   }
 
   @override
   void initState() {
     super.initState();
     _scanMapper.clear();
-
-    WidgetsBinding.instance?.addPostFrameCallback((_) => setOperation());
+    WidgetsBinding.instance
+        ?.addPostFrameCallback((_) => setOperation(isNew: true));
 
     _scrollController.addListener(() {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
@@ -57,21 +64,9 @@ class _ScansViewState extends State<ScansView> {
 
   @override
   Widget build(BuildContext context) {
-    if (!isOnMobile(context)) {
-      return GridView(
-        key: _key,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          childAspectRatio: 4,
-        ),
-        controller: _scrollController,
-        children: _scanMapper.list,
-      );
-    }
-
-    return JList(
+    return ScanList(
       key: _key,
-      controller: _scrollController,
+      scrollController: _scrollController,
       children: _scanMapper.list,
     );
   }
