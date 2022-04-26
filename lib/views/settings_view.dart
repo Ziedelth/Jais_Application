@@ -72,6 +72,25 @@ class _SettingsViewState extends State<SettingsView> {
             ],
           ],
         ),
+        if (member_mapper.isConnected())
+          const SectionWidget(
+            icon: Icon(Icons.notifications),
+            title: 'Notifications',
+            widgets: [
+              FullWidget(
+                widget: ElevatedButton(
+                  onPressed: null,
+                  child: Text('Par défaut'),
+                ),
+              ),
+              FullWidget(
+                widget: ElevatedButton(
+                  onPressed: null,
+                  child: Text('Watchlist'),
+                ),
+              ),
+            ],
+          ),
       ],
     );
   }
