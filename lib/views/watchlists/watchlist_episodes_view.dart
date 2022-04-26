@@ -1,20 +1,20 @@
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:jais/components/jlist.dart';
-import 'package:jais/mappers/episode_mapper.dart';
+import 'package:jais/mappers/watchlist_mapper.dart';
 import 'package:jais/utils/utils.dart';
 
-class EpisodesView extends StatefulWidget {
-  const EpisodesView({Key? key}) : super(key: key);
+class WatchlistEpisodesView extends StatefulWidget {
+  final WatchlistMapper watchlistMapper;
+
+  const WatchlistEpisodesView(this.watchlistMapper, {Key? key}) : super(key: key);
 
   @override
-  _EpisodesViewState createState() => _EpisodesViewState();
+  _WatchlistEpisodesViewState createState() => _WatchlistEpisodesViewState();
 }
 
-class _EpisodesViewState extends State<EpisodesView> {
-  final _episodeMapper = EpisodeMapper();
+class _WatchlistEpisodesViewState extends State<WatchlistEpisodesView> {
   final _scrollController = ScrollController();
-  final _key = GlobalKey();
   bool _isLoading = true;
   CancelableOperation? _cancelableOperation;
 
@@ -25,7 +25,7 @@ class _EpisodesViewState extends State<EpisodesView> {
   }
 
   Future<void> rebuildEpisodes() async {
-    await _episodeMapper.updateCurrentPage(
+    await widget.watchlistMapper.updateEpisodesCurrentPage(
       onSuccess: () => _update(false),
       onFailure: () =>
           showSnackBar(context, 'An error occurred while loading episodes'),
@@ -40,15 +40,13 @@ class _EpisodesViewState extends State<EpisodesView> {
   @override
   void initState() {
     super.initState();
-    _episodeMapper.clear();
-
-    WidgetsBinding.instance?.addPostFrameCallback((_) async => setOperation());
+    WidgetsBinding.instance?.addPostFrameCallback((_) => setOperation());
 
     _scrollController.addListener(() {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
         _isLoading = true;
-        _episodeMapper.currentPage++;
-        _episodeMapper.addLoader();
+        widget.watchlistMapper.currentPageEpisodes++;
+        widget.watchlistMapper.addEpisodeLoader();
         _update(true);
         setOperation();
       }
@@ -57,22 +55,9 @@ class _EpisodesViewState extends State<EpisodesView> {
 
   @override
   Widget build(BuildContext context) {
-    if (!isOnMobile(context)) {
-      return GridView(
-        key: _key,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          childAspectRatio: 1.125,
-        ),
-        controller: _scrollController,
-        children: _episodeMapper.list,
-      );
-    }
-
     return JList(
-      key: _key,
       controller: _scrollController,
-      children: _episodeMapper.list,
+      children: widget.watchlistMapper.episodesList,
     );
   }
 
@@ -81,6 +66,5 @@ class _EpisodesViewState extends State<EpisodesView> {
     super.dispose();
     _cancelableOperation?.cancel();
     _scrollController.dispose();
-    _episodeMapper.clear();
   }
 }

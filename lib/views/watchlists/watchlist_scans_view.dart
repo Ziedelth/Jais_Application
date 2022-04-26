@@ -1,20 +1,20 @@
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:jais/components/jlist.dart';
-import 'package:jais/mappers/scan_mapper.dart';
+import 'package:jais/mappers/watchlist_mapper.dart';
 import 'package:jais/utils/utils.dart';
 
-class ScansView extends StatefulWidget {
-  const ScansView({Key? key}) : super(key: key);
+class WatchlistScansView extends StatefulWidget {
+  final WatchlistMapper watchlistMapper;
+
+  const WatchlistScansView(this.watchlistMapper, {Key? key}) : super(key: key);
 
   @override
-  _ScansViewState createState() => _ScansViewState();
+  _WatchlistScansViewState createState() => _WatchlistScansViewState();
 }
 
-class _ScansViewState extends State<ScansView> {
-  final ScanMapper _scanMapper = ScanMapper();
-  final ScrollController _scrollController = ScrollController();
-  final GlobalKey _key = GlobalKey();
+class _WatchlistScansViewState extends State<WatchlistScansView> {
+  final _scrollController = ScrollController();
   bool _isLoading = true;
   CancelableOperation? _cancelableOperation;
 
@@ -25,7 +25,7 @@ class _ScansViewState extends State<ScansView> {
   }
 
   Future<void> rebuildScans() async {
-    await _scanMapper.updateCurrentPage(
+    await widget.watchlistMapper.updateScansCurrentPage(
       onSuccess: () => _update(false),
       onFailure: () =>
           showSnackBar(context, 'An error occurred while loading scans'),
@@ -40,15 +40,13 @@ class _ScansViewState extends State<ScansView> {
   @override
   void initState() {
     super.initState();
-    _scanMapper.clear();
-
     WidgetsBinding.instance?.addPostFrameCallback((_) => setOperation());
 
     _scrollController.addListener(() {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
         _isLoading = true;
-        _scanMapper.currentPage++;
-        _scanMapper.addLoader();
+        widget.watchlistMapper.currentPageScans++;
+        widget.watchlistMapper.addScanLoader();
         _update(true);
         setOperation();
       }
@@ -57,22 +55,9 @@ class _ScansViewState extends State<ScansView> {
 
   @override
   Widget build(BuildContext context) {
-    if (!isOnMobile(context)) {
-      return GridView(
-        key: _key,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          childAspectRatio: 4,
-        ),
-        controller: _scrollController,
-        children: _scanMapper.list,
-      );
-    }
-
     return JList(
-      key: _key,
       controller: _scrollController,
-      children: _scanMapper.list,
+      children: widget.watchlistMapper.scansList,
     );
   }
 
@@ -81,6 +66,5 @@ class _ScansViewState extends State<ScansView> {
     super.dispose();
     _cancelableOperation?.cancel();
     _scrollController.dispose();
-    _scanMapper.clear();
   }
 }

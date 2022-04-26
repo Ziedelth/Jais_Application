@@ -1,3 +1,4 @@
+import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:jais/components/animes/anime_widget.dart';
 import 'package:jais/components/jlist.dart';
@@ -27,9 +28,9 @@ class AnimesViewState extends State<AnimesView> {
   final GlobalKey _key = GlobalKey();
   bool _isLoading = true;
   Simulcast? _currentSimulcast;
-
   bool _hasTap = false;
   Anime? _anime;
+  CancelableOperation? _cancelableOperation;
 
   void _update(bool isLoading) {
     _isLoading = false;
@@ -99,6 +100,11 @@ class AnimesViewState extends State<AnimesView> {
     );
   }
 
+  void setOperation() {
+    _cancelableOperation?.cancel();
+    _cancelableOperation = CancelableOperation.fromFuture(rebuildAnimes());
+  }
+
   @override
   void initState() {
     super.initState();
@@ -118,8 +124,7 @@ class AnimesViewState extends State<AnimesView> {
             );
           });
 
-          await rebuildAnimes();
-          _update(false);
+          setOperation();
         },
       );
     });
@@ -129,8 +134,8 @@ class AnimesViewState extends State<AnimesView> {
         _isLoading = true;
         _animeMapper.currentPage++;
         _animeMapper.addLoader();
-        rebuildAnimes();
         _update(true);
+        setOperation();
       }
     });
   }
@@ -221,6 +226,7 @@ class AnimesViewState extends State<AnimesView> {
   @override
   void dispose() {
     super.dispose();
+    _cancelableOperation?.cancel();
     _scrollController.dispose();
     _simulcastMapper.clear();
     _animeMapper.clear();
