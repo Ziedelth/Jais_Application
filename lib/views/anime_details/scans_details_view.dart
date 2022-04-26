@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jais/components/jlist.dart';
+import 'package:jais/components/scans/scan_list.dart';
 import 'package:jais/components/scans/scan_widget.dart';
 import 'package:jais/models/anime.dart';
 
@@ -35,7 +35,7 @@ class ScansDetailsView extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-          child: JList(
+          child: ScanList(
             children: _scans,
           ),
         ),

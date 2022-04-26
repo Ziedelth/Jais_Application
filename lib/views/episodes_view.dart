@@ -1,5 +1,6 @@
+import 'package:async/async.dart';
 import 'package:flutter/material.dart';
-import 'package:jais/components/jlist.dart';
+import 'package:jais/components/episodes/episode_list.dart';
 import 'package:jais/mappers/episode_mapper.dart';
 import 'package:jais/utils/utils.dart';
 
@@ -13,61 +14,59 @@ class EpisodesView extends StatefulWidget {
 class _EpisodesViewState extends State<EpisodesView> {
   final _episodeMapper = EpisodeMapper();
   final _scrollController = ScrollController();
-  final _key = GlobalKey();
+  GlobalKey _key = GlobalKey();
   bool _isLoading = true;
+  CancelableOperation? _cancelableOperation;
 
   void _update(bool isLoading) {
-    _isLoading = false;
+    _isLoading = isLoading;
     if (!mounted) return;
     setState(() {});
   }
 
-  Future<void> rebuildEpisodes() async {
+  Future<void> rebuildEpisodes({bool isNew = false}) async {
     await _episodeMapper.updateCurrentPage(
-      onSuccess: () => _update(false),
+      onSuccess: () {
+        _update(false);
+
+        if (isNew) {
+          _key = GlobalKey();
+        }
+      },
       onFailure: () =>
           showSnackBar(context, 'An error occurred while loading episodes'),
     );
+  }
+
+  void setOperation({bool isNew = false}) {
+    _cancelableOperation?.cancel();
+    _cancelableOperation =
+        CancelableOperation.fromFuture(rebuildEpisodes(isNew: isNew));
   }
 
   @override
   void initState() {
     super.initState();
     _episodeMapper.clear();
-
-    WidgetsBinding.instance?.addPostFrameCallback((_) async {
-      await rebuildEpisodes();
-      _update(false);
-    });
+    WidgetsBinding.instance
+        ?.addPostFrameCallback((_) => setOperation(isNew: true));
 
     _scrollController.addListener(() {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
         _isLoading = true;
         _episodeMapper.currentPage++;
         _episodeMapper.addLoader();
-        rebuildEpisodes();
         _update(true);
+        setOperation();
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!isOnMobile(context)) {
-      return GridView(
-        key: _key,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          childAspectRatio: 1.1,
-        ),
-        controller: _scrollController,
-        children: _episodeMapper.list,
-      );
-    }
-
-    return JList(
+    return EpisodeList(
       key: _key,
-      controller: _scrollController,
+      scrollController: _scrollController,
       children: _episodeMapper.list,
     );
   }
@@ -75,6 +74,7 @@ class _EpisodesViewState extends State<EpisodesView> {
   @override
   void dispose() {
     super.dispose();
+    _cancelableOperation?.cancel();
     _scrollController.dispose();
     _episodeMapper.clear();
   }

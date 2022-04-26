@@ -1,19 +1,21 @@
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
-import 'package:jais/components/scans/scan_list.dart';
-import 'package:jais/mappers/scan_mapper.dart';
+import 'package:jais/components/episodes/episode_list.dart';
+import 'package:jais/mappers/watchlist_mapper.dart';
 import 'package:jais/utils/utils.dart';
 
-class ScansView extends StatefulWidget {
-  const ScansView({Key? key}) : super(key: key);
+class WatchlistEpisodesView extends StatefulWidget {
+  final WatchlistMapper watchlistMapper;
+
+  const WatchlistEpisodesView(this.watchlistMapper, {Key? key})
+      : super(key: key);
 
   @override
-  _ScansViewState createState() => _ScansViewState();
+  _WatchlistEpisodesViewState createState() => _WatchlistEpisodesViewState();
 }
 
-class _ScansViewState extends State<ScansView> {
-  final ScanMapper _scanMapper = ScanMapper();
-  final ScrollController _scrollController = ScrollController();
+class _WatchlistEpisodesViewState extends State<WatchlistEpisodesView> {
+  final _scrollController = ScrollController();
   GlobalKey _key = GlobalKey();
   bool _isLoading = true;
   CancelableOperation? _cancelableOperation;
@@ -24,8 +26,8 @@ class _ScansViewState extends State<ScansView> {
     setState(() {});
   }
 
-  Future<void> rebuildScans({bool isNew = false}) async {
-    await _scanMapper.updateCurrentPage(
+  Future<void> rebuildEpisodes({bool isNew = false}) async {
+    await widget.watchlistMapper.updateEpisodesCurrentPage(
       onSuccess: () {
         _update(false);
 
@@ -34,28 +36,27 @@ class _ScansViewState extends State<ScansView> {
         }
       },
       onFailure: () =>
-          showSnackBar(context, 'An error occurred while loading scans'),
+          showSnackBar(context, 'An error occurred while loading episodes'),
     );
   }
 
   void setOperation({bool isNew = false}) {
     _cancelableOperation?.cancel();
     _cancelableOperation =
-        CancelableOperation.fromFuture(rebuildScans(isNew: isNew));
+        CancelableOperation.fromFuture(rebuildEpisodes(isNew: isNew));
   }
 
   @override
   void initState() {
     super.initState();
-    _scanMapper.clear();
     WidgetsBinding.instance
         ?.addPostFrameCallback((_) => setOperation(isNew: true));
 
     _scrollController.addListener(() {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
         _isLoading = true;
-        _scanMapper.currentPage++;
-        _scanMapper.addLoader();
+        widget.watchlistMapper.currentPageEpisodes++;
+        widget.watchlistMapper.addEpisodeLoader();
         _update(true);
         setOperation();
       }
@@ -64,10 +65,10 @@ class _ScansViewState extends State<ScansView> {
 
   @override
   Widget build(BuildContext context) {
-    return ScanList(
-      key: _key,
+    return EpisodeList(
       scrollController: _scrollController,
-      children: _scanMapper.list,
+      key: _key,
+      children: widget.watchlistMapper.episodesList,
     );
   }
 
@@ -76,6 +77,5 @@ class _ScansViewState extends State<ScansView> {
     super.dispose();
     _cancelableOperation?.cancel();
     _scrollController.dispose();
-    _scanMapper.clear();
   }
 }

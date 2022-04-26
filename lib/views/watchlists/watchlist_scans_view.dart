@@ -1,19 +1,20 @@
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:jais/components/scans/scan_list.dart';
-import 'package:jais/mappers/scan_mapper.dart';
+import 'package:jais/mappers/watchlist_mapper.dart';
 import 'package:jais/utils/utils.dart';
 
-class ScansView extends StatefulWidget {
-  const ScansView({Key? key}) : super(key: key);
+class WatchlistScansView extends StatefulWidget {
+  final WatchlistMapper watchlistMapper;
+
+  const WatchlistScansView(this.watchlistMapper, {Key? key}) : super(key: key);
 
   @override
-  _ScansViewState createState() => _ScansViewState();
+  _WatchlistScansViewState createState() => _WatchlistScansViewState();
 }
 
-class _ScansViewState extends State<ScansView> {
-  final ScanMapper _scanMapper = ScanMapper();
-  final ScrollController _scrollController = ScrollController();
+class _WatchlistScansViewState extends State<WatchlistScansView> {
+  final _scrollController = ScrollController();
   GlobalKey _key = GlobalKey();
   bool _isLoading = true;
   CancelableOperation? _cancelableOperation;
@@ -25,7 +26,7 @@ class _ScansViewState extends State<ScansView> {
   }
 
   Future<void> rebuildScans({bool isNew = false}) async {
-    await _scanMapper.updateCurrentPage(
+    await widget.watchlistMapper.updateScansCurrentPage(
       onSuccess: () {
         _update(false);
 
@@ -47,15 +48,14 @@ class _ScansViewState extends State<ScansView> {
   @override
   void initState() {
     super.initState();
-    _scanMapper.clear();
     WidgetsBinding.instance
         ?.addPostFrameCallback((_) => setOperation(isNew: true));
 
     _scrollController.addListener(() {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
         _isLoading = true;
-        _scanMapper.currentPage++;
-        _scanMapper.addLoader();
+        widget.watchlistMapper.currentPageScans++;
+        widget.watchlistMapper.addScanLoader();
         _update(true);
         setOperation();
       }
@@ -65,9 +65,9 @@ class _ScansViewState extends State<ScansView> {
   @override
   Widget build(BuildContext context) {
     return ScanList(
-      key: _key,
       scrollController: _scrollController,
-      children: _scanMapper.list,
+      key: _key,
+      children: widget.watchlistMapper.scansList,
     );
   }
 
@@ -76,6 +76,5 @@ class _ScansViewState extends State<ScansView> {
     super.dispose();
     _cancelableOperation?.cancel();
     _scrollController.dispose();
-    _scanMapper.clear();
   }
 }

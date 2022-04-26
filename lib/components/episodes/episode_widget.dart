@@ -17,107 +17,81 @@ class EpisodeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(5),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Theme.of(context).primaryColor,
-          ),
-          borderRadius: BorderRadius.circular(8),
+    return Container(
+      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Theme.of(context).primaryColor,
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              Row(
-                children: [
-                  PlatformWidget(episode.platform),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 10),
+              PlatformWidget(episode.platform),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  episode.anime.name,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 16,
                   ),
-                  Expanded(
-                    child: Text(
-                      episode.anime.name,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const Padding(
-                padding: EdgeInsets.only(top: 10),
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      episode.title ?? '＞﹏＜',
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Text(
-                    '${episode.anime.country.season} ${episode.season} • ${episode.episodeType.fr} ${episode.number} ${episode.langType.fr} ',
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  const Icon(Icons.movie),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 5),
-                  ),
-                  Text(
-                    printDuration(Duration(seconds: episode.duration)),
-                  ),
-                ],
-              ),
-              const Padding(
-                padding: EdgeInsets.only(top: 10),
-              ),
-              RoundBorderWidget(
-                widget: GestureDetector(
-                  child: CachedNetworkImage(
-                    imageUrl: 'https://ziedelth.fr/${episode.image}',
-                    imageBuilder: (context, imageProvider) => Image(
-                      image: imageProvider,
-                      fit: BoxFit.fill,
-                    ),
-                    placeholder: (context, url) => const Skeleton(height: 200),
-                    errorWidget: (context, url, error) =>
-                        const Skeleton(height: 200),
-                    fit: BoxFit.cover,
-                  ),
-                  onTap: () => launchUrl(Uri.parse(episode.url)),
                 ),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(top: 10),
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    flex: 4,
-                    child: Text(
-                      'Il y a ${printTimeSince(DateTime.parse(episode.releaseDate))}',
-                    ),
-                  ),
-                ],
               ),
             ],
           ),
-        ),
+          const SizedBox(
+            height: 10,
+          ),
+          Text(
+            episode.title ?? '＞﹏＜',
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+            ),
+          ),
+          Text(
+            '${episode.anime.country.season} ${episode.season} • ${episode.episodeType.fr} ${episode.number} ${episode.langType.fr}',
+          ),
+          Row(
+            children: [
+              const Icon(Icons.movie),
+              const SizedBox(width: 5),
+              Text(printDuration(Duration(seconds: episode.duration))),
+            ],
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          RoundBorderWidget(
+            widget: GestureDetector(
+              child: CachedNetworkImage(
+                imageUrl: 'https://ziedelth.fr/${episode.image}',
+                imageBuilder: (context, imageProvider) => Image(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                ),
+                placeholder: (context, url) => const Skeleton(height: 200),
+                errorWidget: (context, url, error) =>
+                    const Skeleton(height: 200),
+              ),
+              onTap: () => launchUrl(Uri.parse(episode.url)),
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Text(
+            'Il y a ${printTimeSince(DateTime.parse(episode.releaseDate))}',
+          ),
+        ],
       ),
     );
   }

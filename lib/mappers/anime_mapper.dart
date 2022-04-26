@@ -14,7 +14,7 @@ import 'package:logger/logger.dart' as logger;
 import 'package:url/url.dart';
 
 class AnimeMapper {
-  static const _limit = 9;
+  static const _limit = 18;
   int currentPage = 1;
   List<Widget> list = _defaultList;
 

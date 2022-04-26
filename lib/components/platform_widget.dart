@@ -6,8 +6,8 @@ import 'package:jais/models/platform.dart';
 
 class PlatformWidget extends StatelessWidget {
   final Platform _platform;
-  static const double _width = 25;
-  static const double _height = 25;
+  static const double _width = 20;
+  static const double _height = 20;
 
   const PlatformWidget(this._platform, {Key? key}) : super(key: key);
 

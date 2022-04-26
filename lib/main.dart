@@ -57,21 +57,17 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-
     _pageController = PageController(initialPage: _currentIndex);
 
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
       createVideo();
-
       await member_mapper.loginWithToken();
-
       if (!mounted) return;
+      setState(() {});
 
       if (member_mapper.isConnected()) {
         showSnackBar(context, 'De retour, ${member_mapper.getPseudo()} !');
       }
-
-      setState(() {});
     });
   }
 
