@@ -165,7 +165,7 @@ class _LoginViewState extends State<LoginView> {
                             member_mapper.login(
                               responseBody['token'] as String,
                               responseBody['pseudo'] as String,
-                              responseBody['watchlist'] as List<dynamic>?,
+                              responseBody['watchlist'] as List<int>?,
                             );
 
                             if (!mounted) return;

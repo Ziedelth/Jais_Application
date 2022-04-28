@@ -39,7 +39,7 @@ bool isConnected() {
 }
 
 // Login, save token and pseudo
-void login(String token, String pseudo, List<dynamic>? watchlist) {
+void login(String token, String pseudo, List<int>? watchlist) {
   _getStorage.write('token', token);
   _getStorage.write('pseudo', pseudo);
   setWatchlist(watchlist);
@@ -78,7 +78,7 @@ Future<void> loginWithToken() async {
     login(
       responseBody['token'] as String,
       responseBody['pseudo'] as String,
-      responseBody['watchlist'] as List<dynamic>?,
+      responseBody['watchlist'] as List<int>?,
     );
   } catch (exception, stackTrace) {
     logger.error(
@@ -114,6 +114,8 @@ String? getPseudo() {
   return _getStorage.read('pseudo');
 }
 
+List<dynamic> getWatchlist() => _getStorage.read('watchlist') as List<dynamic>? ?? <dynamic>[];
+
 // Set watchlist, save watchlist in shared preferences
 void setWatchlist(List<dynamic>? watchlist) {
   _getStorage.write('watchlist', watchlist);
@@ -125,8 +127,7 @@ bool hasAnimeInWatchlist(int animeId) {
     return false;
   }
 
-  final watchlist = _getStorage.read('watchlist') as List<dynamic>? ?? [];
-  return watchlist.contains(animeId);
+  return getWatchlist().contains(animeId);
 }
 
 // Add anime id in watchlist
@@ -139,7 +140,7 @@ Future<void> addAnimeInWatchlist(int animeId) async {
     return;
   }
 
-  final watchlist = _getStorage.read('watchlist') as List<dynamic>? ?? [];
+  final watchlist = getWatchlist();
   watchlist.add(animeId);
   _getStorage.write('watchlist', watchlist);
 
@@ -170,7 +171,7 @@ Future<void> removeAnimeInWatchlist(int animeId) async {
     return;
   }
 
-  final watchlist = _getStorage.read('watchlist') as List<dynamic>? ?? [];
+  final watchlist = getWatchlist();
   watchlist.remove(animeId);
   _getStorage.write('watchlist', watchlist);
 

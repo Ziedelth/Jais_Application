@@ -4,6 +4,7 @@ import 'package:jais/components/section_widget.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/views/users/login_view.dart';
 import 'package:jais/views/users/register_view.dart';
+import 'package:notifications/notifications.dart' as notifications;
 
 class SettingsView extends StatefulWidget {
   const SettingsView({Key? key}) : super(key: key);
@@ -63,6 +64,8 @@ class _SettingsViewState extends State<SettingsView> {
                 widget: ElevatedButton(
                   child: const Text('Déconnexion'),
                   onPressed: () {
+                    notifications.removeAllTopics();
+                    notifications.addTopic("animes");
                     member_mapper.logout();
                     if (!mounted) return;
                     setState(() {});
@@ -73,25 +76,64 @@ class _SettingsViewState extends State<SettingsView> {
           ],
         ),
         if (member_mapper.isConnected())
-          const SectionWidget(
-            icon: Icon(Icons.notifications),
+           SectionWidget(
+            icon: const Icon(Icons.notifications),
             title: 'Notifications',
             widgets: [
               FullWidget(
                 widget: ElevatedButton(
-                  onPressed: null,
-                  child: Text('Par défaut'),
+                  onPressed: notifications.hasTopic("animes") ? null : () {
+                    notifications.removeAllTopics();
+                    notifications.addTopic("animes");
+                    if (!mounted) return;
+                    setState(() {});
+                  },
+                  child: const Text('Par défaut'),
                 ),
               ),
               FullWidget(
                 widget: ElevatedButton(
-                  onPressed: null,
-                  child: Text('Watchlist'),
+                  onPressed: _canBeUsed() ? () {
+                    notifications.removeAllTopics();
+
+                    for (final animeId in member_mapper.getWatchlist()) {
+                      notifications.addTopic(animeId.toString());
+                    }
+
+                    if (!mounted) return;
+                    setState(() {});
+                  } : null,
+                  child: Text('Watchlist${(_canBeUsed() && !notifications.hasTopic("animes") && !_same()) ? ' (Mettre à jour)' : '' }'),
                 ),
               ),
             ],
           ),
       ],
     );
+  }
+
+  bool _canBeUsed() {
+    if (notifications.hasTopic("animes")) {
+      return !_same();
+    }
+
+    return false;
+  }
+
+  bool _same() {
+    final topics = notifications.getTopics();
+    final watchlist = member_mapper.getWatchlist();
+
+    if (watchlist.length == topics.length) {
+      for (final element in watchlist) {
+        if (!topics.contains(element.toString())) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    return false;
   }
 }
