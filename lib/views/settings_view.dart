@@ -93,7 +93,7 @@ class _SettingsViewState extends State<SettingsView> {
               ),
               FullWidget(
                 widget: ElevatedButton(
-                  onPressed: _canBeUsed() ? () {
+                  onPressed: notifications.hasTopic("animes") ? () {
                     notifications.removeAllTopics();
 
                     for (final animeId in member_mapper.getWatchlist()) {
@@ -103,21 +103,13 @@ class _SettingsViewState extends State<SettingsView> {
                     if (!mounted) return;
                     setState(() {});
                   } : null,
-                  child: Text('Watchlist${(_canBeUsed() && !notifications.hasTopic("animes") && !_same()) ? ' (Mettre à jour)' : '' }'),
+                  child: Text('Watchlist${(!notifications.hasTopic("animes") && !_same()) ? ' (Mettre à jour)' : '' }'),
                 ),
               ),
             ],
           ),
       ],
     );
-  }
-
-  bool _canBeUsed() {
-    if (notifications.hasTopic("animes")) {
-      return !_same();
-    }
-
-    return false;
   }
 
   bool _same() {

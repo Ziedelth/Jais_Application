@@ -39,7 +39,7 @@ bool isConnected() {
 }
 
 // Login, save token and pseudo
-void login(String token, String pseudo, List<int>? watchlist) {
+void login(String token, String pseudo, List<dynamic>? watchlist) {
   _getStorage.write('token', token);
   _getStorage.write('pseudo', pseudo);
   setWatchlist(watchlist);
@@ -78,7 +78,7 @@ Future<void> loginWithToken() async {
     login(
       responseBody['token'] as String,
       responseBody['pseudo'] as String,
-      responseBody['watchlist'] as List<int>?,
+      responseBody['watchlist'] as List<dynamic>?,
     );
   } catch (exception, stackTrace) {
     logger.error(
@@ -142,7 +142,7 @@ Future<void> addAnimeInWatchlist(int animeId) async {
 
   final watchlist = getWatchlist();
   watchlist.add(animeId);
-  _getStorage.write('watchlist', watchlist);
+  setWatchlist(watchlist);
 
   try {
     await URL().post(
@@ -173,7 +173,7 @@ Future<void> removeAnimeInWatchlist(int animeId) async {
 
   final watchlist = getWatchlist();
   watchlist.remove(animeId);
-  _getStorage.write('watchlist', watchlist);
+  setWatchlist(watchlist);
 
   try {
     await URL().post(
