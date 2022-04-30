@@ -15,10 +15,13 @@ class ScanList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!isOnMobile(context)) {
+      final width = MediaQuery.of(context).size.width;
+
       return GridView(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
-          childAspectRatio: 4,
+          // childAspectRatio: 2,
+          childAspectRatio: 3.23E-3 * width + 0.0302,
         ),
         controller: scrollController,
         children: children,

@@ -37,6 +37,7 @@ class _SettingsViewState extends State<SettingsView> {
                   },
                 ),
               ),
+              const SizedBox(height: 8),
               FullWidget(
                 widget: ElevatedButton(
                   child: const Text('Connexion'),
@@ -60,6 +61,7 @@ class _SettingsViewState extends State<SettingsView> {
                   child: Text('Mon profil'),
                 ),
               ),
+              const SizedBox(height: 8),
               FullWidget(
                 widget: ElevatedButton(
                   child: const Text('Déconnexion'),
@@ -91,6 +93,7 @@ class _SettingsViewState extends State<SettingsView> {
                   child: const Text('Par défaut'),
                 ),
               ),
+              const SizedBox(height: 8),
               FullWidget(
                 widget: ElevatedButton(
                   onPressed: notifications.hasTopic("animes") ? () {

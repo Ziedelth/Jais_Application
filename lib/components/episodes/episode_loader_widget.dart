@@ -21,7 +21,9 @@ class EpisodeLoaderWidget extends StatelessWidget {
             children: const [
               Skeleton(width: 20, height: 20),
               SizedBox(width: 10),
-              Skeleton(width: 250, height: 20),
+              Expanded(
+                child: Skeleton(height: 20),
+              ),
             ],
           ),
           const SizedBox(height: 10),
@@ -31,7 +33,9 @@ class EpisodeLoaderWidget extends StatelessWidget {
           const SizedBox(height: 5),
           const Skeleton(width: 100, height: 20),
           const SizedBox(height: 10),
-          const Skeleton(height: 200),
+          const Expanded(
+            child: Skeleton(),
+          ),
           const SizedBox(height: 10),
           const Skeleton(width: 200, height: 20),
         ],

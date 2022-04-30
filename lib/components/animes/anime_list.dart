@@ -15,10 +15,13 @@ class AnimeList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!isOnMobile(context)) {
+      final width = MediaQuery.of(context).size.width;
+
       return GridView(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
-          childAspectRatio: 3,
+          // childAspectRatio: 1.5,
+          childAspectRatio: 2.37E-3 * width + 0.0772,
         ),
         controller: scrollController,
         children: children,

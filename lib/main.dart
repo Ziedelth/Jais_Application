@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:jais/components/roundborder_widget.dart';
@@ -16,7 +17,7 @@ import 'package:notifications/notifications.dart' as notifications;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await MobileAds.instance.initialize();
+  if (!kIsWeb) await MobileAds.instance.initialize();
   await notifications.init();
   await member_mapper.init();
   runApp(const MyApp());
@@ -49,7 +50,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _animesKey = GlobalKey<AnimesViewState>();
-  int _currentIndex = 0;
+  int _currentIndex = 2;
   late final PageController _pageController;
 
   void _changeTab(int index) => setState(() => _currentIndex = index);
@@ -60,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _pageController = PageController(initialPage: _currentIndex);
 
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
-      createVideo();
+      if (!kIsWeb) createBanner();
       await member_mapper.loginWithToken();
       if (!mounted) return;
       setState(() {});
@@ -85,43 +86,36 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: 50,
                 child: Row(
                   children: [
-                    Expanded(
-                      child: RoundBorderWidget(
-                        widget: Image.asset('assets/icon.jpg'),
+                    RoundBorderWidget(
+                      widget: Image.asset('assets/icon.jpg'),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      'Jaïs',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
+                        fontFamily: 'Pacifico',
                       ),
                     ),
-                    Expanded(
-                      flex: 9,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 7.5),
-                        child: Text(
-                          'Jaïs',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor,
-                            fontFamily: 'Pacifico',
-                          ),
-                        ),
-                      ),
+                    const SizedBox(width: 10),
+                    Text(
+                      '${MediaQuery.of(context).size.width}x${MediaQuery.of(context).size.height}',
                     ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: bannerAd != null
+                          ? AdWidget(ad: bannerAd!)
+                          : Container(),
+                    ),
+                    const SizedBox(width: 10),
                     if (_currentIndex == 2)
-                      Expanded(
-                        child: IconButton(
-                          icon: const Icon(Icons.search),
-                          onPressed: () =>
-                              _animesKey.currentState?.showSearch(),
-                        ),
+                      IconButton(
+                        alignment: Alignment.centerRight,
+                        icon: const Icon(Icons.search),
+                        onPressed: () => _animesKey.currentState?.showSearch(),
                       ),
-                    Expanded(
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.card_giftcard,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        onPressed: showVideo,
-                      ),
-                    ),
                   ],
                 ),
               ),

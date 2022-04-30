@@ -1,39 +1,29 @@
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-RewardedAd? _rewardedAd;
+BannerAd? bannerAd;
 
-void createVideo() {
-  RewardedAd.load(
-    adUnitId: 'ca-app-pub-5658764393995798/3650456466',
+void createBanner() {
+  bannerAd = BannerAd(
+    adUnitId: 'ca-app-pub-5658764393995798/7021730383',
+    size: AdSize.banner,
     request: const AdRequest(),
-    rewardedAdLoadCallback: RewardedAdLoadCallback(
-      onAdLoaded: (RewardedAd ad) => _rewardedAd = ad,
-      onAdFailedToLoad: (LoadAdError error) => _rewardedAd = null,
+    listener: BannerAdListener(
+      // Called when an ad is successfully received.
+      onAdLoaded: (Ad ad) => print('Ad loaded.'),
+      // Called when an ad request failed.
+      onAdFailedToLoad: (Ad ad, LoadAdError error) {
+        // Dispose the ad here to free resources.
+        ad.dispose();
+        print('Ad failed to load: $error');
+      },
+      // Called when an ad opens an overlay that covers the screen.
+      onAdOpened: (Ad ad) => print('Ad opened.'),
+      // Called when an ad removes an overlay that covers the screen.
+      onAdClosed: (Ad ad) => print('Ad closed.'),
+      // Called when an impression occurs on the ad.
+      onAdImpression: (Ad ad) => print('Ad impression.'),
     ),
   );
-}
 
-void showVideo() {
-  if (_rewardedAd == null) {
-    return;
-  }
-
-  _rewardedAd?.fullScreenContentCallback = FullScreenContentCallback(
-    onAdDismissedFullScreenContent: (RewardedAd ad) {
-      ad.dispose();
-      createVideo();
-    },
-    onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
-      ad.dispose();
-      createVideo();
-    },
-  );
-
-  _rewardedAd?.setImmersiveMode(true);
-
-  _rewardedAd?.show(
-    onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {},
-  );
-
-  _rewardedAd = null;
+  bannerAd?.load();
 }

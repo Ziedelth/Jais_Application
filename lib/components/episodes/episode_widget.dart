@@ -54,11 +54,12 @@ class EpisodeWidget extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 13,
+              // fontSize: 13,
             ),
           ),
           Text(
             '${episode.anime.country.season} ${episode.season} • ${episode.episodeType.fr} ${episode.number} ${episode.langType.fr}',
+            overflow: TextOverflow.ellipsis,
           ),
           Row(
             children: [
@@ -70,19 +71,20 @@ class EpisodeWidget extends StatelessWidget {
           const SizedBox(
             height: 10,
           ),
-          RoundBorderWidget(
-            widget: GestureDetector(
-              child: CachedNetworkImage(
-                imageUrl: 'https://ziedelth.fr/${episode.image}',
-                imageBuilder: (context, imageProvider) => Image(
-                  image: imageProvider,
-                  fit: BoxFit.cover,
+          Expanded(
+            child: RoundBorderWidget(
+              widget: GestureDetector(
+                child: CachedNetworkImage(
+                  imageUrl: 'https://ziedelth.fr/${episode.image}',
+                  imageBuilder: (context, imageProvider) => Image(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                  placeholder: (context, url) => const Skeleton(),
+                  errorWidget: (context, url, error) => const Skeleton(),
                 ),
-                placeholder: (context, url) => const Skeleton(height: 200),
-                errorWidget: (context, url, error) =>
-                    const Skeleton(height: 200),
+                onTap: () => launchUrl(Uri.parse(episode.url)),
               ),
-              onTap: () => launchUrl(Uri.parse(episode.url)),
             ),
           ),
           const SizedBox(

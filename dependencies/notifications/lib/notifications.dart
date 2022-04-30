@@ -2,6 +2,7 @@ library notifications;
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:logger/logger.dart' as logger;
 import 'package:notifications/firebase_options.dart';
@@ -37,7 +38,7 @@ void addTopic(String topic) {
   _getStorage.write(_key, list);
 
   logger.info("Subscribing to topic $topic");
-  FirebaseMessaging.instance.subscribeToTopic(topic);
+  if (!kIsWeb) FirebaseMessaging.instance.subscribeToTopic(topic);
 }
 
 void removeTopic(String topic) {

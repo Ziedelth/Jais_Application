@@ -33,6 +33,7 @@ class ScanWidget extends StatelessWidget {
                 Expanded(
                   child: Text(
                     scan.anime.name,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
                       fontSize: 16,

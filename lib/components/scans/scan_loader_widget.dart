@@ -21,7 +21,7 @@ class ScanLoaderWidget extends StatelessWidget {
             children: const [
               Skeleton(width: 20, height: 20),
               SizedBox(width: 10),
-              Skeleton(width: 250, height: 20),
+              Expanded(child: Skeleton(height: 20)),
             ],
           ),
           const SizedBox(height: 10),
