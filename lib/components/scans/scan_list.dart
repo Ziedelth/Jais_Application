@@ -21,7 +21,7 @@ class ScanList extends StatelessWidget {
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
           // childAspectRatio: 2,
-          childAspectRatio: 3.23E-3 * width + 0.0302,
+          childAspectRatio: 3.1E-3 * width + 0.0302,
         ),
         controller: scrollController,
         children: children,

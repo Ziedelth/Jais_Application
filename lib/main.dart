@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:jais/components/custom_gesture_detector.dart';
 import 'package:jais/components/roundborder_widget.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/utils/jais_ad.dart';
@@ -14,6 +15,7 @@ import 'package:jais/views/scans_view.dart';
 import 'package:jais/views/settings_view.dart';
 import 'package:jais/views/watchlist_view.dart';
 import 'package:notifications/notifications.dart' as notifications;
+import 'package:package_info_plus/package_info_plus.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,7 +52,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _animesKey = GlobalKey<AnimesViewState>();
-  int _currentIndex = 2;
+  int _currentIndex = 0;
   late final PageController _pageController;
 
   void _changeTab(int index) => setState(() => _currentIndex = index);
@@ -67,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {});
 
       if (member_mapper.isConnected()) {
-        showSnackBar(context, 'De retour, ${member_mapper.getPseudo()} !');
+        showSnackBar(context, 'De retour, ${member_mapper.getMember()?.pseudo} !');
       }
     });
   }
@@ -86,28 +88,50 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: 50,
                 child: Row(
                   children: [
-                    RoundBorderWidget(
-                      widget: Image.asset('assets/icon.jpg'),
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      'Jaïs',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).primaryColor,
-                        fontFamily: 'Pacifico',
+                    CustomGestureDetector(
+                      duration: const Duration(seconds: 5),
+                      onLongPress: () async {
+                        final packageInfo = await PackageInfo.fromPlatform();
+
+                        showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: const Text('À propos'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text('Version ${packageInfo.version}'),
+                                Text('© 2021-${DateTime.now().year} Jaïs'),
+                                const Text('Powered by Ziedelth.fr'),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          RoundBorderWidget(
+                            widget: Image.asset('assets/icon.jpg'),
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            'Jaïs',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                              fontFamily: 'Pacifico',
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      '${MediaQuery.of(context).size.width}x${MediaQuery.of(context).size.height}',
                     ),
                     const SizedBox(width: 10),
                     Expanded(
                       child: bannerAd != null
                           ? AdWidget(ad: bannerAd!)
-                          : Container(),
+                          : Container(color: Colors.black),
                     ),
                     const SizedBox(width: 10),
                     if (_currentIndex == 2)
@@ -129,7 +153,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   const ScansView(),
                   AnimesView(key: _animesKey),
                   if (member_mapper.isConnected()) const WatchlistView(),
-                  const SettingsView(),
+                  SettingsView(
+                    onLogin: () {
+                      _changeTab(4);
+                      _pageController.jumpToPage(5);
+                    },
+                    onLogout: () => _changeTab(3),
+                  ),
                 ],
               ),
             ),

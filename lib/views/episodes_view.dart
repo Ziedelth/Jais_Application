@@ -64,10 +64,17 @@ class _EpisodesViewState extends State<EpisodesView> {
 
   @override
   Widget build(BuildContext context) {
-    return EpisodeList(
-      key: _key,
-      scrollController: _scrollController,
-      children: _episodeMapper.list,
+    return RefreshIndicator(
+      onRefresh: () async {
+        _episodeMapper.clear();
+        _update(true);
+        setOperation();
+      },
+      child: EpisodeList(
+        key: _key,
+        scrollController: _scrollController,
+        children: _episodeMapper.list,
+      ),
     );
   }
 

@@ -2,7 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:jais/models/anime.dart';
+import 'package:jais/models/member.dart';
 import 'package:logger/logger.dart' as logger;
+import 'package:notifications/notifications.dart' as notifications;
 import 'package:url/url.dart';
 
 // Email regex
@@ -33,16 +36,29 @@ Future<void> init() async {
   logger.info("Initializing member mapper done");
 }
 
-// Is connected, check if token key is present and pseudo is present
-bool isConnected() {
-  return _getStorage.hasData('token') && _getStorage.hasData('pseudo');
+// Get member save in storage
+Member? getMember() {
+  final memberJson = _getStorage.read('member') as String?;
+
+  if (memberJson == null) {
+    return null;
+  }
+
+  return Member.fromJson(jsonDecode(memberJson) as Map<String, dynamic>);
 }
 
-// Login, save token and pseudo
-void login(String token, String pseudo, List<dynamic>? watchlist) {
-  _getStorage.write('token', token);
-  _getStorage.write('pseudo', pseudo);
-  setWatchlist(watchlist);
+void setMember(Member? member) {
+  if (member == null) {
+    _getStorage.remove('member');
+  } else {
+    _getStorage.write('member', jsonEncode(member.toJson()));
+  }
+}
+
+// Is connected, check if token key is present and pseudo is present
+bool isConnected() {
+  final member = getMember();
+  return member != null && member.token != null && member.token!.isNotEmpty;
 }
 
 Future<void> loginWithToken() async {
@@ -54,32 +70,27 @@ Future<void> loginWithToken() async {
     final response = await URL().post(
       "https://api.ziedelth.fr/v1/member/token",
       body: {
-        "token": getToken()!,
+        "token": getMember()!.token!,
       },
     );
 
     // If response is null or response code is not 200, return an error
     if (response == null || response.statusCode != 200) {
-      logout();
+      setMember(null);
       throw Exception("Error while logging in");
     }
 
-    // Decode response
-    final responseBody = jsonDecode(response.body) as Map<String, dynamic>;
+    // Decode response to member
+    final member = Member.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
 
-    // If responseBody not contains token and pseudo, return an error
-    if (!responseBody.containsKey('token') ||
-        !responseBody.containsKey('pseudo')) {
-      logout();
+    // If responseBody not contains token, return an error
+    if (member.token == null) {
+      setMember(null);
       throw Exception("Error while logging in");
     }
 
     // Save token and pseudo in shared preferences
-    login(
-      responseBody['token'] as String,
-      responseBody['pseudo'] as String,
-      responseBody['watchlist'] as List<dynamic>?,
-    );
+    setMember(member);
   } catch (exception, stackTrace) {
     logger.error(
       'Exception when trying to login',
@@ -89,67 +100,35 @@ Future<void> loginWithToken() async {
   }
 }
 
-// Logout, remove token and pseudo
-void logout() {
-  _getStorage.remove('token');
-  _getStorage.remove('pseudo');
-  _getStorage.remove('watchlist');
-}
-
-// Get token is member is connected
-String? getToken() {
-  if (!isConnected()) {
-    return null;
-  }
-
-  return _getStorage.read('token');
-}
-
-// Get pseudo is member is connected
-String? getPseudo() {
-  if (!isConnected()) {
-    return null;
-  }
-
-  return _getStorage.read('pseudo');
-}
-
-List<dynamic> getWatchlist() => _getStorage.read('watchlist') as List<dynamic>? ?? <dynamic>[];
-
-// Set watchlist, save watchlist in shared preferences
-void setWatchlist(List<dynamic>? watchlist) {
-  _getStorage.write('watchlist', watchlist);
-}
-
-// Has anime id in watchlist
-bool hasAnimeInWatchlist(int animeId) {
+// Has anime in watchlist
+bool hasAnimeInWatchlist(Anime anime) {
   if (!isConnected()) {
     return false;
   }
 
-  return getWatchlist().contains(animeId);
+  return getMember()?.watchlist.any((element) => element.id == anime.id) ?? false;
 }
 
-// Add anime id in watchlist
-Future<void> addAnimeInWatchlist(int animeId) async {
+// Add anime in watchlist
+Future<void> addAnimeInWatchlist(Anime anime) async {
   if (!isConnected()) {
     return;
   }
 
-  if (hasAnimeInWatchlist(animeId)) {
+  if (hasAnimeInWatchlist(anime)) {
     return;
   }
 
-  final watchlist = getWatchlist();
-  watchlist.add(animeId);
-  setWatchlist(watchlist);
+  final member = getMember()!;
+  member.watchlist.add(anime);
+  setMember(member);
 
   try {
     await URL().post(
       "https://api.ziedelth.fr/v1/watchlist/add",
       body: {
-        "token": getToken()!,
-        "animeId": animeId.toString(),
+        "token": member.token!,
+        "animeId": anime.id.toString(),
       },
     );
   } catch (exception, stackTrace) {
@@ -161,26 +140,26 @@ Future<void> addAnimeInWatchlist(int animeId) async {
   }
 }
 
-// Remove anime id in watchlist
-Future<void> removeAnimeInWatchlist(int animeId) async {
+// Remove anime in watchlist
+Future<void> removeAnimeInWatchlist(Anime anime) async {
   if (!isConnected()) {
     return;
   }
 
-  if (!hasAnimeInWatchlist(animeId)) {
+  if (!hasAnimeInWatchlist(anime)) {
     return;
   }
 
-  final watchlist = getWatchlist();
-  watchlist.remove(animeId);
-  setWatchlist(watchlist);
+  final member = getMember()!;
+  member.watchlist.removeWhere((element) => element.id == anime.id);
+  setMember(member);
 
   try {
     await URL().post(
       "https://api.ziedelth.fr/v1/watchlist/remove",
       body: {
-        "token": getToken()!,
-        "animeId": animeId.toString(),
+        "token": member.token!,
+        "animeId": anime.id.toString(),
       },
     );
   } catch (exception, stackTrace) {
@@ -189,5 +168,41 @@ Future<void> removeAnimeInWatchlist(int animeId) async {
       exception: exception,
       stackTrace: stackTrace,
     );
+  }
+}
+
+String notificationsMode() {
+  if (notifications.hasTopic("animes")) {
+    return "default";
+  } else {
+    return "watchlist";
+  }
+}
+
+void setDefaultNotifications() {
+  notifications.removeAllTopics();
+  notifications.addTopic("animes");
+  logger.info("Set default notifications");
+}
+
+void setWatchlistNotifications() {
+  if (!isConnected()) {
+    return;
+  }
+
+  notifications.removeAllTopics();
+
+  for (final anime in getMember()!.watchlist) {
+    notifications.addTopic(anime.id.toString());
+  }
+}
+
+String roleToString(int? role) {
+  switch (role) {
+    case 100:
+      return "Administrateur";
+    case 0:
+    default:
+      return "Membre";
   }
 }

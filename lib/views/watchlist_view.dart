@@ -14,7 +14,7 @@ class WatchlistView extends StatefulWidget {
 
 class _WatchlistViewState extends State<WatchlistView>
     with SingleTickerProviderStateMixin {
-  final _watchlistMapper = WatchlistMapper(pseudo: getPseudo()!);
+  final _watchlistMapper = WatchlistMapper(pseudo: getMember()!.pseudo);
   late final TabController _tabController;
 
   @override

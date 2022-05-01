@@ -63,7 +63,6 @@ class AnimesViewState extends State<AnimesView> {
         context: context,
         builder: (context) => const AlertDialog(
           content: Loading(),
-          actions: [],
         ),
       );
 
@@ -119,7 +118,7 @@ class AnimesViewState extends State<AnimesView> {
     _animeMapper.clear();
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
       await _simulcastMapper.update(
-        onSuccess: () async {
+        onSuccess: () {
           // Set current simulcast to the last one
           _currentSimulcast = _simulcastMapper.list?.last;
 
@@ -154,39 +153,65 @@ class AnimesViewState extends State<AnimesView> {
       return AnimeDetailsView(_anime!, _setDetails);
     }
 
-    return Column(
-      key: _key,
-      children: [
-        Expanded(
-          child: SimulcastsWidget(
-            scrollController: _simulcastsScrollController,
-            simulcast: _currentSimulcast,
-            simulcastMapper: _simulcastMapper,
-            onTap: (simulcast) {
-              _scrollController.jumpTo(0);
-              _currentSimulcast = simulcast;
-              _animeMapper.clear();
-              rebuildAnimes(force: true);
-              if (!mounted) return;
-              setState(() {});
-            },
+    return RefreshIndicator(
+      onRefresh: () async {
+        _simulcastMapper.clear();
+        _animeMapper.clear();
+        _update(true);
+
+        await _simulcastMapper.update(
+          onSuccess: () {
+            // Set current simulcast to the last one
+            _currentSimulcast = _simulcastMapper.list?.last;
+
+            if (!mounted) return;
+
+            setState(() {
+              _simulcastsScrollController.animateTo(
+                _simulcastsScrollController.position.maxScrollExtent,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeInOut,
+              );
+            });
+
+            setOperation(isNew: true);
+          },
+        );
+      },
+      child: Column(
+        key: _key,
+        children: [
+          Expanded(
+            child: SimulcastsWidget(
+              scrollController: _simulcastsScrollController,
+              simulcast: _currentSimulcast,
+              simulcastMapper: _simulcastMapper,
+              onTap: (simulcast) {
+                _scrollController.jumpTo(0);
+                _currentSimulcast = simulcast;
+                _animeMapper.clear();
+                rebuildAnimes(force: true);
+                if (!mounted) return;
+                setState(() {});
+              },
+            ),
           ),
-        ),
-        Expanded(
-          flex: 10,
-          child: AnimeList(
-            scrollController: _scrollController,
-            children: _animeMapper.list
-                .map<Widget>(
-                  (e) => GestureDetector(
-                    child: e,
-                    onTap: () => e is AnimeWidget ? _onTap(e.anime) : null,
-                  ),
-                )
-                .toList(),
+          Expanded(
+            flex: isOnMobile(context) ? 10 : 4,
+            child: AnimeList(
+              scrollController: _scrollController,
+              children: _animeMapper.list
+                  .map<Widget>(
+                    (e) => GestureDetector(
+                      child: e,
+                      onTap: () => e is AnimeWidget ? _onTap(e.anime) : null,
+                    ),
+                  )
+                  .toList(),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -218,20 +243,18 @@ class SimulcastsWidget extends StatelessWidget {
     if (simulcastMapper.list == null) {
       return List.filled(
         5,
-        Padding(
-          padding: const EdgeInsets.all(8),
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Theme.of(context).primaryColor,
-              ),
-              borderRadius: BorderRadius.circular(8),
+        Container(
+          margin: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Theme.of(context).primaryColor,
             ),
-            child: const Padding(
-              padding: EdgeInsets.all(8),
-              child: Skeleton(
-                width: 80,
-              ),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: const Padding(
+            padding: EdgeInsets.all(8),
+            child: Skeleton(
+              width: 80,
             ),
           ),
         ),
@@ -240,38 +263,35 @@ class SimulcastsWidget extends StatelessWidget {
 
     return simulcastMapper.list!
         .map(
-          (simulcast) => Padding(
-            padding: const EdgeInsets.all(8),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Theme.of(context).primaryColor,
-                ),
-                borderRadius: BorderRadius.circular(8),
-                color: simulcast == this.simulcast
-                    ? Theme.of(context).primaryColor
-                    : Colors.transparent,
+          (simulcast) => Container(
+            margin: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Theme.of(context).primaryColor,
               ),
-              child: GestureDetector(
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Center(
-                    child: Text(
-                      simulcast.simulcast,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: simulcast == this.simulcast
-                            ? Colors.black
-                            : Colors.white,
-                        fontWeight: simulcast == this.simulcast
-                            ? FontWeight.bold
-                            : null,
-                      ),
+              borderRadius: BorderRadius.circular(8),
+              color: simulcast == this.simulcast
+                  ? Theme.of(context).primaryColor
+                  : Colors.transparent,
+            ),
+            child: GestureDetector(
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Center(
+                  child: Text(
+                    simulcast.simulcast,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: simulcast == this.simulcast
+                          ? Colors.black
+                          : Colors.white,
+                      fontWeight:
+                          simulcast == this.simulcast ? FontWeight.bold : null,
                     ),
                   ),
                 ),
-                onTap: () => onTap?.call(simulcast),
               ),
+              onTap: () => onTap?.call(simulcast),
             ),
           ),
         )

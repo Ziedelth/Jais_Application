@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:jais/components/full_widget.dart';
 import 'package:jais/components/section_widget.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
-import 'package:jais/views/users/login_view.dart';
-import 'package:jais/views/users/register_view.dart';
+import 'package:jais/views/members/login_view.dart';
+import 'package:jais/views/members/member_view.dart';
+import 'package:jais/views/members/register_view.dart';
 import 'package:notifications/notifications.dart' as notifications;
 
 class SettingsView extends StatefulWidget {
-  const SettingsView({Key? key}) : super(key: key);
+  final Function()? onLogin;
+  final Function()? onLogout;
+
+  const SettingsView({this.onLogin, this.onLogout, Key? key}) : super(key: key);
 
   @override
   _SettingsViewState createState() => _SettingsViewState();
@@ -16,112 +20,131 @@ class SettingsView extends StatefulWidget {
 class _SettingsViewState extends State<SettingsView> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SectionWidget(
-          icon: const Icon(Icons.person),
-          title: member_mapper.isConnected()
-              ? member_mapper.getPseudo()!
-              : 'Utilisateur',
-          widgets: [
-            if (!member_mapper.isConnected()) ...[
-              FullWidget(
-                widget: ElevatedButton(
-                  child: const Text('Inscription'),
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const RegisterView(),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 8),
-              FullWidget(
-                widget: ElevatedButton(
-                  child: const Text('Connexion'),
-                  onPressed: () async {
-                    await Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const LoginView(),
-                      ),
-                    );
+    final isDefaultMode = member_mapper.notificationsMode() == "default";
+    final isWatchlistModeOrNeedUpdate =
+        member_mapper.notificationsMode() == "watchlist" && !_same();
 
-                    if (!mounted) return;
-                    setState(() {});
-                  },
-                ),
-              )
-            ],
-            if (member_mapper.isConnected()) ...[
-              const FullWidget(
-                widget: ElevatedButton(
-                  onPressed: null,
-                  child: Text('Mon profil'),
-                ),
-              ),
-              const SizedBox(height: 8),
-              FullWidget(
-                widget: ElevatedButton(
-                  child: const Text('Déconnexion'),
-                  onPressed: () {
-                    notifications.removeAllTopics();
-                    notifications.addTopic("animes");
-                    member_mapper.logout();
-                    if (!mounted) return;
-                    setState(() {});
-                  },
-                ),
-              ),
-            ],
-          ],
-        ),
-        if (member_mapper.isConnected())
-           SectionWidget(
-            icon: const Icon(Icons.notifications),
-            title: 'Notifications',
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          SectionWidget(
+            icon: const Icon(Icons.person),
+            title: member_mapper.isConnected()
+                ? '${member_mapper.getMember()?.pseudo}'
+                : 'Utilisateur',
             widgets: [
-              FullWidget(
-                widget: ElevatedButton(
-                  onPressed: notifications.hasTopic("animes") ? null : () {
-                    notifications.removeAllTopics();
-                    notifications.addTopic("animes");
-                    if (!mounted) return;
-                    setState(() {});
-                  },
-                  child: const Text('Par défaut'),
+              if (!member_mapper.isConnected()) ...[
+                FullWidget(
+                  widget: ElevatedButton(
+                    child: const Text('Inscription'),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => RegisterView(
+                            onLogin: widget.onLogin,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              FullWidget(
-                widget: ElevatedButton(
-                  onPressed: notifications.hasTopic("animes") ? () {
-                    notifications.removeAllTopics();
+                FullWidget(
+                  widget: ElevatedButton(
+                    child: const Text('Connexion'),
+                    onPressed: () async {
+                      await Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => LoginView(
+                            onLogin: widget.onLogin,
+                          ),
+                        ),
+                      );
 
-                    for (final animeId in member_mapper.getWatchlist()) {
-                      notifications.addTopic(animeId.toString());
-                    }
-
-                    if (!mounted) return;
-                    setState(() {});
-                  } : null,
-                  child: Text('Watchlist${(!notifications.hasTopic("animes") && !_same()) ? ' (Mettre à jour)' : '' }'),
+                      if (!mounted) return;
+                      setState(() {});
+                    },
+                  ),
+                )
+              ],
+              if (member_mapper.isConnected()) ...[
+                FullWidget(
+                  widget: ElevatedButton(
+                    child: const Text('Mon profil'),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => MemberView(
+                            member: member_mapper.getMember()!,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
-              ),
+                FullWidget(
+                  widget: ElevatedButton(
+                    child: const Text('Déconnexion'),
+                    onPressed: () {
+                      member_mapper.setDefaultNotifications();
+                      member_mapper.setMember(null);
+                      widget.onLogout?.call();
+                      if (!mounted) return;
+                      setState(() {});
+                    },
+                  ),
+                ),
+              ],
             ],
           ),
-      ],
+          if (member_mapper.isConnected())
+            SectionWidget(
+              icon: const Icon(Icons.notifications),
+              title: 'Notifications',
+              widgets: [
+                FullWidget(
+                  widget: ElevatedButton(
+                    onPressed: isDefaultMode
+                        ? null
+                        : () {
+                            member_mapper.setDefaultNotifications();
+                            if (!mounted) return;
+                            setState(() {});
+                          },
+                    child: const Text('Par défaut'),
+                  ),
+                ),
+                FullWidget(
+                  widget: ElevatedButton(
+                    onPressed: (isDefaultMode || isWatchlistModeOrNeedUpdate)
+                        ? () {
+                            member_mapper.setWatchlistNotifications();
+                            if (!mounted) return;
+                            setState(() {});
+                          }
+                        : null,
+                    child: Text(
+                      'Watchlist${isWatchlistModeOrNeedUpdate ? ' (Mettre à jour)' : ''}',
+                    ),
+                  ),
+                ),
+              ],
+            ),
+        ],
+      ),
     );
   }
 
   bool _same() {
+    if (!member_mapper.isConnected()) {
+      return true;
+    }
+
     final topics = notifications.getTopics();
-    final watchlist = member_mapper.getWatchlist();
+    final watchlist = member_mapper.getMember()!.watchlist;
 
     if (watchlist.length == topics.length) {
       for (final element in watchlist) {
-        if (!topics.contains(element.toString())) {
+        if (!topics.contains(element.id.toString())) {
           return false;
         }
       }

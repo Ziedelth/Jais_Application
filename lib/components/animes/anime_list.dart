@@ -21,7 +21,7 @@ class AnimeList extends StatelessWidget {
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
           // childAspectRatio: 1.5,
-          childAspectRatio: 2.37E-3 * width + 0.0772,
+          childAspectRatio: 2.2E-3 * width + 0.0772,
         ),
         controller: scrollController,
         children: children,

@@ -55,7 +55,7 @@ void removeTopic(String topic) {
   _getStorage.write(_key, list);
 
   logger.info("Unsubscribing from topic $topic");
-  FirebaseMessaging.instance.unsubscribeFromTopic(topic);
+  if (!kIsWeb) FirebaseMessaging.instance.unsubscribeFromTopic(topic);
 }
 
 void removeAllTopics() {
@@ -64,7 +64,7 @@ void removeAllTopics() {
 
   for (final String topic in list) {
     logger.info("Unsubscribing from topic $topic");
-    FirebaseMessaging.instance.unsubscribeFromTopic(topic);
+    if (!kIsWeb) FirebaseMessaging.instance.unsubscribeFromTopic(topic);
   }
 
   list.clear();

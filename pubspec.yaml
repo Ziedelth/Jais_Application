@@ -1,5 +1,5 @@
 name: jais
-description: A Flutter application by Ziedelth for mobile users
+description: A Flutter application by Ziedelth for mobile members
 
 publish_to: 'none'
 version: 1.0.5+5
@@ -21,6 +21,7 @@ dependencies:
     path: dependencies/logger
   notifications:
     path: dependencies/notifications
+  package_info_plus: ^1.4.2
   shimmer: ^2.0.0
   url:
     path: dependencies/url

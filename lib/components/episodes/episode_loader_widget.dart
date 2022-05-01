@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jais/components/skeleton.dart';
+import 'package:jais/utils/utils.dart';
 
 class EpisodeLoaderWidget extends StatelessWidget {
   const EpisodeLoaderWidget({Key? key}) : super(key: key);
@@ -33,9 +34,11 @@ class EpisodeLoaderWidget extends StatelessWidget {
           const SizedBox(height: 5),
           const Skeleton(width: 100, height: 20),
           const SizedBox(height: 10),
-          const Expanded(
-            child: Skeleton(),
-          ),
+          if (!isOnMobile(context))
+            const Expanded(
+              child: Skeleton(),
+            ),
+          if (isOnMobile(context)) const Skeleton(height: 200),
           const SizedBox(height: 10),
           const Skeleton(width: 200, height: 20),
         ],

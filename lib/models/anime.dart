@@ -38,4 +38,22 @@ class Anime {
   factory Anime.fromJson(Map<String, dynamic> data) => _$AnimeFromJson(data);
 
   Map<String, dynamic> toJson() => _$AnimeToJson(this);
+
+  // Copy
+  Anime copyWith({
+    String? name,
+    String? description,
+  }) {
+    return Anime(
+      id,
+      codes,
+      genres,
+      country,
+      releaseDate,
+      name ?? this.name,
+      url,
+      image,
+      description ?? this.description,
+    );
+  }
 }

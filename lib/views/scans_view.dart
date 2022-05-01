@@ -64,10 +64,17 @@ class _ScansViewState extends State<ScansView> {
 
   @override
   Widget build(BuildContext context) {
-    return ScanList(
-      key: _key,
-      scrollController: _scrollController,
-      children: _scanMapper.list,
+    return RefreshIndicator(
+      onRefresh: () async {
+        _scanMapper.clear();
+        _update(true);
+        setOperation();
+      },
+      child: ScanList(
+        key: _key,
+        scrollController: _scrollController,
+        children: _scanMapper.list,
+      ),
     );
   }
 

@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:jais/components/full_widget.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/utils/utils.dart';
-import 'package:jais/views/users/login_view.dart';
+import 'package:jais/views/members/login_view.dart';
 import 'package:logger/logger.dart' as logger;
 import 'package:url/url.dart';
 
 class RegisterView extends StatefulWidget {
-  const RegisterView({Key? key}) : super(key: key);
+  final Function()? onLogin;
+
+  const RegisterView({this.onLogin, Key? key}) : super(key: key);
 
   @override
   _RegisterViewState createState() => _RegisterViewState();
@@ -219,7 +221,9 @@ class _RegisterViewState extends State<RegisterView> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const LoginView(),
+                                builder: (context) => LoginView(
+                                  onLogin: widget.onLogin,
+                                ),
                               ),
                             );
                           } catch (exception, stackTrace) {

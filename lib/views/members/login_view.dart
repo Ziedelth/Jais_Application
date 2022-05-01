@@ -3,12 +3,15 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:jais/components/full_widget.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
+import 'package:jais/models/member.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:logger/logger.dart' as logger;
 import 'package:url/url.dart';
 
 class LoginView extends StatefulWidget {
-  const LoginView({Key? key}) : super(key: key);
+  final Function()? onLogin;
+
+  const LoginView({this.onLogin, Key? key}) : super(key: key);
 
   @override
   _LoginViewState createState() => _LoginViewState();
@@ -140,13 +143,12 @@ class _LoginViewState extends State<LoginView> {
                               return;
                             }
 
-                            // Decode response
-                            final responseBody = jsonDecode(response.body)
-                                as Map<String, dynamic>;
+                            // Decode response to member
+                            final member = Member.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
 
-                            // If responseBody not contains token and pseudo, return an error
-                            if (!responseBody.containsKey('token') ||
-                                !responseBody.containsKey('pseudo')) {
+
+                            // If responseBody not contains token, return an error
+                            if (member.token == null) {
                               if (!mounted) return;
 
                               setState(() {
@@ -162,13 +164,11 @@ class _LoginViewState extends State<LoginView> {
                             }
 
                             // Save token and pseudo in shared preferences
-                            member_mapper.login(
-                              responseBody['token'] as String,
-                              responseBody['pseudo'] as String,
-                              responseBody['watchlist'] as List<int>?,
-                            );
+                            member_mapper.setMember(member);
 
                             if (!mounted) return;
+
+                            widget.onLogin?.call();
 
                             setState(() {
                               _isLoading = false;
@@ -176,7 +176,7 @@ class _LoginViewState extends State<LoginView> {
 
                             showSnackBar(
                               context,
-                              'Bienvenue ${member_mapper.getPseudo()}',
+                              'Bienvenue ${member.pseudo}',
                             );
 
                             Navigator.pop(context);

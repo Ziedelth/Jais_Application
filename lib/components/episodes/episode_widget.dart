@@ -71,8 +71,25 @@ class EpisodeWidget extends StatelessWidget {
           const SizedBox(
             height: 10,
           ),
-          Expanded(
-            child: RoundBorderWidget(
+          if (!isOnMobile(context))
+            Expanded(
+              child: RoundBorderWidget(
+                widget: GestureDetector(
+                  child: CachedNetworkImage(
+                    imageUrl: 'https://ziedelth.fr/${episode.image}',
+                    imageBuilder: (context, imageProvider) => Image(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                    placeholder: (context, url) => const Skeleton(),
+                    errorWidget: (context, url, error) => const Skeleton(),
+                  ),
+                  onTap: () => launchUrl(Uri.parse(episode.url)),
+                ),
+              ),
+            ),
+          if (isOnMobile(context))
+            RoundBorderWidget(
               widget: GestureDetector(
                 child: CachedNetworkImage(
                   imageUrl: 'https://ziedelth.fr/${episode.image}',
@@ -80,13 +97,16 @@ class EpisodeWidget extends StatelessWidget {
                     image: imageProvider,
                     fit: BoxFit.cover,
                   ),
-                  placeholder: (context, url) => const Skeleton(),
-                  errorWidget: (context, url, error) => const Skeleton(),
+                  placeholder: (context, url) => const Skeleton(
+                    height: 200,
+                  ),
+                  errorWidget: (context, url, error) => const Skeleton(
+                    height: 200,
+                  ),
                 ),
                 onTap: () => launchUrl(Uri.parse(episode.url)),
               ),
             ),
-          ),
           const SizedBox(
             height: 10,
           ),

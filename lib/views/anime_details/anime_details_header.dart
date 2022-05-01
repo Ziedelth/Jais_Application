@@ -4,6 +4,7 @@ import 'package:jais/components/platform_widget.dart';
 import 'package:jais/mappers/member_mapper.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/platform.dart';
+import 'package:notifications/notifications.dart' as notifications;
 
 class AnimeDetailsHeader extends StatefulWidget {
   const AnimeDetailsHeader(this._callback, this._anime, {Key? key})
@@ -62,18 +63,28 @@ class _AnimeDetailsHeaderState extends State<AnimeDetailsHeader> {
               if (isConnected())
                 IconButton(
                   icon: Icon(
-                    hasAnimeInWatchlist(widget._anime.id)
+                    hasAnimeInWatchlist(widget._anime)
                         ? Icons.playlist_remove
                         : Icons.playlist_add,
-                    color: hasAnimeInWatchlist(widget._anime.id)
+                    color: hasAnimeInWatchlist(widget._anime)
                         ? Colors.red
                         : Colors.green,
                   ),
                   onPressed: () async {
-                    if (hasAnimeInWatchlist(widget._anime.id)) {
-                      await removeAnimeInWatchlist(widget._anime.id);
+                    final isWatchlistMode = notificationsMode() == 'watchlist';
+
+                    if (hasAnimeInWatchlist(widget._anime)) {
+                      await removeAnimeInWatchlist(widget._anime);
+
+                      if (isWatchlistMode) {
+                        notifications.removeTopic(widget._anime.id.toString());
+                      }
                     } else {
-                      await addAnimeInWatchlist(widget._anime.id);
+                      await addAnimeInWatchlist(widget._anime);
+
+                      if (isWatchlistMode) {
+                        notifications.addTopic(widget._anime.id.toString());
+                      }
                     }
 
                     if (!mounted) return;
