@@ -9,7 +9,7 @@ import 'package:logger/logger.dart' as logger;
 import 'package:url/url.dart';
 
 class EpisodeMapper {
-  static const limit = 9;
+  static const limit = 12;
   int currentPage = 1;
   List<Widget> list = _defaultList;
 

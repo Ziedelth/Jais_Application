@@ -9,7 +9,7 @@ import 'package:logger/logger.dart' as logger;
 import 'package:url/url.dart';
 
 class ScanMapper {
-  static const limit = 27;
+  static const limit = 33;
   int currentPage = 1;
   List<Widget> list = _defaultList;
 
