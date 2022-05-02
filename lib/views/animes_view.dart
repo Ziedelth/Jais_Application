@@ -1,399 +1,312 @@
-import 'dart:convert';
-
+import 'package:async/async.dart';
 import 'package:flutter/material.dart';
+import 'package:jais/components/animes/anime_list.dart';
 import 'package:jais/components/animes/anime_widget.dart';
-import 'package:jais/components/episodes/episode_widget.dart';
+import 'package:jais/components/jlist.dart';
 import 'package:jais/components/loading_widget.dart';
-import 'package:jais/components/scans/scan_widget.dart';
-import 'package:jais/models/anime.dart';
-import 'package:jais/models/long_anime.dart';
-import 'package:jais/models/season.dart';
+import 'package:jais/components/skeleton.dart';
 import 'package:jais/mappers/anime_mapper.dart';
-import 'package:jais/utils/main_color.dart';
+import 'package:jais/mappers/simulcast_mapper.dart';
+import 'package:jais/models/anime.dart';
+import 'package:jais/models/simulcast.dart';
 import 'package:jais/utils/utils.dart';
+import 'package:jais/views/anime_details/anime_details_view.dart';
+import 'package:jais/views/anime_search_view.dart';
 
 class AnimesView extends StatefulWidget {
   const AnimesView({Key? key}) : super(key: key);
 
   @override
-  _AnimesViewState createState() => _AnimesViewState();
+  AnimesViewState createState() => AnimesViewState();
 }
 
-class _AnimesViewState extends State<AnimesView> {
-  final TextEditingController _textEditingController = TextEditingController();
+class AnimesViewState extends State<AnimesView> {
+  final SimulcastMapper _simulcastMapper = SimulcastMapper();
+  final AnimeMapper _animeMapper = AnimeMapper();
+
+  final ScrollController _simulcastsScrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
+  GlobalKey _key = GlobalKey();
+  bool _isLoading = true;
+  Simulcast? _currentSimulcast;
   bool _hasTap = false;
-  LongAnime? _longAnime;
+  Anime? _anime;
+  CancelableOperation? _cancelableOperation;
+
+  void _update(bool isLoading) {
+    _isLoading = isLoading;
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  void showSearch() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => AnimeSearchView(
+          animeMapper: _animeMapper,
+          onTap: _onTap,
+        ),
+      ),
+    );
+  }
+
+  void _setDetails({Anime? anime}) {
+    setState(() {
+      _anime = anime;
+      _hasTap = anime != null;
+    });
+  }
+
+  // Show loader dialog with a builder context
+  Future<void> _showLoader(BuildContext context) async => showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => const AlertDialog(
+          content: Loading(),
+        ),
+      );
+
+  Future<void> _onTap(Anime anime) async {
+    _hasTap = false;
+    _anime = null;
+    if (!mounted) return;
+    setState(() {});
+
+    _showLoader(context);
+    final details = await _animeMapper.loadDetails(anime);
+    if (!mounted) return;
+    Navigator.pop(context);
+
+    // If details is null, show error
+    if (details == null) {
+      showSnackBar(context, 'An error occurred while loading details');
+      return;
+    }
+
+    _setDetails(
+      anime: details,
+    );
+  }
+
+  Future<void> rebuildAnimes({bool force = false, bool isNew = false}) async {
+    if (_currentSimulcast == null) return;
+    if (force) _animeMapper.clear();
+
+    await _animeMapper.updateCurrentPage(
+      simulcast: _currentSimulcast!,
+      onSuccess: () {
+        _update(false);
+
+        if (isNew) {
+          _key = GlobalKey();
+        }
+      },
+      onFailure: () =>
+          showSnackBar(context, 'An error occurred while loading animes'),
+    );
+  }
+
+  void setOperation({bool isNew = false}) {
+    _cancelableOperation?.cancel();
+    _cancelableOperation =
+        CancelableOperation.fromFuture(rebuildAnimes(isNew: isNew));
+  }
 
   @override
   void initState() {
     super.initState();
+    _animeMapper.clear();
+    WidgetsBinding.instance?.addPostFrameCallback((_) async {
+      await _simulcastMapper.update(
+        onSuccess: () {
+          // Set current simulcast to the last one
+          _currentSimulcast = _simulcastMapper.list?.last;
 
-    AnimeMapper.clear();
-    AnimeMapper.update(
-      onSuccess: () => setState(() {}),
-    );
+          if (!mounted) return;
+          setState(() {
+            _simulcastsScrollController.animateTo(
+              _simulcastsScrollController.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            );
+          });
+
+          setOperation(isNew: true);
+        },
+      );
+    });
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
+        _isLoading = true;
+        _animeMapper.currentPage++;
+        _animeMapper.addLoader();
+        _update(true);
+        setOperation();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_hasTap && _longAnime != null) {
-      return AnimeDetailsView(_longAnime!, () {
-        setState(() {
-          _hasTap = false;
-          _longAnime = null;
-        });
-      });
+    if (_hasTap && _anime != null) {
+      return AnimeDetailsView(_anime!, _setDetails);
     }
 
-    return Column(
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(left: 20),
-                child: TextField(
-                  controller: _textEditingController,
-                  decoration: const InputDecoration(label: Text('Rechercher')),
-                  onChanged: (value) => setState(
-                    () => AnimeMapper.onSearch(value),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: IconButton(
-                icon: Icon(
-                  Icons.search,
-                  color: MainColor.mainColorO,
-                ),
-                onPressed: () => setState(
-                  () => AnimeMapper.onSearch(_textEditingController.text),
-                ),
-              ),
-            ),
-          ],
-        ),
-        const Padding(padding: EdgeInsets.only(top: 10)),
-        Expanded(
-          child: ListView.builder(
-            addAutomaticKeepAlives: false,
-            addRepaintBoundaries: false,
-            itemCount: AnimeMapper.filtered.length,
-            itemBuilder: (context, index) {
-              final Widget widget = AnimeMapper.filtered[index];
+    return RefreshIndicator(
+      onRefresh: () async {
+        _simulcastMapper.clear();
+        _animeMapper.clear();
+        _update(true);
 
-              if (widget is! AnimeWidget) {
-                return widget;
-              }
+        await _simulcastMapper.update(
+          onSuccess: () {
+            // Set current simulcast to the last one
+            _currentSimulcast = _simulcastMapper.list?.last;
 
-              final Anime anime = widget.anime;
+            if (!mounted) return;
 
-              return GestureDetector(
-                child: widget,
-                onTap: () {
-                  showDialog(
-                    barrierDismissible: false,
-                    context: context,
-                    builder: (context) => const Center(
-                      child: Loading(),
-                    ),
-                  );
-
-                  Utils.request(
-                    'https://ziedelth.fr/api/v1/country/fr/anime/${anime.id}',
-                        (p0) {
-                      _longAnime = LongAnime.fromJson(jsonDecode(p0));
-                      _hasTap = true;
-                      Navigator.pop(context);
-                      setState(() {});
-                    },
-                        (p0) => null,
-                  );
-                },
+            setState(() {
+              _simulcastsScrollController.animateTo(
+                _simulcastsScrollController.position.maxScrollExtent,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeInOut,
               );
-            },
+            });
+
+            setOperation(isNew: true);
+          },
+        );
+      },
+      child: Column(
+        key: _key,
+        children: [
+          Expanded(
+            child: SimulcastsWidget(
+              scrollController: _simulcastsScrollController,
+              simulcast: _currentSimulcast,
+              simulcastMapper: _simulcastMapper,
+              onTap: (simulcast) {
+                _scrollController.jumpTo(0);
+                _currentSimulcast = simulcast;
+                _animeMapper.clear();
+                rebuildAnimes(force: true);
+                if (!mounted) return;
+                setState(() {});
+              },
+            ),
           ),
-        )
-      ],
+          Expanded(
+            flex: isOnMobile(context) ? 10 : 4,
+            child: AnimeList(
+              scrollController: _scrollController,
+              children: _animeMapper.list
+                  .map<Widget>(
+                    (e) => GestureDetector(
+                      child: e,
+                      onTap: () => e is AnimeWidget ? _onTap(e.anime) : null,
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
+        ],
+      ),
     );
-  }
-}
-
-class AnimeDetailsView extends StatefulWidget {
-  final LongAnime _longAnime;
-  final VoidCallback _callback;
-
-  AnimeDetailsView(this._longAnime, this._callback);
-
-  @override
-  _AnimeDetailsViewState createState() => _AnimeDetailsViewState();
-}
-
-class _AnimeDetailsViewState extends State<AnimeDetailsView>
-    with SingleTickerProviderStateMixin {
-  late final TabController _tabController;
-  bool _notifications = false;
-
-  @override
-  void initState() {
-    _tabController = TabController(length: 2, vsync: this);
-    super.initState();
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
     super.dispose();
+    _cancelableOperation?.cancel();
+    _scrollController.dispose();
+    _simulcastMapper.clear();
+    _animeMapper.clear();
   }
+}
 
-  List<Widget> buildWidgets() {
-    if (widget._longAnime.seasons.isNotEmpty &&
-        widget._longAnime.scans.isNotEmpty) {
-      return [
-        TabBar(
-          controller: _tabController,
-          indicatorColor: Colors.black,
-          labelColor: MainColor.mainColorO,
-          unselectedLabelColor: Colors.grey,
-          tabs: <Widget>[
-            Tab(
-              icon: const Icon(
-                Icons.airplay,
-              ),
+class SimulcastsWidget extends StatelessWidget {
+  const SimulcastsWidget({
+    Key? key,
+    required this.scrollController,
+    required this.simulcastMapper,
+    this.simulcast,
+    this.onTap,
+  }) : super(key: key);
+
+  final ScrollController scrollController;
+  final SimulcastMapper simulcastMapper;
+  final Simulcast? simulcast;
+  final Function(Simulcast)? onTap;
+
+  List<Widget> _getWidgets(BuildContext context) {
+    if (simulcastMapper.list == null) {
+      return List.filled(
+        5,
+        Container(
+          margin: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Theme.of(context).primaryColor,
             ),
-            Tab(
-              icon: const Icon(
-                Icons.bookmark_border,
-              ),
-            )
-          ],
-        ),
-        Expanded(
-          child: TabBarView(
-            controller: _tabController,
-            children: [
-              EpisodesDetailsView(widget._longAnime),
-              ScansDetailsView(widget._longAnime),
-            ],
+            borderRadius: BorderRadius.circular(8),
           ),
-        ),
-      ];
-    }
-
-    if (widget._longAnime.seasons.isNotEmpty) {
-      return [
-        Expanded(
-          child: EpisodesDetailsView(widget._longAnime),
-        ),
-      ];
-    }
-
-    if (widget._longAnime.scans.isNotEmpty) {
-      return [
-        Expanded(
-          child: ScansDetailsView(widget._longAnime),
-        ),
-      ];
-    }
-
-    return [];
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            BackButton(
-              onPressed: () => widget._callback(),
+          child: const Padding(
+            padding: EdgeInsets.all(8),
+            child: Skeleton(
+              width: 80,
             ),
-            Expanded(
-              flex: 5,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      widget._longAnime.name,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5),
-                    child: IconButton(
-                      icon: Icon(Icons.help),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            backgroundColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                              side: BorderSide(color: MainColor.mainColorO),
-                            ),
-                            content: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    widget._longAnime.genres,
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 10),
-                                    child: Divider(
-                                      height: 1,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  Text(widget._longAnime.description ??
-                                      'No description'),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: IconButton(
-                icon: Icon(
-                  _notifications
-                      ? Icons.notifications_on
-                      : Icons.notifications_off,
-                  color: _notifications ? Colors.green : Colors.red,
-                ),
-                onPressed: () {
-                  _notifications = !_notifications;
-                  setState(() {});
-                },
-              ),
-            ),
-          ],
-        ),
-        const Divider(
-          height: 2,
-        ),
-        ...buildWidgets(),
-      ],
-    );
-  }
-}
-
-class EpisodesDetailsView extends StatefulWidget {
-  final LongAnime _longAnime;
-
-  EpisodesDetailsView(this._longAnime);
-
-  @override
-  _EpisodesDetailsViewState createState() => _EpisodesDetailsViewState();
-}
-
-class _EpisodesDetailsViewState extends State<EpisodesDetailsView> {
-  Season? _selectedSeason;
-
-  @override
-  void initState() {
-    if (widget._longAnime.seasons.isNotEmpty) {
-      _selectedSeason = widget._longAnime.seasons.first;
-    }
-
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (widget._longAnime.seasons.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.close,
-              color: Colors.red,
-            ),
-            Text("Il n'y a pas d'épisodes pour cet anime"),
-          ],
+          ),
         ),
       );
     }
 
-    return Column(
-      children: [
-        DropdownButton<Season>(
-          value: _selectedSeason,
-          onChanged: (Season? newValue) {
-            _selectedSeason = newValue;
-            setState(() {});
-          },
-          items: widget._longAnime.seasons
-              .map<DropdownMenuItem<Season>>(
-                (e) => DropdownMenuItem(
-                  value: e,
-                  child: Text('Saison ${e.season}'),
+    return simulcastMapper.list!
+        .map(
+          (simulcast) => Container(
+            margin: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Theme.of(context).primaryColor,
+              ),
+              borderRadius: BorderRadius.circular(8),
+              color: simulcast == this.simulcast
+                  ? Theme.of(context).primaryColor
+                  : Colors.transparent,
+            ),
+            child: GestureDetector(
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Center(
+                  child: Text(
+                    simulcast.simulcast,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: simulcast == this.simulcast
+                          ? Colors.black
+                          : Colors.white,
+                      fontWeight:
+                          simulcast == this.simulcast ? FontWeight.bold : null,
+                    ),
+                  ),
                 ),
-              )
-              .toList(),
-        ),
-        Expanded(
-          child: ListView.builder(
-            addAutomaticKeepAlives: false,
-            addRepaintBoundaries: false,
-            controller: ScrollController(),
-            itemCount: _selectedSeason!.episodes.length,
-            itemBuilder: (context, index) => EpisodeWidget(
-              episode: _selectedSeason!.episodes[index],
+              ),
+              onTap: () => onTap?.call(simulcast),
             ),
           ),
-        ),
-      ],
-    );
+        )
+        .toList();
   }
-}
-
-class ScansDetailsView extends StatelessWidget {
-  final LongAnime _longAnime;
-
-  ScansDetailsView(this._longAnime);
 
   @override
   Widget build(BuildContext context) {
-    if (_longAnime.scans.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.close,
-              color: Colors.red,
-            ),
-            Text("Il n'y a pas de scans pour cet anime"),
-          ],
-        ),
-      );
-    }
-
-    return Column(
+    return Row(
       children: [
         Expanded(
-          child: ListView.builder(
-            addAutomaticKeepAlives: false,
-            addRepaintBoundaries: false,
-            controller: ScrollController(),
-            itemCount: _longAnime.scans.length,
-            itemBuilder: (context, index) => ScanWidget(
-              scan: _longAnime.scans[index],
-            ),
+          child: JList(
+            direction: Axis.horizontal,
+            controller: scrollController,
+            children: _getWidgets(context),
           ),
         ),
       ],

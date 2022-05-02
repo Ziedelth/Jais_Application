@@ -1,34 +1,32 @@
 import 'package:jais/models/anime.dart';
+import 'package:jais/models/episode_type.dart';
+import 'package:jais/models/lang_type.dart';
+import 'package:jais/models/platform.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'scan.g.dart';
 
-@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
+@JsonSerializable(explicitToJson: true)
 class Scan {
-  final String platform;
-  final String platformUrl;
-  final String platformImage;
-  final int animeId;
-  final String anime;
-  final String animeImage;
+  final int id;
+  final Platform platform;
+  final Anime anime;
+  final EpisodeType episodeType;
+  final LangType langType;
   final String releaseDate;
   final int number;
-  final String episodeType;
-  final String langType;
   final String url;
 
   Scan(
-      this.platform,
-      this.platformUrl,
-      this.platformImage,
-      this.animeId,
-      this.anime,
-      this.animeImage,
-      this.releaseDate,
-      this.number,
-      this.episodeType,
-      this.langType,
-      this.url);
+    this.id,
+    this.platform,
+    this.anime,
+    this.episodeType,
+    this.langType,
+    this.releaseDate,
+    this.number,
+    this.url,
+  );
 
   factory Scan.fromJson(Map<String, dynamic> data) => _$ScanFromJson(data);
 

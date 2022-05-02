@@ -2,67 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:jais/components/skeleton.dart';
 
 class ScanLoaderWidget extends StatelessWidget {
-  const ScanLoaderWidget({
-    Key? key,
-  }) : super(key: key);
+  const ScanLoaderWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(5),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Theme.of(context).primaryColor,
-          ),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Row(
-                children: const [
-                  Skeleton(
-                    width: 25,
-                    height: 25,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 10),
-                  ),
-                  Skeleton(
-                    width: 250,
-                    height: 30,
-                  ),
-                ],
-              ), // Animé
-              const Padding(
-                padding: EdgeInsets.only(top: 10),
-              ),
-              Row(
-                children: const [
-                  Skeleton(
-                    width: 250,
-                    height: 20,
-                  ),
-                ],
-              ), // Info
-              const Padding(
-                padding: EdgeInsets.only(top: 10),
-              ),
-              Row(
-                children: const [
-                  Skeleton(
-                    width: 200,
-                    height: 20,
-                  ),
-                ],
-              ), // Time since
+    return Container(
+      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        border: Border.all(color: Theme.of(context).primaryColor),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: const [
+              Skeleton(width: 20, height: 20),
+              SizedBox(width: 10),
+              Expanded(child: Skeleton(height: 20)),
             ],
           ),
-        ),
+          const SizedBox(height: 10),
+          const Skeleton(width: 250, height: 15), // Info
+          const SizedBox(height: 5),
+          const Skeleton(width: 200, height: 15), // Time since
+        ],
       ),
     );
   }
