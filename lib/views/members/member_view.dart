@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:jais/components/animes/anime_list.dart';
 import 'package:jais/components/animes/anime_widget.dart';
+import 'package:jais/components/qr_member.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/models/member.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 class MemberView extends StatelessWidget {
   final Member member;
@@ -28,29 +28,7 @@ class MemberView extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => Scaffold(
-                    backgroundColor: Colors.black,
-                    appBar: AppBar(
-                      title: const Text('QR Code'),
-                    ),
-                    body: SafeArea(
-                      child: Center(
-                        child: QrImage(
-                          foregroundColor: Colors.white,
-                          data: 'profile:${member.pseudo}',
-                          size: 200,
-                          errorStateBuilder: (cxt, err) {
-                            return const Center(
-                              child: Text(
-                                "Uh oh! Something went wrong...",
-                                textAlign: TextAlign.center,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
+                  builder: (context) => QRMember(member: member),
                 ),
               );
             },
@@ -100,13 +78,17 @@ class MemberView extends StatelessWidget {
     return member.watchlist.map<Widget>(
       (e) {
         // Copy e
-        final anime = e.copyWith(
-          name: utf8.decode(e.name.codeUnits),
-          description:
-              (e.description != null && e.description?.isNotEmpty == true)
-                  ? utf8.decode(e.description!.codeUnits)
-                  : null,
-        );
+        var anime = e;
+
+        try {
+          anime = e.copyWith(
+            name: utf8.decode(e.name.codeUnits),
+            description:
+                (e.description != null && e.description?.isNotEmpty == true)
+                    ? utf8.decode(e.description!.codeUnits)
+                    : null,
+          );
+        } catch (_) {}
 
         return AnimeWidget(
           anime: anime,
