@@ -33,10 +33,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        backgroundColor: Colors.white,
+        brightness: Brightness.light,
+        useMaterial3: true,
+        primaryColor: mainColors[900],
+        colorScheme: ColorScheme.fromSeed(seedColor: mainColors[900]!),
+      ),
+      darkTheme: ThemeData(
+        backgroundColor: Colors.black,
         brightness: Brightness.dark,
+        useMaterial3: true,
         primaryColor: mainColors[900],
         primarySwatch: MaterialColor(mainColors[900]!.value, mainColors),
-        backgroundColor: Colors.black,
       ),
       home: const MyHomePage(),
     );
@@ -62,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     _pageController = PageController(initialPage: _currentIndex);
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!kIsWeb) createBanner();
       await member_mapper.loginWithToken();
       if (!mounted) return;
@@ -170,6 +178,7 @@ class _MyHomePageState extends State<MyHomePage> {
         showSelectedLabels: false,
         showUnselectedLabels: false,
         selectedItemColor: Theme.of(context).primaryColor,
+        unselectedItemColor: Colors.grey,
         currentIndex: _currentIndex,
         onTap: (index) => _pageController.animateToPage(
           index,

@@ -34,6 +34,7 @@ class _LoginViewState extends State<LoginView> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
               const SizedBox(height: 16),

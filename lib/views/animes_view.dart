@@ -94,11 +94,17 @@ class AnimesViewState extends State<AnimesView> {
 
     await _animeMapper.updateCurrentPage(
       simulcast: _currentSimulcast!,
-      onSuccess: () {
+      onSuccess: () async {
         _update(false);
 
         if (isNew) {
           _key = GlobalKey();
+          await Future.delayed(const Duration(milliseconds: 100));
+          _simulcastsScrollController.animateTo(
+            _simulcastsScrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
         }
       },
       onFailure: () =>
@@ -116,21 +122,11 @@ class AnimesViewState extends State<AnimesView> {
   void initState() {
     super.initState();
     _animeMapper.clear();
-    WidgetsBinding.instance?.addPostFrameCallback((_) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _simulcastMapper.update(
         onSuccess: () {
           // Set current simulcast to the last one
           _currentSimulcast = _simulcastMapper.list?.last;
-
-          if (!mounted) return;
-          setState(() {
-            _simulcastsScrollController.animateTo(
-              _simulcastsScrollController.position.maxScrollExtent,
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.easeInOut,
-            );
-          });
-
           setOperation(isNew: true);
         },
       );
@@ -197,7 +193,7 @@ class AnimesViewState extends State<AnimesView> {
             ),
           ),
           Expanded(
-            flex: isOnMobile(context) ? 10 : 4,
+            flex: isOnMobile(context) ? 9 : 4,
             child: AnimeList(
               scrollController: _scrollController,
               children: _animeMapper.list
@@ -282,9 +278,6 @@ class SimulcastsWidget extends StatelessWidget {
                     simulcast.simulcast,
                     style: TextStyle(
                       fontSize: 14,
-                      color: simulcast == this.simulcast
-                          ? Colors.black
-                          : Colors.white,
                       fontWeight:
                           simulcast == this.simulcast ? FontWeight.bold : null,
                     ),

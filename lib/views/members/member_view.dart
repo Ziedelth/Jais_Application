@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:jais/components/animes/anime_list.dart';
 import 'package:jais/components/animes/anime_widget.dart';
-import 'package:jais/components/qr_member.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/models/member.dart';
 
@@ -22,18 +21,6 @@ class MemberView extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.qr_code),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => QRMember(member: member),
-                ),
-              );
-            },
-          ),
-        ],
       ),
       body: SafeArea(
         child: Column(

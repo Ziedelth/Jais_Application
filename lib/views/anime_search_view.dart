@@ -31,7 +31,7 @@ class _AnimeSearchViewState extends State<AnimeSearchView> {
             border: InputBorder.none,
           ),
           autofocus: true,
-          onChanged: (value) async {
+          onSubmitted: (value) async {
             final animes = await widget.animeMapper.search(query: value);
             if (animes == null) return;
 

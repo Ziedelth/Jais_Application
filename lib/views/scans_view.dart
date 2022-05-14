@@ -49,7 +49,7 @@ class _ScansViewState extends State<ScansView> {
     super.initState();
     _scanMapper.clear();
     WidgetsBinding.instance
-        ?.addPostFrameCallback((_) => setOperation(isNew: true));
+        .addPostFrameCallback((_) => setOperation(isNew: true));
 
     _scrollController.addListener(() {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
