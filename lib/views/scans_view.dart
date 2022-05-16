@@ -2,7 +2,6 @@ import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:jais/components/scans/scan_list.dart';
 import 'package:jais/mappers/scan_mapper.dart';
-import 'package:jais/utils/utils.dart';
 
 class ScansView extends StatefulWidget {
   const ScansView({Key? key}) : super(key: key);
@@ -14,7 +13,6 @@ class ScansView extends StatefulWidget {
 class _ScansViewState extends State<ScansView> {
   final ScanMapper _scanMapper = ScanMapper();
   final ScrollController _scrollController = ScrollController();
-  GlobalKey _key = GlobalKey();
   bool _isLoading = true;
   CancelableOperation? _cancelableOperation;
 
@@ -24,32 +22,20 @@ class _ScansViewState extends State<ScansView> {
     setState(() {});
   }
 
-  Future<void> rebuildScans({bool isNew = false}) async {
-    await _scanMapper.updateCurrentPage(
-      onSuccess: () {
-        _update(false);
-
-        if (isNew) {
-          _key = GlobalKey();
-        }
-      },
-      onFailure: () =>
-          showSnackBar(context, 'An error occurred while loading scans'),
-    );
+  Future<void> rebuildScans() async {
+    await _scanMapper.updateCurrentPage(onSuccess: () => _update(false));
   }
 
-  void setOperation({bool isNew = false}) {
+  void setOperation() {
     _cancelableOperation?.cancel();
-    _cancelableOperation =
-        CancelableOperation.fromFuture(rebuildScans(isNew: isNew));
+    _cancelableOperation = CancelableOperation.fromFuture(rebuildScans());
   }
 
   @override
   void initState() {
     super.initState();
     _scanMapper.clear();
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => setOperation(isNew: true));
+    WidgetsBinding.instance.addPostFrameCallback((_) => setOperation());
 
     _scrollController.addListener(() {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
@@ -71,7 +57,6 @@ class _ScansViewState extends State<ScansView> {
         setOperation();
       },
       child: ScanList(
-        key: _key,
         scrollController: _scrollController,
         children: _scanMapper.list,
       ),

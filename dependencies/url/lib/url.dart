@@ -8,7 +8,9 @@ class URL {
     Map<String, String>? headers,
   }) async {
     try {
-      return http.get(Uri.parse(url), headers: headers);
+      return await http
+          .get(Uri.parse(url), headers: headers)
+          .timeout(const Duration(seconds: 10));
     } catch (_) {
       return null;
     }
@@ -20,7 +22,9 @@ class URL {
     Map<String, String>? body,
   }) async {
     try {
-      return http.post(Uri.parse(url), headers: headers, body: body);
+      return await http
+          .post(Uri.parse(url), headers: headers, body: body)
+          .timeout(const Duration(seconds: 10));
     } catch (_) {
       return null;
     }

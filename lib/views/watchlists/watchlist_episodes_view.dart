@@ -2,7 +2,6 @@ import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:jais/components/episodes/episode_list.dart';
 import 'package:jais/mappers/watchlist_mapper.dart';
-import 'package:jais/utils/utils.dart';
 
 class WatchlistEpisodesView extends StatefulWidget {
   final WatchlistMapper watchlistMapper;
@@ -16,7 +15,6 @@ class WatchlistEpisodesView extends StatefulWidget {
 
 class _WatchlistEpisodesViewState extends State<WatchlistEpisodesView> {
   final _scrollController = ScrollController();
-  GlobalKey _key = GlobalKey();
   bool _isLoading = true;
   CancelableOperation? _cancelableOperation;
 
@@ -26,24 +24,14 @@ class _WatchlistEpisodesViewState extends State<WatchlistEpisodesView> {
     setState(() {});
   }
 
-  Future<void> rebuildEpisodes({bool isNew = false}) async {
-    await widget.watchlistMapper.updateEpisodesCurrentPage(
-      onSuccess: () {
-        _update(false);
-
-        if (isNew) {
-          _key = GlobalKey();
-        }
-      },
-      onFailure: () =>
-          showSnackBar(context, 'An error occurred while loading episodes'),
-    );
+  Future<void> rebuildEpisodes() async {
+    await widget.watchlistMapper
+        .updateEpisodesCurrentPage(onSuccess: () => _update(false));
   }
 
   void setOperation({bool isNew = false}) {
     _cancelableOperation?.cancel();
-    _cancelableOperation =
-        CancelableOperation.fromFuture(rebuildEpisodes(isNew: isNew));
+    _cancelableOperation = CancelableOperation.fromFuture(rebuildEpisodes());
   }
 
   @override
@@ -67,7 +55,6 @@ class _WatchlistEpisodesViewState extends State<WatchlistEpisodesView> {
   Widget build(BuildContext context) {
     return EpisodeList(
       scrollController: _scrollController,
-      key: _key,
       children: widget.watchlistMapper.episodesList,
     );
   }

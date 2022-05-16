@@ -22,9 +22,7 @@ class _EpisodesDetailsViewState extends State<EpisodesDetailsView> {
         _selectedSeason = newValue;
         _episodes = widget._anime.episodes
             .where((element) => element.season == newValue)
-            .map<Widget>(
-              (element) => EpisodeWidget(episode: element),
-            )
+            .map<Widget>((element) => EpisodeWidget(episode: element))
             .toList();
       });
 
@@ -46,9 +44,7 @@ class _EpisodesDetailsViewState extends State<EpisodesDetailsView> {
 
       _episodes = widget._anime.episodes
           .where((element) => element.season == _selectedSeason)
-          .map<Widget>(
-            (element) => EpisodeWidget(episode: element),
-          )
+          .map<Widget>((element) => EpisodeWidget(episode: element))
           .toList();
     }
 

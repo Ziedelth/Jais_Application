@@ -48,20 +48,8 @@ class AnimeMapper {
   }
 
 // Convert a List<Anime> to List<AnimeWidget>
-  List<AnimeWidget> animesToWidgets(
-    List<Anime> animes, {
-    Function(Anime anime)? onUp,
-    Function(Anime anime)? onDown,
-  }) {
-    return animes
-        .map(
-          (e) => AnimeWidget(
-            anime: e,
-            onUp: onUp,
-            onDown: onDown,
-          ),
-        )
-        .toList();
+  List<AnimeWidget> animesToWidgets(List<Anime> animes) {
+    return animes.map((e) => AnimeWidget(anime: e)).toList();
   }
 
 // Update the list of animes
@@ -88,7 +76,6 @@ class AnimeMapper {
 
     logger.info('Successfully fetched $link');
     final animes = stringToAnimes(utf8.decode(response.bodyBytes));
-    logger.info('Animes: $animes');
 
     // If animes is null or empty, then the request failed
     if (animes == null) {
@@ -99,11 +86,7 @@ class AnimeMapper {
 
     logger.info('Successfully converted in animes list');
     // Convert the animes to widgets
-    final widgets = animesToWidgets(
-      animes,
-      onUp: onUp,
-      onDown: onDown,
-    );
+    final widgets = animesToWidgets(animes);
 
     // Remove the loader
     removeLoader();

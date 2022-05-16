@@ -43,28 +43,14 @@ class EpisodeMapper {
   }
 
 // Convert a List<Episode> to List<EpisodeWidget>
-  static List<EpisodeWidget> episodesToWidgets(
-    List<Episode> episodes, {
-    Function(Episode episode)? onUp,
-    Function(Episode episode)? onDown,
-  }) {
-    return episodes
-        .map(
-          (e) => EpisodeWidget(
-            episode: e,
-            onUp: onUp,
-            onDown: onDown,
-          ),
-        )
-        .toList();
+  static List<EpisodeWidget> episodesToWidgets(List<Episode> episodes) {
+    return episodes.map((e) => EpisodeWidget(episode: e)).toList();
   }
 
 // Update the list of episodes
   Future<void> updateCurrentPage({
     Function()? onSuccess,
     Function()? onFailure,
-    Function(Episode episode)? onUp,
-    Function(Episode episode)? onDown,
   }) async {
     final link =
         'https://api.ziedelth.fr/v1/episodes/country/${Country.name}/page/$currentPage/limit/$limit';
@@ -82,7 +68,6 @@ class EpisodeMapper {
 
     logger.info('Successfully fetched episodes');
     final episodes = stringToEpisodes(utf8.decode(response.bodyBytes));
-    logger.info('Episodes: $episodes');
 
     // If episodes is null or empty, then the request failed
     if (episodes == null || episodes.isEmpty) {
@@ -93,11 +78,7 @@ class EpisodeMapper {
 
     logger.info('Successfully converted in episodes list');
     // Convert the episodes to widgets
-    final widgets = episodesToWidgets(
-      episodes,
-      onUp: onUp,
-      onDown: onDown,
-    );
+    final widgets = episodesToWidgets(episodes);
 
     // Remove the loader
     removeLoader();

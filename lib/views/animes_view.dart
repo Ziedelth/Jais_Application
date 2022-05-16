@@ -26,7 +26,6 @@ class AnimesViewState extends State<AnimesView> {
 
   final ScrollController _simulcastsScrollController = ScrollController();
   final ScrollController _scrollController = ScrollController();
-  GlobalKey _key = GlobalKey();
   bool _isLoading = true;
   Simulcast? _currentSimulcast;
   bool _hasTap = false;
@@ -88,34 +87,17 @@ class AnimesViewState extends State<AnimesView> {
     );
   }
 
-  Future<void> rebuildAnimes({bool force = false, bool isNew = false}) async {
+  Future<void> rebuildAnimes({bool force = false}) async {
     if (_currentSimulcast == null) return;
     if (force) _animeMapper.clear();
 
     await _animeMapper.updateCurrentPage(
-      simulcast: _currentSimulcast!,
-      onSuccess: () async {
-        _update(false);
-
-        if (isNew) {
-          _key = GlobalKey();
-          await Future.delayed(const Duration(milliseconds: 100));
-          _simulcastsScrollController.animateTo(
-            _simulcastsScrollController.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
-        }
-      },
-      onFailure: () =>
-          showSnackBar(context, 'An error occurred while loading animes'),
-    );
+        simulcast: _currentSimulcast!, onSuccess: () => _update(false));
   }
 
-  void setOperation({bool isNew = false}) {
+  void setOperation() {
     _cancelableOperation?.cancel();
-    _cancelableOperation =
-        CancelableOperation.fromFuture(rebuildAnimes(isNew: isNew));
+    _cancelableOperation = CancelableOperation.fromFuture(rebuildAnimes());
   }
 
   @override
@@ -127,7 +109,7 @@ class AnimesViewState extends State<AnimesView> {
         onSuccess: () {
           // Set current simulcast to the last one
           _currentSimulcast = _simulcastMapper.list?.last;
-          setOperation(isNew: true);
+          _build();
         },
       );
     });
@@ -141,6 +123,17 @@ class AnimesViewState extends State<AnimesView> {
         setOperation();
       }
     });
+  }
+
+  Future<void> _build() async {
+    setOperation();
+
+    await Future.delayed(const Duration(milliseconds: 100));
+    _simulcastsScrollController.animateTo(
+      _simulcastsScrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
   }
 
   @override
@@ -170,12 +163,11 @@ class AnimesViewState extends State<AnimesView> {
               );
             });
 
-            setOperation(isNew: true);
+            _build();
           },
         );
       },
       child: Column(
-        key: _key,
         children: [
           Expanded(
             child: SimulcastsWidget(

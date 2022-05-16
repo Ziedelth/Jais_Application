@@ -5,8 +5,6 @@ import 'package:jais/components/episodes/episode_loader_widget.dart';
 import 'package:jais/components/scans/scan_loader_widget.dart';
 import 'package:jais/mappers/episode_mapper.dart';
 import 'package:jais/mappers/scan_mapper.dart';
-import 'package:jais/models/episode.dart';
-import 'package:jais/models/scan.dart';
 import 'package:logger/logger.dart' as logger;
 import 'package:url/url.dart';
 
@@ -45,8 +43,6 @@ class WatchlistMapper {
   Future<void> updateEpisodesCurrentPage({
     Function()? onSuccess,
     Function()? onFailure,
-    Function(Episode episode)? onUp,
-    Function(Episode episode)? onDown,
   }) async {
     final link =
         'https://api.ziedelth.fr/v1/watchlist/episodes/member/$pseudo/page/$currentPageEpisodes/limit/${EpisodeMapper.limit}';
@@ -65,7 +61,6 @@ class WatchlistMapper {
     logger.info('Successfully fetched episodes');
     final episodes =
         EpisodeMapper.stringToEpisodes(utf8.decode(response.bodyBytes));
-    logger.info('Episodes: $episodes');
 
     // If episodes is null or empty, then the request failed
     if (episodes == null) {
@@ -76,11 +71,7 @@ class WatchlistMapper {
 
     logger.info('Successfully converted in episodes list');
     // Convert the episodes to widgets
-    final widgets = EpisodeMapper.episodesToWidgets(
-      episodes,
-      onUp: onUp,
-      onDown: onDown,
-    );
+    final widgets = EpisodeMapper.episodesToWidgets(episodes);
 
     // Remove the loader
     removeEpisodeLoader();
@@ -98,8 +89,6 @@ class WatchlistMapper {
   Future<void> updateScansCurrentPage({
     Function()? onSuccess,
     Function()? onFailure,
-    Function(Scan scan)? onUp,
-    Function(Scan scan)? onDown,
   }) async {
     final link =
         'https://api.ziedelth.fr/v1/watchlist/scans/member/$pseudo/page/$currentPageScans/limit/${ScanMapper.limit}';
@@ -117,7 +106,6 @@ class WatchlistMapper {
 
     logger.info('Successfully fetched episodes');
     final scans = ScanMapper.stringToScans(utf8.decode(response.bodyBytes));
-    logger.info('Scans: $scans');
 
     // If scans is null or empty, then the request failed
     if (scans == null) {
@@ -128,11 +116,7 @@ class WatchlistMapper {
 
     logger.info('Successfully converted in scans list');
     // Convert the scans to widgets
-    final widgets = ScanMapper.scansToWidgets(
-      scans,
-      onUp: onUp,
-      onDown: onDown,
-    );
+    final widgets = ScanMapper.scansToWidgets(scans);
 
     // Remove the loader
     removeScanLoader();

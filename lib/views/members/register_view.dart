@@ -234,8 +234,8 @@ class _RegisterViewState extends State<RegisterView> {
 
                             logger.error(
                               'Exception when trying to register user',
-                              exception: exception,
-                              stackTrace: stackTrace,
+                              exception,
+                              stackTrace,
                             );
 
                             showSnackBar(context, 'Une erreur est survenue');

@@ -35,9 +35,9 @@ class _AnimeSearchViewState extends State<AnimeSearchView> {
             final animes = await widget.animeMapper.search(query: value);
             if (animes == null) return;
 
-            setState(() {
-              _animeWidgets.clear();
-              _animeWidgets.addAll(
+            _animeWidgets
+              ..clear()
+              ..addAll(
                 animes
                     .map<Widget>(
                       (e) => GestureDetector(
@@ -50,7 +50,8 @@ class _AnimeSearchViewState extends State<AnimeSearchView> {
                     )
                     .toList(),
               );
-            });
+
+            setState(() {});
           },
         ),
       ),

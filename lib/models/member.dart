@@ -13,8 +13,7 @@ class Member {
 
   Member(this.id, this.pseudo, this.token, this.role, this.watchlist);
 
-  factory Member.fromJson(Map<String, dynamic> data) =>
-      _$MemberFromJson(data);
+  factory Member.fromJson(Map<String, dynamic> data) => _$MemberFromJson(data);
 
   Map<String, dynamic> toJson() => _$MemberToJson(this);
 }

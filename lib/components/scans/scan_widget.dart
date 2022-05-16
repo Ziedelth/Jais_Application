@@ -6,11 +6,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 class ScanWidget extends StatelessWidget {
   final Scan scan;
-  final Function(Scan scan)? onUp;
-  final Function(Scan scan)? onDown;
 
-  const ScanWidget({required this.scan, this.onUp, this.onDown, Key? key})
-      : super(key: key);
+  const ScanWidget({required this.scan, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

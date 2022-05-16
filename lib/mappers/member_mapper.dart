@@ -81,7 +81,8 @@ Future<void> loginWithToken() async {
     }
 
     // Decode response to member
-    final member = Member.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+    final member =
+        Member.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
 
     // If responseBody not contains token, return an error
     if (member.token == null) {
@@ -94,8 +95,8 @@ Future<void> loginWithToken() async {
   } catch (exception, stackTrace) {
     logger.error(
       'Exception when trying to login',
-      exception: exception,
-      stackTrace: stackTrace,
+      exception,
+      stackTrace,
     );
   }
 }
@@ -106,7 +107,8 @@ bool hasAnimeInWatchlist(Anime anime) {
     return false;
   }
 
-  return getMember()?.watchlist.any((element) => element.id == anime.id) ?? false;
+  return getMember()?.watchlist.any((element) => element.id == anime.id) ??
+      false;
 }
 
 // Add anime in watchlist
@@ -134,8 +136,8 @@ Future<void> addAnimeInWatchlist(Anime anime) async {
   } catch (exception, stackTrace) {
     logger.error(
       'Exception when trying to add anime in watchlist',
-      exception: exception,
-      stackTrace: stackTrace,
+      exception,
+      stackTrace,
     );
   }
 }
@@ -165,8 +167,8 @@ Future<void> removeAnimeInWatchlist(Anime anime) async {
   } catch (exception, stackTrace) {
     logger.error(
       'Exception when trying to remove anime in watchlist',
-      exception: exception,
-      stackTrace: stackTrace,
+      exception,
+      stackTrace,
     );
   }
 }

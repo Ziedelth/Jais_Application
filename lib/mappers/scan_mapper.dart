@@ -43,28 +43,14 @@ class ScanMapper {
   }
 
 // Convert a List<Scan> to List<ScanWidget>
-  static List<ScanWidget> scansToWidgets(
-    List<Scan> scans, {
-    Function(Scan scan)? onUp,
-    Function(Scan scan)? onDown,
-  }) {
-    return scans
-        .map(
-          (e) => ScanWidget(
-            scan: e,
-            onUp: onUp,
-            onDown: onDown,
-          ),
-        )
-        .toList();
+  static List<ScanWidget> scansToWidgets(List<Scan> scans) {
+    return scans.map((e) => ScanWidget(scan: e)).toList();
   }
 
 // Update the list of scans
   Future<void> updateCurrentPage({
     Function()? onSuccess,
     Function()? onFailure,
-    Function(Scan scan)? onUp,
-    Function(Scan scan)? onDown,
   }) async {
     final link =
         'https://api.ziedelth.fr/v1/scans/country/${Country.name}/page/$currentPage/limit/$limit';
@@ -82,7 +68,6 @@ class ScanMapper {
 
     logger.info('Successfully fetched $link');
     final scans = stringToScans(utf8.decode(response.bodyBytes));
-    logger.info('Scans: $scans');
 
     // If scans is null or empty, then the request failed
     if (scans == null || scans.isEmpty) {
@@ -93,11 +78,7 @@ class ScanMapper {
 
     logger.info('Successfully converted in scans list');
     // Convert the scans to widgets
-    final widgets = scansToWidgets(
-      scans,
-      onUp: onUp,
-      onDown: onDown,
-    );
+    final widgets = scansToWidgets(scans);
 
     // Remove the loader
     removeLoader();

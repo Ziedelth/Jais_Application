@@ -2,7 +2,6 @@ import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:jais/components/episodes/episode_list.dart';
 import 'package:jais/mappers/episode_mapper.dart';
-import 'package:jais/utils/utils.dart';
 
 class EpisodesView extends StatefulWidget {
   const EpisodesView({Key? key}) : super(key: key);
@@ -14,7 +13,6 @@ class EpisodesView extends StatefulWidget {
 class _EpisodesViewState extends State<EpisodesView> {
   final _episodeMapper = EpisodeMapper();
   final _scrollController = ScrollController();
-  GlobalKey _key = GlobalKey();
   bool _isLoading = true;
   CancelableOperation? _cancelableOperation;
 
@@ -24,32 +22,20 @@ class _EpisodesViewState extends State<EpisodesView> {
     setState(() {});
   }
 
-  Future<void> rebuildEpisodes({bool isNew = false}) async {
-    await _episodeMapper.updateCurrentPage(
-      onSuccess: () {
-        _update(false);
-
-        if (isNew) {
-          _key = GlobalKey();
-        }
-      },
-      onFailure: () =>
-          showSnackBar(context, 'An error occurred while loading episodes'),
-    );
+  Future<void> rebuildEpisodes() async {
+    await _episodeMapper.updateCurrentPage(onSuccess: () => _update(false));
   }
 
-  void setOperation({bool isNew = false}) {
+  void setOperation() {
     _cancelableOperation?.cancel();
-    _cancelableOperation =
-        CancelableOperation.fromFuture(rebuildEpisodes(isNew: isNew));
+    _cancelableOperation = CancelableOperation.fromFuture(rebuildEpisodes());
   }
 
   @override
   void initState() {
     super.initState();
     _episodeMapper.clear();
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => setOperation(isNew: true));
+    WidgetsBinding.instance.addPostFrameCallback((_) => setOperation());
 
     _scrollController.addListener(() {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
@@ -71,7 +57,6 @@ class _EpisodesViewState extends State<EpisodesView> {
         setOperation();
       },
       child: EpisodeList(
-        key: _key,
         scrollController: _scrollController,
         children: _episodeMapper.list,
       ),

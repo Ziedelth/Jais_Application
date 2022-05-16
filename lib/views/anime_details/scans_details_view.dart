@@ -9,9 +9,7 @@ class ScansDetailsView extends StatelessWidget {
 
   ScansDetailsView(this._anime) {
     _scans = _anime.scans
-        .map<Widget>(
-          (element) => ScanWidget(scan: element),
-        )
+        .map<Widget>((element) => ScanWidget(scan: element))
         .toList();
   }
 

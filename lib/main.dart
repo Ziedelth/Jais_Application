@@ -77,7 +77,10 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {});
 
       if (member_mapper.isConnected()) {
-        showSnackBar(context, 'De retour, ${member_mapper.getMember()?.pseudo} !');
+        showSnackBar(
+          context,
+          'De retour, ${member_mapper.getMember()?.pseudo} !',
+        );
       }
     });
   }

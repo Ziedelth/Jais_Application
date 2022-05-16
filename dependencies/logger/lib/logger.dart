@@ -19,7 +19,11 @@ void debug(String message) => log(logType: LogType.debug, message: message);
 
 void warning(String message) => log(logType: LogType.warning, message: message);
 
-void error(String message, {Object? exception, StackTrace? stackTrace}) => log(
+void error(String message, [Object? exception, StackTrace? stackTrace]) => log(
       logType: LogType.error,
-      message: '$message, Exception: $exception\n$stackTrace',
+      message: '$message${exception.nextLine()}${stackTrace.nextLine()}',
     );
+
+extension QString on Object? {
+  String nextLine() => this == null ? '' : '\n${toString()}';
+}

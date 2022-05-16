@@ -13,69 +13,69 @@ class MemberView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    try {
-      return Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
-        appBar: AppBar(
-          title: const Text('Profil'),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
+    return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
+      appBar: AppBar(
+        title: const Text('Profil'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
         ),
-        body: SafeArea(
-          child: Column(
-            children: [
-              const SizedBox(height: 16),
-              Text(
-                member.pseudo,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(height: 16),
+            Text(
+              member.pseudo,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
               ),
-              const SizedBox(height: 10),
-              Text(
-                member_mapper.roleToString(member.role),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              member_mapper.roleToString(member.role),
+            ),
+            const SizedBox(height: 5),
+            const Divider(
+              color: Colors.white,
+              thickness: 1,
+            ),
+            const SizedBox(height: 5),
+            const Text(
+              'Watchlist :',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
               ),
-              const SizedBox(height: 5),
-              const Divider(
-                color: Colors.white,
-                thickness: 1,
+            ),
+            const SizedBox(height: 10),
+            Expanded(
+              child: AnimeList(
+                children: buildList(),
               ),
-              const SizedBox(height: 5),
-              const Text(
-                'Watchlist :',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Expanded(
-                child: AnimeList(
-                  children: buildList(),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-      );
-    } catch (exception, stackTrace) {
-      return printErrorWidget("Une erreur est survenue lors de l'affichage du membre", exception, stackTrace);
-    }
+      ),
+    );
   }
 
   List<Widget> buildList() {
     return member.watchlist.map<Widget>(
       (e) {
         // Copy e
-        var anime = e.copyWith(
-          name: utf8.decode(e.name.codeUnits),
-          description:
-          (e.description != null && e.description?.isNotEmpty == true)
-              ? utf8.decode(e.description!.codeUnits)
-              : null
-        );
+        var anime = e;
+
+        try {
+          anime = e.copyWith(
+            name: utf8.decode(e.name.codeUnits),
+            description:
+                (e.description != null && e.description?.isNotEmpty == true)
+                    ? utf8.decode(e.description!.codeUnits)
+                    : null,
+          );
+        } catch (_) {}
 
         return AnimeWidget(
           anime: anime,

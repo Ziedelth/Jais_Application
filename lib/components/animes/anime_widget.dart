@@ -5,11 +5,8 @@ import 'package:jais/models/anime.dart';
 
 class AnimeWidget extends StatelessWidget {
   final Anime anime;
-  final Function(Anime anime)? onUp;
-  final Function(Anime anime)? onDown;
 
-  const AnimeWidget({required this.anime, this.onUp, this.onDown, Key? key})
-      : super(key: key);
+  const AnimeWidget({required this.anime, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
