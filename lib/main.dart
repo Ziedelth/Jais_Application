@@ -15,10 +15,17 @@ import 'package:jais/views/scans_view.dart';
 import 'package:jais/views/settings_view.dart';
 import 'package:jais/views/watchlist_view.dart';
 import 'package:notifications/notifications.dart' as notifications;
+import 'package:logger/logger.dart' as logger;
 import 'package:package_info_plus/package_info_plus.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Catch errors
+  FlutterError.onError = (FlutterErrorDetails details) {
+    logger.error(details.toString(), details.exception, details.stack);
+  };
+
   if (!kIsWeb) await MobileAds.instance.initialize();
   await notifications.init();
   await member_mapper.init();
