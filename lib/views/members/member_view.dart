@@ -5,6 +5,7 @@ import 'package:jais/components/animes/anime_list.dart';
 import 'package:jais/components/animes/anime_widget.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/models/member.dart';
+import 'package:jais/utils/errors.dart';
 
 class MemberView extends StatelessWidget {
   final Member member;
@@ -13,48 +14,52 @@ class MemberView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      appBar: AppBar(
-        title: const Text('Profil'),
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 16),
-            Text(
-              member.pseudo,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              member_mapper.roleToString(member.role),
-            ),
-            const SizedBox(height: 5),
-            const Divider(
-              color: Colors.white,
-              thickness: 1,
-            ),
-            const SizedBox(height: 5),
-            const Text(
-              'Watchlist :',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: AnimeList(
-                children: buildList(),
-              ),
-            ),
-          ],
+    try {
+      return Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
+        appBar: AppBar(
+          title: const Text('Profil'),
         ),
-      ),
-    );
+        body: SafeArea(
+          child: Column(
+            children: [
+              const SizedBox(height: 16),
+              Text(
+                member.pseudo,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                member_mapper.roleToString(member.role),
+              ),
+              const SizedBox(height: 5),
+              const Divider(
+                color: Colors.white,
+                thickness: 1,
+              ),
+              const SizedBox(height: 5),
+              const Text(
+                'Watchlist :',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Expanded(
+                child: AnimeList(
+                  children: buildList(),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    } catch (exception, stackTrace) {
+      return printErrorWidget("Une erreur est survenue lors de l'affichage du membre", exception, stackTrace);
+    }
   }
 
   List<Widget> buildList() {
