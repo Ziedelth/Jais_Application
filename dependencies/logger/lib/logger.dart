@@ -24,6 +24,6 @@ void error(String message, [Object? exception, StackTrace? stackTrace]) => log(
       message: '$message${exception.nextLine()}${stackTrace.nextLine()}',
     );
 
-extension QString on Object? {
+extension _QString on Object? {
   String nextLine() => this == null ? '' : '\n${toString()}';
 }
