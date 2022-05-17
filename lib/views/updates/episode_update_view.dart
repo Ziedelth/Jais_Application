@@ -92,6 +92,7 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
           child: Column(
             children: [
               DropdownButtonFormField<int>(
@@ -105,12 +106,12 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                         value: platform.id,
                         child: Text(platform.name),
                       ),
-                    )
+                )
                     .toList(),
                 onChanged: (platform) {
                   if (platform == null) return;
                   widget.episode.platform = platformMapper.list.firstWhere(
-                    (p) => p.id == platform,
+                        (p) => p.id == platform,
                   );
                   if (!mounted) return;
                   setState(() {});
@@ -125,17 +126,17 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 items: episodeTypeMapper.list
                     .map<DropdownMenuItem<int>>(
                       (episodeType) => DropdownMenuItem<int>(
-                        value: episodeType.id,
-                        child: Text(episodeType.name),
-                      ),
-                    )
+                    value: episodeType.id,
+                    child: Text(episodeType.name),
+                  ),
+                )
                     .toList(),
                 onChanged: (episodeType) {
                   if (episodeType == null) return;
                   widget.episode.episodeType =
                       episodeTypeMapper.list.firstWhere(
-                    (p) => p.id == episodeType,
-                  );
+                            (p) => p.id == episodeType,
+                      );
                   if (!mounted) return;
                   setState(() {});
                 },
@@ -149,15 +150,15 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 items: langTypeMapper.list
                     .map<DropdownMenuItem<int>>(
                       (langType) => DropdownMenuItem<int>(
-                        value: langType.id,
-                        child: Text(langType.name),
-                      ),
-                    )
+                    value: langType.id,
+                    child: Text(langType.name),
+                  ),
+                )
                     .toList(),
                 onChanged: (langType) {
                   if (langType == null) return;
                   widget.episode.langType = langTypeMapper.list.firstWhere(
-                    (p) => p.id == langType,
+                        (p) => p.id == langType,
                   );
                   if (!mounted) return;
                   setState(() {});
@@ -179,7 +180,7 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                   labelText: 'Saison',
                 ),
                 onChanged: (value) =>
-                    widget.episode.season = int.tryParse(value) ?? 0,
+                widget.episode.season = int.tryParse(value) ?? 0,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -189,7 +190,7 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                   labelText: 'Numéro',
                 ),
                 onChanged: (value) =>
-                    widget.episode.number = int.tryParse(value) ?? 0,
+                widget.episode.number = int.tryParse(value) ?? 0,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -231,7 +232,7 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                   labelText: 'Durée',
                 ),
                 onChanged: (value) =>
-                    widget.episode.duration = int.tryParse(value) ?? 0,
+                widget.episode.duration = int.tryParse(value) ?? 0,
               ),
             ],
           ),

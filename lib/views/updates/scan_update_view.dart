@@ -92,6 +92,7 @@ class _ScanUpdateViewState extends State<ScanUpdateView> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
           child: Column(
             children: [
               DropdownButtonFormField<int>(
@@ -105,12 +106,12 @@ class _ScanUpdateViewState extends State<ScanUpdateView> {
                         value: platform.id,
                         child: Text(platform.name),
                       ),
-                    )
+                )
                     .toList(),
                 onChanged: (platform) {
                   if (platform == null) return;
                   widget.scan.platform = platformMapper.list.firstWhere(
-                    (p) => p.id == platform,
+                        (p) => p.id == platform,
                   );
                   if (!mounted) return;
                   setState(() {});
@@ -125,15 +126,15 @@ class _ScanUpdateViewState extends State<ScanUpdateView> {
                 items: episodeTypeMapper.list
                     .map<DropdownMenuItem<int>>(
                       (episodeType) => DropdownMenuItem<int>(
-                        value: episodeType.id,
-                        child: Text(episodeType.name),
-                      ),
-                    )
+                    value: episodeType.id,
+                    child: Text(episodeType.name),
+                  ),
+                )
                     .toList(),
                 onChanged: (episodeType) {
                   if (episodeType == null) return;
                   widget.scan.episodeType = episodeTypeMapper.list.firstWhere(
-                    (p) => p.id == episodeType,
+                        (p) => p.id == episodeType,
                   );
                   if (!mounted) return;
                   setState(() {});
@@ -148,15 +149,15 @@ class _ScanUpdateViewState extends State<ScanUpdateView> {
                 items: langTypeMapper.list
                     .map<DropdownMenuItem<int>>(
                       (langType) => DropdownMenuItem<int>(
-                        value: langType.id,
-                        child: Text(langType.name),
-                      ),
-                    )
+                    value: langType.id,
+                    child: Text(langType.name),
+                  ),
+                )
                     .toList(),
                 onChanged: (langType) {
                   if (langType == null) return;
                   widget.scan.langType = langTypeMapper.list.firstWhere(
-                    (p) => p.id == langType,
+                        (p) => p.id == langType,
                   );
                   if (!mounted) return;
                   setState(() {});
@@ -178,7 +179,7 @@ class _ScanUpdateViewState extends State<ScanUpdateView> {
                   labelText: 'Numéro',
                 ),
                 onChanged: (value) =>
-                    widget.scan.number = int.tryParse(value) ?? 0,
+                widget.scan.number = int.tryParse(value) ?? 0,
               ),
               const SizedBox(height: 16),
               TextFormField(

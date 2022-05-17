@@ -109,6 +109,7 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                 controller: _tabController,
                 children: [
                   SingleChildScrollView(
+                    padding: const EdgeInsets.all(16),
                     child: Column(
                       children: [
                         const SizedBox(height: 16),
@@ -153,12 +154,13 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                           minLines: 3,
                           maxLines: 10,
                           onChanged: (value) =>
-                              widget.anime.description = value,
+                          widget.anime.description = value,
                         ),
                       ],
                     ),
                   ),
                   SingleChildScrollView(
+                    padding: const EdgeInsets.all(16),
                     child: Column(
                       children: [
                         const SizedBox(height: 16),
@@ -170,16 +172,18 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                                 .map<int>((e) => e.id)
                                 .toList()
                                 .contains(genre.id),
-                            onChanged: (value) {
-                              if (value == true) {
+                                onChanged: (value) {
+                                  if (value == true) {
                                 widget.anime.genres.add(genre);
                               } else {
                                 widget.anime.genres.removeWhere(
                                   (e) => e.id == genre.id,
                                 );
                               }
+
+                              setState(() {});
                             },
-                          ),
+                              ),
                         ),
                       ],
                     ),
