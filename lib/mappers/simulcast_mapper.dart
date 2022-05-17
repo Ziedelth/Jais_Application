@@ -44,7 +44,6 @@ class SimulcastMapper {
 
     logger.info('Successfully fetched $link');
     final simulcasts = stringToSimulcasts(utf8.decode(response.bodyBytes));
-    logger.info('Simulcasts: $simulcasts');
 
     // If scans is null or empty, then the request failed
     if (simulcasts == null || simulcasts.isEmpty) {

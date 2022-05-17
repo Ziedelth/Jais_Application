@@ -22,10 +22,7 @@ class EpisodeList extends StatelessWidget {
       return GridView(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
-          // childAspectRatio: (width * 1.125) / 1245,
-          // childAspectRatio: 4.95E-4 * width + 0.514,
           childAspectRatio: -1.9 + 0.42 * log(width),
-          // childAspectRatio: 1.285,
         ),
         controller: scrollController,
         children: children,

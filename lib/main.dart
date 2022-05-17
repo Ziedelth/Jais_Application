@@ -14,8 +14,8 @@ import 'package:jais/views/episodes_view.dart';
 import 'package:jais/views/scans_view.dart';
 import 'package:jais/views/settings_view.dart';
 import 'package:jais/views/watchlist_view.dart';
-import 'package:notifications/notifications.dart' as notifications;
 import 'package:logger/logger.dart' as logger;
+import 'package:notifications/notifications.dart' as notifications;
 import 'package:package_info_plus/package_info_plus.dart';
 
 Future<void> main() async {

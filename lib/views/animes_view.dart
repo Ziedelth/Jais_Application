@@ -92,7 +92,9 @@ class AnimesViewState extends State<AnimesView> {
     if (force) _animeMapper.clear();
 
     await _animeMapper.updateCurrentPage(
-        simulcast: _currentSimulcast!, onSuccess: () => _update(false));
+      simulcast: _currentSimulcast!,
+      onSuccess: () => _update(false),
+    );
   }
 
   void setOperation() {
@@ -129,11 +131,15 @@ class AnimesViewState extends State<AnimesView> {
     setOperation();
 
     await Future.delayed(const Duration(milliseconds: 100));
-    _simulcastsScrollController.animateTo(
-      _simulcastsScrollController.position.maxScrollExtent,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
+    if (!mounted) return;
+
+    try {
+      _simulcastsScrollController.animateTo(
+        _simulcastsScrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    } catch (_) {}
   }
 
   @override

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:jais/components/platform_widget.dart';
+import 'package:jais/mappers/member_mapper.dart' as member_mapper;
+import 'package:jais/models/member_role.dart';
 import 'package:jais/models/scan.dart';
 import 'package:jais/utils/utils.dart';
+import 'package:jais/views/updates/scan_update_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ScanWidget extends StatelessWidget {
@@ -12,6 +15,27 @@ class ScanWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: () => launchUrl(Uri.parse(scan.url)),
+      onLongPress: () {
+        if (!member_mapper.isConnected()) {
+          return;
+        }
+
+        final member = member_mapper.getMember()!;
+
+        if (member.role != MemberRole.admin) {
+          return;
+        }
+
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ScanUpdateView(
+              scan: scan,
+              member: member,
+            ),
+          ),
+        );
+      },
       child: Container(
         padding: const EdgeInsets.all(10),
         margin: const EdgeInsets.all(5),
@@ -50,7 +74,6 @@ class ScanWidget extends StatelessWidget {
           ],
         ),
       ),
-      onTap: () => launchUrl(Uri.parse(scan.url)),
     );
   }
 }

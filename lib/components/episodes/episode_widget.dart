@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:jais/components/platform_widget.dart';
 import 'package:jais/components/roundborder_widget.dart';
 import 'package:jais/components/skeleton.dart';
+import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/models/episode.dart';
+import 'package:jais/models/member_role.dart';
 import 'package:jais/utils/utils.dart';
+import 'package:jais/views/updates/episode_update_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class EpisodeWidget extends StatelessWidget {
@@ -14,65 +17,86 @@ class EpisodeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      margin: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Theme.of(context).primaryColor,
-        ),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              PlatformWidget(episode.platform),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  episode.anime.name,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Text(
-            episode.title ?? '＞﹏＜',
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              // fontSize: 13,
+    return GestureDetector(
+      onTap: () => launchUrl(Uri.parse(episode.url)),
+      onLongPress: () {
+        if (!member_mapper.isConnected()) {
+          return;
+        }
+
+        final member = member_mapper.getMember()!;
+
+        if (member.role != MemberRole.admin) {
+          return;
+        }
+
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => EpisodeUpdateView(
+              episode: episode,
+              member: member,
             ),
           ),
-          Text(
-            '${episode.anime.country.season} ${episode.season} • ${episode.episodeType.fr} ${episode.number} ${episode.langType.fr}',
-            overflow: TextOverflow.ellipsis,
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        margin: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Theme.of(context).primaryColor,
           ),
-          Row(
-            children: [
-              const Icon(Icons.movie),
-              const SizedBox(width: 5),
-              Text(printDuration(Duration(seconds: episode.duration))),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          if (!isOnMobile(context))
-            Expanded(
-              child: RoundBorderWidget(
-                widget: GestureDetector(
-                  child: CachedNetworkImage(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                PlatformWidget(episode.platform),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    episode.anime.name,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              episode.title ?? '＞﹏＜',
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                // fontSize: 13,
+              ),
+            ),
+            Text(
+              '${episode.anime.country.season} ${episode.season} • ${episode.episodeType.fr} ${episode.number} ${episode.langType.fr}',
+              overflow: TextOverflow.ellipsis,
+            ),
+            Row(
+              children: [
+                const Icon(Icons.movie),
+                const SizedBox(width: 5),
+                Text(printDuration(Duration(seconds: episode.duration))),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            if (!isOnMobile(context))
+              Expanded(
+                child: RoundBorderWidget(
+                  widget: CachedNetworkImage(
                     imageUrl: 'https://ziedelth.fr/${episode.image}',
                     imageBuilder: (context, imageProvider) => Image(
                       image: imageProvider,
@@ -81,14 +105,11 @@ class EpisodeWidget extends StatelessWidget {
                     placeholder: (context, url) => const Skeleton(),
                     errorWidget: (context, url, error) => const Skeleton(),
                   ),
-                  onTap: () => launchUrl(Uri.parse(episode.url)),
                 ),
               ),
-            ),
-          if (isOnMobile(context))
-            RoundBorderWidget(
-              widget: GestureDetector(
-                child: CachedNetworkImage(
+            if (isOnMobile(context))
+              RoundBorderWidget(
+                widget: CachedNetworkImage(
                   imageUrl: 'https://ziedelth.fr/${episode.image}',
                   imageBuilder: (context, imageProvider) => Image(
                     image: imageProvider,
@@ -101,16 +122,15 @@ class EpisodeWidget extends StatelessWidget {
                     height: 200,
                   ),
                 ),
-                onTap: () => launchUrl(Uri.parse(episode.url)),
               ),
+            const SizedBox(
+              height: 10,
             ),
-          const SizedBox(
-            height: 10,
-          ),
-          Text(
-            'Il y a ${printTimeSince(DateTime.parse(episode.releaseDate))}',
-          ),
-        ],
+            Text(
+              'Il y a ${printTimeSince(DateTime.parse(episode.releaseDate))}',
+            ),
+          ],
+        ),
       ),
     );
   }

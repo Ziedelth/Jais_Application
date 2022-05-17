@@ -20,7 +20,6 @@ class AnimeList extends StatelessWidget {
       return GridView(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
-          // childAspectRatio: 1.5,
           childAspectRatio: 2.2E-3 * width + 0.0772,
         ),
         controller: scrollController,

@@ -9,18 +9,18 @@ part 'episode.g.dart';
 @JsonSerializable(explicitToJson: true)
 class Episode {
   final int id;
-  final Platform platform;
+  Platform platform;
   final Anime anime;
-  final EpisodeType episodeType;
-  final LangType langType;
-  final String releaseDate;
-  final int season;
-  final int number;
-  final String episodeId;
-  final String? title;
-  final String url;
-  final String image;
-  final int duration;
+  EpisodeType episodeType;
+  LangType langType;
+  String releaseDate;
+  int season;
+  int number;
+  String episodeId;
+  String? title;
+  String url;
+  String image;
+  int duration;
 
   Episode(
     this.id,

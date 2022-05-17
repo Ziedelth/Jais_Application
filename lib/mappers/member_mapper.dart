@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/member.dart';
+import 'package:jais/models/member_role.dart';
 import 'package:logger/logger.dart' as logger;
 import 'package:notifications/notifications.dart' as notifications;
 import 'package:url/url.dart';
@@ -201,7 +202,7 @@ void setWatchlistNotifications() {
 
 String roleToString(int? role) {
   switch (role) {
-    case 100:
+    case MemberRole.admin:
       return "Administrateur";
     case 0:
     default:
