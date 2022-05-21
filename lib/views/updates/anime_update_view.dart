@@ -194,14 +194,17 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                                 },
                               ),
                             )
-                            .where((CheckboxListTile element) =>
-                                (_searchText.isNotEmpty &&
-                                    _searchText.toLowerCase().contains(
-                                        (element.title as Text?)
-                                                ?.data
-                                                ?.toLowerCase() ??
-                                            '')) ||
-                                _searchText.isEmpty),
+                            .where(
+                              (CheckboxListTile element) =>
+                                  (_searchText.isNotEmpty &&
+                                      _searchText.toLowerCase().startsWith(
+                                            (element.title as Text?)
+                                                    ?.data
+                                                    ?.toLowerCase() ??
+                                                '',
+                                          )) ||
+                                  _searchText.isEmpty,
+                            ),
                       ],
                     ),
                   ),
