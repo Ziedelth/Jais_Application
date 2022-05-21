@@ -78,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _pageController = PageController(initialPage: _currentIndex);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (!kIsWeb) createBanner();
+      if (!kIsWeb) createGlobalBanner();
       await member_mapper.loginWithToken();
       if (!mounted) return;
       setState(() {});
@@ -148,8 +148,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     const SizedBox(width: 10),
                     if (!kIsWeb)
                       Expanded(
-                        child: bannerAd != null
-                            ? AdWidget(ad: bannerAd!)
+                        child: globalBannerAd != null
+                            ? AdWidget(ad: globalBannerAd!)
                             : Container(
                                 color: Theme.of(context).backgroundColor,
                               ),

@@ -1,7 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:jais/components/animes/anime_list.dart';
 import 'package:jais/mappers/anime_mapper.dart';
 import 'package:jais/models/anime.dart';
+import 'package:jais/utils/jais_ad.dart';
 
 class AnimeSearchView extends StatefulWidget {
   const AnimeSearchView({
@@ -19,6 +22,15 @@ class AnimeSearchView extends StatefulWidget {
 
 class _AnimeSearchViewState extends State<AnimeSearchView> {
   final List<Widget> _animeWidgets = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!kIsWeb) createSearchBanner();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,13 +53,13 @@ class _AnimeSearchViewState extends State<AnimeSearchView> {
                 animes
                     .map<Widget>(
                       (e) => GestureDetector(
-                        child: e,
-                        onTap: () {
-                          Navigator.pop(context);
-                          widget.onTap(e.anime);
-                        },
-                      ),
-                    )
+                    child: e,
+                    onTap: () {
+                      Navigator.pop(context);
+                      widget.onTap(e.anime);
+                    },
+                  ),
+                )
                     .toList(),
               );
 
@@ -57,6 +69,11 @@ class _AnimeSearchViewState extends State<AnimeSearchView> {
       ),
       body: Column(
         children: [
+          if (!kIsWeb && searchBannerAd != null)
+            SizedBox(
+              height: 50,
+              child: AdWidget(ad: searchBannerAd!),
+            ),
           Expanded(
             child: AnimeList(
               children: _animeWidgets,
