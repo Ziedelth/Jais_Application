@@ -68,7 +68,7 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
               final response = await URL().put(
                 'https://api.ziedelth.fr/v1/episodes/update',
                 headers: {
-                  'Authorization': widget.member.token!,
+                  'Authorization': widget.member.token ?? '',
                 },
                 body: jsonEncode(widget.episode.toJson()),
               );
@@ -126,17 +126,17 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 items: episodeTypeMapper.list
                     .map<DropdownMenuItem<int>>(
                       (episodeType) => DropdownMenuItem<int>(
-                    value: episodeType.id,
-                    child: Text(episodeType.name),
-                  ),
-                )
+                        value: episodeType.id,
+                        child: Text(episodeType.fr),
+                      ),
+                    )
                     .toList(),
                 onChanged: (episodeType) {
                   if (episodeType == null) return;
                   widget.episode.episodeType =
                       episodeTypeMapper.list.firstWhere(
-                            (p) => p.id == episodeType,
-                      );
+                    (p) => p.id == episodeType,
+                  );
                   if (!mounted) return;
                   setState(() {});
                 },
@@ -150,10 +150,10 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 items: langTypeMapper.list
                     .map<DropdownMenuItem<int>>(
                       (langType) => DropdownMenuItem<int>(
-                    value: langType.id,
-                    child: Text(langType.name),
-                  ),
-                )
+                        value: langType.id,
+                        child: Text(langType.fr),
+                      ),
+                    )
                     .toList(),
                 onChanged: (langType) {
                   if (langType == null) return;
@@ -180,7 +180,7 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                   labelText: 'Saison',
                 ),
                 onChanged: (value) =>
-                widget.episode.season = int.tryParse(value) ?? 0,
+                    widget.episode.season = int.tryParse(value) ?? 0,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -190,7 +190,7 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                   labelText: 'Numéro',
                 ),
                 onChanged: (value) =>
-                widget.episode.number = int.tryParse(value) ?? 0,
+                    widget.episode.number = int.tryParse(value) ?? 0,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -232,7 +232,7 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                   labelText: 'Durée',
                 ),
                 onChanged: (value) =>
-                widget.episode.duration = int.tryParse(value) ?? 0,
+                    widget.episode.duration = int.tryParse(value) ?? 0,
               ),
             ],
           ),

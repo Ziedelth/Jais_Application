@@ -14,6 +14,7 @@ class WatchlistScansView extends StatefulWidget {
 
 class _WatchlistScansViewState extends State<WatchlistScansView> {
   final _scrollController = ScrollController();
+  GlobalKey _key = GlobalKey();
   bool _isLoading = true;
   CancelableOperation? _cancelableOperation;
 
@@ -23,14 +24,22 @@ class _WatchlistScansViewState extends State<WatchlistScansView> {
     setState(() {});
   }
 
-  Future<void> rebuildScans() async {
-    await widget.watchlistMapper
-        .updateScansCurrentPage(onSuccess: () => _update(false));
+  Future<void> rebuildScans({bool isNew = false}) async {
+    await widget.watchlistMapper.updateScansCurrentPage(
+      onSuccess: () {
+        if (isNew) {
+          _key = GlobalKey();
+        }
+
+        _update(false);
+      },
+    );
   }
 
   void setOperation({bool isNew = false}) {
     _cancelableOperation?.cancel();
-    _cancelableOperation = CancelableOperation.fromFuture(rebuildScans());
+    _cancelableOperation =
+        CancelableOperation.fromFuture(rebuildScans(isNew: isNew));
   }
 
   @override
@@ -41,7 +50,6 @@ class _WatchlistScansViewState extends State<WatchlistScansView> {
 
     _scrollController.addListener(() {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
-        _isLoading = true;
         widget.watchlistMapper.currentPageScans++;
         widget.watchlistMapper.addScanLoader();
         _update(true);
@@ -53,6 +61,7 @@ class _WatchlistScansViewState extends State<WatchlistScansView> {
   @override
   Widget build(BuildContext context) {
     return ScanList(
+      key: _key,
       scrollController: _scrollController,
       children: widget.watchlistMapper.scansList,
     );

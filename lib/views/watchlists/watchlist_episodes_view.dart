@@ -15,6 +15,7 @@ class WatchlistEpisodesView extends StatefulWidget {
 
 class _WatchlistEpisodesViewState extends State<WatchlistEpisodesView> {
   final _scrollController = ScrollController();
+  GlobalKey _key = GlobalKey();
   bool _isLoading = true;
   CancelableOperation? _cancelableOperation;
 
@@ -24,14 +25,22 @@ class _WatchlistEpisodesViewState extends State<WatchlistEpisodesView> {
     setState(() {});
   }
 
-  Future<void> rebuildEpisodes() async {
-    await widget.watchlistMapper
-        .updateEpisodesCurrentPage(onSuccess: () => _update(false));
+  Future<void> rebuildEpisodes({bool isNew = false}) async {
+    await widget.watchlistMapper.updateEpisodesCurrentPage(
+      onSuccess: () {
+        if (isNew) {
+          _key = GlobalKey();
+        }
+
+        _update(false);
+      },
+    );
   }
 
   void setOperation({bool isNew = false}) {
     _cancelableOperation?.cancel();
-    _cancelableOperation = CancelableOperation.fromFuture(rebuildEpisodes());
+    _cancelableOperation =
+        CancelableOperation.fromFuture(rebuildEpisodes(isNew: isNew));
   }
 
   @override
@@ -42,7 +51,6 @@ class _WatchlistEpisodesViewState extends State<WatchlistEpisodesView> {
 
     _scrollController.addListener(() {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
-        _isLoading = true;
         widget.watchlistMapper.currentPageEpisodes++;
         widget.watchlistMapper.addEpisodeLoader();
         _update(true);
@@ -54,6 +62,7 @@ class _WatchlistEpisodesViewState extends State<WatchlistEpisodesView> {
   @override
   Widget build(BuildContext context) {
     return EpisodeList(
+      key: _key,
       scrollController: _scrollController,
       children: widget.watchlistMapper.episodesList,
     );

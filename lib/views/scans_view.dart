@@ -13,6 +13,7 @@ class ScansView extends StatefulWidget {
 class _ScansViewState extends State<ScansView> {
   final ScanMapper _scanMapper = ScanMapper();
   final ScrollController _scrollController = ScrollController();
+  GlobalKey _key = GlobalKey();
   bool _isLoading = true;
   CancelableOperation? _cancelableOperation;
 
@@ -22,24 +23,33 @@ class _ScansViewState extends State<ScansView> {
     setState(() {});
   }
 
-  Future<void> rebuildScans() async {
-    await _scanMapper.updateCurrentPage(onSuccess: () => _update(false));
+  Future<void> rebuildScans({bool isNew = false}) async {
+    await _scanMapper.updateCurrentPage(
+      onSuccess: () {
+        if (isNew) {
+          _key = GlobalKey();
+        }
+
+        _update(false);
+      },
+    );
   }
 
-  void setOperation() {
+  void setOperation({bool isNew = false}) {
     _cancelableOperation?.cancel();
-    _cancelableOperation = CancelableOperation.fromFuture(rebuildScans());
+    _cancelableOperation =
+        CancelableOperation.fromFuture(rebuildScans(isNew: isNew));
   }
 
   @override
   void initState() {
     super.initState();
     _scanMapper.clear();
-    WidgetsBinding.instance.addPostFrameCallback((_) => setOperation());
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => setOperation(isNew: true));
 
     _scrollController.addListener(() {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
-        _isLoading = true;
         _scanMapper.currentPage++;
         _scanMapper.addLoader();
         _update(true);
@@ -57,6 +67,7 @@ class _ScansViewState extends State<ScansView> {
         setOperation();
       },
       child: ScanList(
+        key: _key,
         scrollController: _scrollController,
         children: _scanMapper.list,
       ),

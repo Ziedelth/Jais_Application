@@ -106,7 +106,7 @@ class _ScanUpdateViewState extends State<ScanUpdateView> {
                         value: platform.id,
                         child: Text(platform.name),
                       ),
-                )
+                    )
                     .toList(),
                 onChanged: (platform) {
                   if (platform == null) return;
@@ -126,10 +126,10 @@ class _ScanUpdateViewState extends State<ScanUpdateView> {
                 items: episodeTypeMapper.list
                     .map<DropdownMenuItem<int>>(
                       (episodeType) => DropdownMenuItem<int>(
-                    value: episodeType.id,
-                    child: Text(episodeType.name),
-                  ),
-                )
+                        value: episodeType.id,
+                        child: Text(episodeType.fr),
+                      ),
+                    )
                     .toList(),
                 onChanged: (episodeType) {
                   if (episodeType == null) return;
@@ -149,10 +149,10 @@ class _ScanUpdateViewState extends State<ScanUpdateView> {
                 items: langTypeMapper.list
                     .map<DropdownMenuItem<int>>(
                       (langType) => DropdownMenuItem<int>(
-                    value: langType.id,
-                    child: Text(langType.name),
-                  ),
-                )
+                        value: langType.id,
+                        child: Text(langType.fr),
+                      ),
+                    )
                     .toList(),
                 onChanged: (langType) {
                   if (langType == null) return;
@@ -179,7 +179,7 @@ class _ScanUpdateViewState extends State<ScanUpdateView> {
                   labelText: 'Numéro',
                 ),
                 onChanged: (value) =>
-                widget.scan.number = int.tryParse(value) ?? 0,
+                    widget.scan.number = int.tryParse(value) ?? 0,
               ),
               const SizedBox(height: 16),
               TextFormField(

@@ -39,9 +39,7 @@ class URL {
       return await http
           .put(Uri.parse(url), headers: headers, body: body)
           .timeout(const Duration(seconds: 10));
-    } catch (exception, stackTrace) {
-      print(exception);
-      print(stackTrace);
+    } catch (_) {
       return null;
     }
   }

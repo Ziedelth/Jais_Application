@@ -146,11 +146,42 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     const SizedBox(width: 10),
-                    Expanded(
-                      child: bannerAd != null
-                          ? AdWidget(ad: bannerAd!)
-                          : Container(color: Colors.black),
-                    ),
+                    if (!kIsWeb)
+                      Expanded(
+                        child: bannerAd != null
+                            ? AdWidget(ad: bannerAd!)
+                            : Container(
+                                color: Theme.of(context).backgroundColor,
+                              ),
+                      ),
+                    if (kIsWeb) ...[
+                      const Spacer(),
+                      if (!isOnMobile(context)) ...[
+                        TextButton(
+                          onPressed: () => _pageController.jumpToPage(0),
+                          child: const Text('Épisodes'),
+                        ),
+                        TextButton(
+                          onPressed: () => _pageController.jumpToPage(1),
+                          child: const Text('Scans'),
+                        ),
+                        TextButton(
+                          onPressed: () => _pageController.jumpToPage(2),
+                          child: const Text('Animes'),
+                        ),
+                        if (member_mapper.isConnected())
+                          TextButton(
+                            onPressed: () => _pageController.jumpToPage(3),
+                            child: const Text('Watchlist'),
+                          ),
+                        TextButton(
+                          onPressed: () => _pageController
+                              .jumpToPage(member_mapper.isConnected() ? 4 : 3),
+                          child: const Text('Paramètres'),
+                        ),
+                      ],
+                      const Spacer()
+                    ],
                     const SizedBox(width: 10),
                     if (_currentIndex == 2)
                       IconButton(
@@ -184,41 +215,43 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        selectedItemColor: Theme.of(context).primaryColor,
-        unselectedItemColor: Colors.grey,
-        currentIndex: _currentIndex,
-        onTap: (index) => _pageController.animateToPage(
-          index,
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.ease,
-        ),
-        items: [
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.subscriptions),
-            label: 'Episodes',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.library_books),
-            label: 'Scans',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.live_tv),
-            label: 'Animes',
-          ),
-          if (member_mapper.isConnected())
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.playlist_add_check),
-              label: 'Watchlist',
-            ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Paramètres',
-          ),
-        ],
-      ),
+      bottomNavigationBar: ((kIsWeb && isOnMobile(context)) || !kIsWeb)
+          ? BottomNavigationBar(
+              showSelectedLabels: false,
+              showUnselectedLabels: false,
+              selectedItemColor: Theme.of(context).primaryColor,
+              unselectedItemColor: Colors.grey,
+              currentIndex: _currentIndex,
+              onTap: (index) => _pageController.animateToPage(
+                index,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.ease,
+              ),
+              items: [
+                const BottomNavigationBarItem(
+                  icon: Icon(Icons.subscriptions),
+                  label: 'Episodes',
+                ),
+                const BottomNavigationBarItem(
+                  icon: Icon(Icons.library_books),
+                  label: 'Scans',
+                ),
+                const BottomNavigationBarItem(
+                  icon: Icon(Icons.live_tv),
+                  label: 'Animes',
+                ),
+                if (member_mapper.isConnected())
+                  const BottomNavigationBarItem(
+                    icon: Icon(Icons.playlist_add_check),
+                    label: 'Watchlist',
+                  ),
+                const BottomNavigationBarItem(
+                  icon: Icon(Icons.settings),
+                  label: 'Paramètres',
+                ),
+              ],
+            )
+          : null,
     );
   }
 }

@@ -27,6 +27,7 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
   final GenreMapper genreMapper = GenreMapper();
+  String _searchText = '';
 
   @override
   void initState() {
@@ -112,7 +113,6 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       children: [
-                        const SizedBox(height: 16),
                         TextFormField(
                           initialValue: widget.anime.releaseDate,
                           decoration: const InputDecoration(
@@ -154,7 +154,7 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                           minLines: 3,
                           maxLines: 10,
                           onChanged: (value) =>
-                          widget.anime.description = value,
+                              widget.anime.description = value,
                         ),
                       ],
                     ),
@@ -163,28 +163,45 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       children: [
+                        TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'Rechercher',
+                          ),
+                          onChanged: (value) => setState(() {
+                            _searchText = value;
+                          }),
+                        ),
                         const SizedBox(height: 16),
-                        ...genreMapper.list.map(
-                          (genre) => CheckboxListTile(
-                            title: Text(genre.name),
-                            activeColor: Theme.of(context).primaryColor,
-                            value: widget.anime.genres
-                                .map<int>((e) => e.id)
-                                .toList()
-                                .contains(genre.id),
+                        ...genreMapper.list
+                            .map(
+                              (genre) => CheckboxListTile(
+                                title: Text(genre.fr),
+                                activeColor: Theme.of(context).primaryColor,
+                                value: widget.anime.genres
+                                    .map<int>((e) => e.id)
+                                    .toList()
+                                    .contains(genre.id),
                                 onChanged: (value) {
                                   if (value == true) {
-                                widget.anime.genres.add(genre);
-                              } else {
-                                widget.anime.genres.removeWhere(
-                                  (e) => e.id == genre.id,
-                                );
-                              }
+                                    widget.anime.genres.add(genre);
+                                  } else {
+                                    widget.anime.genres.removeWhere(
+                                      (e) => e.id == genre.id,
+                                    );
+                                  }
 
-                              setState(() {});
-                            },
+                                  setState(() {});
+                                },
                               ),
-                        ),
+                            )
+                            .where((CheckboxListTile element) =>
+                                (_searchText.isNotEmpty &&
+                                    _searchText.toLowerCase().contains(
+                                        (element.title as Text?)
+                                                ?.data
+                                                ?.toLowerCase() ??
+                                            '')) ||
+                                _searchText.isEmpty),
                       ],
                     ),
                   ),

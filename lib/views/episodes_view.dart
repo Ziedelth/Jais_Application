@@ -13,6 +13,7 @@ class EpisodesView extends StatefulWidget {
 class _EpisodesViewState extends State<EpisodesView> {
   final _episodeMapper = EpisodeMapper();
   final _scrollController = ScrollController();
+  GlobalKey _key = GlobalKey();
   bool _isLoading = true;
   CancelableOperation? _cancelableOperation;
 
@@ -22,24 +23,33 @@ class _EpisodesViewState extends State<EpisodesView> {
     setState(() {});
   }
 
-  Future<void> rebuildEpisodes() async {
-    await _episodeMapper.updateCurrentPage(onSuccess: () => _update(false));
+  Future<void> rebuildEpisodes({bool isNew = false}) async {
+    await _episodeMapper.updateCurrentPage(
+      onSuccess: () {
+        if (isNew) {
+          _key = GlobalKey();
+        }
+
+        _update(false);
+      },
+    );
   }
 
-  void setOperation() {
+  void setOperation({bool isNew = false}) {
     _cancelableOperation?.cancel();
-    _cancelableOperation = CancelableOperation.fromFuture(rebuildEpisodes());
+    _cancelableOperation =
+        CancelableOperation.fromFuture(rebuildEpisodes(isNew: isNew));
   }
 
   @override
   void initState() {
     super.initState();
     _episodeMapper.clear();
-    WidgetsBinding.instance.addPostFrameCallback((_) => setOperation());
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => setOperation(isNew: true));
 
     _scrollController.addListener(() {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
-        _isLoading = true;
         _episodeMapper.currentPage++;
         _episodeMapper.addLoader();
         _update(true);
@@ -57,6 +67,7 @@ class _EpisodesViewState extends State<EpisodesView> {
         setOperation();
       },
       child: EpisodeList(
+        key: _key,
         scrollController: _scrollController,
         children: _episodeMapper.list,
       ),
