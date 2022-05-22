@@ -4,7 +4,7 @@ import 'package:jais/components/animes/anime_list.dart';
 import 'package:jais/components/animes/anime_widget.dart';
 import 'package:jais/components/jlist.dart';
 import 'package:jais/components/loading_widget.dart';
-import 'package:jais/components/skeleton.dart';
+import 'package:jais/components/simulcasts/simulcast_widget.dart';
 import 'package:jais/mappers/anime_mapper.dart';
 import 'package:jais/mappers/simulcast_mapper.dart';
 import 'package:jais/models/anime.dart';
@@ -91,10 +91,8 @@ class AnimesViewState extends State<AnimesView> {
     if (_currentSimulcast == null) return;
     if (force) _animeMapper.clear();
 
-    await _animeMapper.updateCurrentPage(
-      simulcast: _currentSimulcast!,
-      onSuccess: () => _update(false),
-    );
+    _animeMapper.simulcast = _currentSimulcast;
+    await _animeMapper.updateCurrentPage(onSuccess: () => _update(false));
   }
 
   void setOperation() {
@@ -107,10 +105,10 @@ class AnimesViewState extends State<AnimesView> {
     super.initState();
     _animeMapper.clear();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _simulcastMapper.update(
+      await _simulcastMapper.updateCurrentPage(
         onSuccess: () {
           // Set current simulcast to the last one
-          _currentSimulcast = _simulcastMapper.list?.last;
+          _currentSimulcast = (_simulcastMapper.list.last as SimulcastWidget).simulcast;
           _build();
         },
       );
@@ -154,10 +152,10 @@ class AnimesViewState extends State<AnimesView> {
         _animeMapper.clear();
         _update(true);
 
-        await _simulcastMapper.update(
+        await _simulcastMapper.updateCurrentPage(
           onSuccess: () {
             // Set current simulcast to the last one
-            _currentSimulcast = _simulcastMapper.list?.last;
+            _currentSimulcast = (_simulcastMapper.list.last as SimulcastWidget).simulcast;
 
             if (!mounted) return;
 
@@ -233,62 +231,6 @@ class SimulcastsWidget extends StatelessWidget {
   final Simulcast? simulcast;
   final Function(Simulcast)? onTap;
 
-  List<Widget> _getWidgets(BuildContext context) {
-    if (simulcastMapper.list == null) {
-      return List.filled(
-        5,
-        Container(
-          margin: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Theme.of(context).primaryColor,
-            ),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: const Padding(
-            padding: EdgeInsets.all(8),
-            child: Skeleton(
-              width: 80,
-            ),
-          ),
-        ),
-      );
-    }
-
-    return simulcastMapper.list!
-        .map(
-          (simulcast) => Container(
-            margin: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Theme.of(context).primaryColor,
-              ),
-              borderRadius: BorderRadius.circular(8),
-              color: simulcast == this.simulcast
-                  ? Theme.of(context).primaryColor
-                  : Colors.transparent,
-            ),
-            child: GestureDetector(
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Center(
-                  child: Text(
-                    simulcast.simulcast,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight:
-                          simulcast == this.simulcast ? FontWeight.bold : null,
-                    ),
-                  ),
-                ),
-              ),
-              onTap: () => onTap?.call(simulcast),
-            ),
-          ),
-        )
-        .toList();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -297,7 +239,7 @@ class SimulcastsWidget extends StatelessWidget {
           child: JList(
             direction: Axis.horizontal,
             controller: scrollController,
-            children: _getWidgets(context),
+            children: simulcastMapper.list,
           ),
         ),
       ],

@@ -26,7 +26,7 @@ class _WatchlistEpisodesViewState extends State<WatchlistEpisodesView> {
   }
 
   Future<void> rebuildEpisodes({bool isNew = false}) async {
-    await widget.watchlistMapper.updateEpisodesCurrentPage(
+    await widget.watchlistMapper.watchlistEpisodeMapper.updateCurrentPage(
       onSuccess: () {
         if (isNew) {
           _key = GlobalKey();
@@ -51,8 +51,8 @@ class _WatchlistEpisodesViewState extends State<WatchlistEpisodesView> {
 
     _scrollController.addListener(() {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
-        widget.watchlistMapper.currentPageEpisodes++;
-        widget.watchlistMapper.addEpisodeLoader();
+        widget.watchlistMapper.watchlistEpisodeMapper.currentPage++;
+        widget.watchlistMapper.watchlistEpisodeMapper.addLoader();
         _update(true);
         setOperation();
       }
@@ -64,7 +64,7 @@ class _WatchlistEpisodesViewState extends State<WatchlistEpisodesView> {
     return EpisodeList(
       key: _key,
       scrollController: _scrollController,
-      children: widget.watchlistMapper.episodesList,
+      children: widget.watchlistMapper.watchlistEpisodeMapper.list,
     );
   }
 

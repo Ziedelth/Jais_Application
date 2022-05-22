@@ -25,7 +25,7 @@ class _WatchlistScansViewState extends State<WatchlistScansView> {
   }
 
   Future<void> rebuildScans({bool isNew = false}) async {
-    await widget.watchlistMapper.updateScansCurrentPage(
+    await widget.watchlistMapper.watchlistScanMapper.updateCurrentPage(
       onSuccess: () {
         if (isNew) {
           _key = GlobalKey();
@@ -50,8 +50,8 @@ class _WatchlistScansViewState extends State<WatchlistScansView> {
 
     _scrollController.addListener(() {
       if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
-        widget.watchlistMapper.currentPageScans++;
-        widget.watchlistMapper.addScanLoader();
+        widget.watchlistMapper.watchlistScanMapper.currentPage++;
+        widget.watchlistMapper.watchlistScanMapper.addLoader();
         _update(true);
         setOperation();
       }
@@ -63,7 +63,7 @@ class _WatchlistScansViewState extends State<WatchlistScansView> {
     return ScanList(
       key: _key,
       scrollController: _scrollController,
-      children: widget.watchlistMapper.scansList,
+      children: widget.watchlistMapper.watchlistScanMapper.list,
     );
   }
 
