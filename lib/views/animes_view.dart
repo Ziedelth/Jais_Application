@@ -108,7 +108,8 @@ class AnimesViewState extends State<AnimesView> {
       await _simulcastMapper.updateCurrentPage(
         onSuccess: () {
           // Set current simulcast to the last one
-          _currentSimulcast = (_simulcastMapper.list.last as SimulcastWidget).simulcast;
+          _currentSimulcast =
+              (_simulcastMapper.list.last as SimulcastWidget).simulcast;
           _build();
         },
       );
@@ -155,7 +156,8 @@ class AnimesViewState extends State<AnimesView> {
         await _simulcastMapper.updateCurrentPage(
           onSuccess: () {
             // Set current simulcast to the last one
-            _currentSimulcast = (_simulcastMapper.list.last as SimulcastWidget).simulcast;
+            _currentSimulcast =
+                (_simulcastMapper.list.last as SimulcastWidget).simulcast;
 
             if (!mounted) return;
 

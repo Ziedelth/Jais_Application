@@ -22,9 +22,7 @@ class SimulcastWidget extends StatelessWidget {
           color: Theme.of(context).primaryColor,
         ),
         borderRadius: BorderRadius.circular(8),
-        color: isSelected
-            ? Theme.of(context).primaryColor
-            : Colors.transparent,
+        color: isSelected ? Theme.of(context).primaryColor : Colors.transparent,
       ),
       child: GestureDetector(
         child: Padding(
@@ -34,8 +32,7 @@ class SimulcastWidget extends StatelessWidget {
               simulcast.simulcast,
               style: TextStyle(
                 fontSize: 14,
-                fontWeight:
-                isSelected ? FontWeight.bold : null,
+                fontWeight: isSelected ? FontWeight.bold : null,
               ),
             ),
           ),

@@ -53,13 +53,13 @@ class _AnimeSearchViewState extends State<AnimeSearchView> {
                 animes
                     .map<Widget>(
                       (e) => GestureDetector(
-                    child: e,
-                    onTap: () {
-                      Navigator.pop(context);
-                      widget.onTap(e.anime);
-                    },
-                  ),
-                )
+                        child: e,
+                        onTap: () {
+                          Navigator.pop(context);
+                          widget.onTap(e.anime);
+                        },
+                      ),
+                    )
                     .toList(),
               );
 
