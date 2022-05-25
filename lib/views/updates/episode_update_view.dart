@@ -111,7 +111,7 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 onChanged: (platform) {
                   if (platform == null) return;
                   widget.episode.platform = platformMapper.list.firstWhere(
-                        (p) => p.id == platform,
+                    (p) => p.id == platform,
                   );
                   if (!mounted) return;
                   setState(() {});
@@ -158,7 +158,7 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 onChanged: (langType) {
                   if (langType == null) return;
                   widget.episode.langType = langTypeMapper.list.firstWhere(
-                        (p) => p.id == langType,
+                    (p) => p.id == langType,
                   );
                   if (!mounted) return;
                   setState(() {});

@@ -134,7 +134,7 @@ class _ScanUpdateViewState extends State<ScanUpdateView> {
                 onChanged: (episodeType) {
                   if (episodeType == null) return;
                   widget.scan.episodeType = episodeTypeMapper.list.firstWhere(
-                        (p) => p.id == episodeType,
+                    (p) => p.id == episodeType,
                   );
                   if (!mounted) return;
                   setState(() {});
@@ -157,7 +157,7 @@ class _ScanUpdateViewState extends State<ScanUpdateView> {
                 onChanged: (langType) {
                   if (langType == null) return;
                   widget.scan.langType = langTypeMapper.list.firstWhere(
-                        (p) => p.id == langType,
+                    (p) => p.id == langType,
                   );
                   if (!mounted) return;
                   setState(() {});

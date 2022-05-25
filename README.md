@@ -19,3 +19,9 @@ Pour modifier l'image de chargement de l'application
 ```
 flutter pub run flutter_native_splash:create
 ```
+
+---
+Pour formatter l'application :
+```
+dart format --fix .
+```
