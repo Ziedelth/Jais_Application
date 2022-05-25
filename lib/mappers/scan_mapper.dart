@@ -5,6 +5,7 @@ import 'package:jais/components/scans/scan_widget.dart';
 import 'package:jais/mappers/imapper.dart';
 import 'package:jais/models/scan.dart';
 import 'package:jais/utils/country.dart';
+import 'package:jais/utils/decompress.dart';
 import 'package:url/url.dart';
 
 class ScanMapper extends IMapper<Scan> {
@@ -32,7 +33,7 @@ class ScanMapper extends IMapper<Scan> {
     Function()? onFailure,
   }) async {
     final response = await URL().get(
-      'https://api.ziedelth.fr/v1/scans/country/${Country.name}/page/$currentPage/limit/$limit',
+      'https://api.ziedelth.fr/v2/scans/country/${Country.name}/page/$currentPage/limit/$limit',
     );
 
     if (response == null || response.statusCode != 200) {
@@ -41,7 +42,7 @@ class ScanMapper extends IMapper<Scan> {
     }
 
     removeLoader();
-    list.addAll(toWidgets(stringTo(utf8.decode(response.bodyBytes))));
+    list.addAll(toWidgets(stringTo(fromBrotly(response.body))));
     onSuccess?.call();
   }
 }

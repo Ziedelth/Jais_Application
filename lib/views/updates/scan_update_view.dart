@@ -111,7 +111,7 @@ class _ScanUpdateViewState extends State<ScanUpdateView> {
                 onChanged: (platform) {
                   if (platform == null) return;
                   widget.scan.platform = platformMapper.list.firstWhere(
-                        (p) => p.id == platform,
+                    (p) => p.id == platform,
                   );
                   if (!mounted) return;
                   setState(() {});

@@ -13,6 +13,20 @@ class SimulcastWidget extends StatelessWidget {
   final bool isSelected;
   final Function(Simulcast)? onTap;
 
+  // Copy function
+  SimulcastWidget copyWith({
+    Key? key,
+    Simulcast? simulcast,
+    bool? isSelected,
+    Function(Simulcast)? onTap,
+  }) =>
+      SimulcastWidget(
+        key: key ?? this.key,
+        simulcast: simulcast ?? this.simulcast,
+        isSelected: isSelected ?? this.isSelected,
+        onTap: onTap ?? this.onTap,
+      );
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -22,9 +36,7 @@ class SimulcastWidget extends StatelessWidget {
           color: Theme.of(context).primaryColor,
         ),
         borderRadius: BorderRadius.circular(8),
-        color: isSelected
-            ? Theme.of(context).primaryColor
-            : Colors.transparent,
+        color: isSelected ? Theme.of(context).primaryColor : Colors.transparent,
       ),
       child: GestureDetector(
         child: Padding(
@@ -34,8 +46,7 @@ class SimulcastWidget extends StatelessWidget {
               simulcast.simulcast,
               style: TextStyle(
                 fontSize: 14,
-                fontWeight:
-                isSelected ? FontWeight.bold : null,
+                fontWeight: isSelected ? FontWeight.bold : null,
               ),
             ),
           ),

@@ -11,7 +11,8 @@ class URL {
       return await http
           .get(Uri.parse(url), headers: headers)
           .timeout(const Duration(seconds: 10));
-    } catch (_) {
+    } catch (exception, stackTrace) {
+      print('$exception\n$stackTrace');
       return null;
     }
   }

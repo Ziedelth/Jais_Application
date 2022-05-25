@@ -1,10 +1,11 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
 import 'package:jais/components/simulcasts/simulcast_loader_widget.dart';
 import 'package:jais/components/simulcasts/simulcast_widget.dart';
 import 'package:jais/mappers/imapper.dart';
 import 'package:jais/models/simulcast.dart';
+import 'package:jais/utils/decompress.dart';
 import 'package:url/url.dart';
 
 class SimulcastMapper extends IMapper<Simulcast> {
@@ -33,7 +34,7 @@ class SimulcastMapper extends IMapper<Simulcast> {
     Function()? onFailure,
   }) async {
     final response = await URL().get(
-      'https://api.ziedelth.fr/v1/simulcasts',
+      'https://api.ziedelth.fr/v2/simulcasts',
     );
 
     if (response == null || response.statusCode != 200) {
@@ -42,7 +43,7 @@ class SimulcastMapper extends IMapper<Simulcast> {
     }
 
     removeLoader();
-    list.addAll(toWidgets(stringTo(utf8.decode(response.bodyBytes))));
+    list.addAll(toWidgets(stringTo(fromBrotly(response.body))));
     onSuccess?.call();
   }
 }

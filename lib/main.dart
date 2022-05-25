@@ -29,6 +29,7 @@ Future<void> main() async {
   if (!kIsWeb) await MobileAds.instance.initialize();
   await notifications.init();
   await member_mapper.init();
+
   runApp(const MyApp());
 }
 

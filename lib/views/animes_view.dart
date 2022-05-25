@@ -31,6 +31,7 @@ class AnimesViewState extends State<AnimesView> {
   bool _hasTap = false;
   Anime? _anime;
   CancelableOperation? _cancelableOperation;
+  late List<Widget> _simulcastWidgets;
 
   void _update(bool isLoading) {
     _isLoading = isLoading;
@@ -100,16 +101,38 @@ class AnimesViewState extends State<AnimesView> {
     _cancelableOperation = CancelableOperation.fromFuture(rebuildAnimes());
   }
 
+  void scrollToEndSimulcasts() {
+    Future.delayed(const Duration(milliseconds: 100)).then((value) {
+      if (!mounted) return;
+
+      try {
+        _simulcastsScrollController.animateTo(
+          _simulcastsScrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      } catch (_) {}
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     _animeMapper.clear();
+    _simulcastWidgets = _simulcastMapper.list;
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _simulcastMapper.updateCurrentPage(
         onSuccess: () {
+          scrollToEndSimulcasts();
+          _simulcastWidgets = _simulcastMapper.list;
+          var last = _simulcastWidgets.last as SimulcastWidget;
           // Set current simulcast to the last one
-          _currentSimulcast = (_simulcastMapper.list.last as SimulcastWidget).simulcast;
-          _build();
+          _currentSimulcast = last.simulcast;
+          last = last.copyWith(isSelected: true);
+          _simulcastWidgets.removeLast();
+          _simulcastWidgets.add(last);
+          setOperation();
         },
       );
     });
@@ -123,21 +146,6 @@ class AnimesViewState extends State<AnimesView> {
         setOperation();
       }
     });
-  }
-
-  Future<void> _build() async {
-    setOperation();
-
-    await Future.delayed(const Duration(milliseconds: 100));
-    if (!mounted) return;
-
-    try {
-      _simulcastsScrollController.animateTo(
-        _simulcastsScrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    } catch (_) {}
   }
 
   @override
@@ -154,20 +162,15 @@ class AnimesViewState extends State<AnimesView> {
 
         await _simulcastMapper.updateCurrentPage(
           onSuccess: () {
+            scrollToEndSimulcasts();
+            _simulcastWidgets = _simulcastMapper.list;
+            var last = _simulcastWidgets.last as SimulcastWidget;
             // Set current simulcast to the last one
-            _currentSimulcast = (_simulcastMapper.list.last as SimulcastWidget).simulcast;
-
-            if (!mounted) return;
-
-            setState(() {
-              _simulcastsScrollController.animateTo(
-                _simulcastsScrollController.position.maxScrollExtent,
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeInOut,
-              );
-            });
-
-            _build();
+            _currentSimulcast = last.simulcast;
+            last = last.copyWith(isSelected: true);
+            _simulcastWidgets.removeLast();
+            _simulcastWidgets.add(last);
+            setOperation();
           },
         );
       },
@@ -177,10 +180,21 @@ class AnimesViewState extends State<AnimesView> {
             child: SimulcastsWidget(
               scrollController: _simulcastsScrollController,
               simulcast: _currentSimulcast,
-              simulcastMapper: _simulcastMapper,
+              children: _simulcastWidgets,
               onTap: (simulcast) {
                 _scrollController.jumpTo(0);
                 _currentSimulcast = simulcast;
+
+                final copyList = _simulcastMapper.list;
+
+                for (var element in copyList) {
+                  if (element is SimulcastWidget) {
+                    element = element.copyWith(
+                        isSelected: element.simulcast == simulcast);
+                  }
+                }
+
+                _simulcastWidgets = copyList;
                 _animeMapper.clear();
                 rebuildAnimes(force: true);
                 if (!mounted) return;
@@ -221,13 +235,13 @@ class SimulcastsWidget extends StatelessWidget {
   const SimulcastsWidget({
     Key? key,
     required this.scrollController,
-    required this.simulcastMapper,
+    required this.children,
     this.simulcast,
     this.onTap,
   }) : super(key: key);
 
   final ScrollController scrollController;
-  final SimulcastMapper simulcastMapper;
+  final List<Widget> children;
   final Simulcast? simulcast;
   final Function(Simulcast)? onTap;
 
@@ -239,7 +253,16 @@ class SimulcastsWidget extends StatelessWidget {
           child: JList(
             direction: Axis.horizontal,
             controller: scrollController,
-            children: simulcastMapper.list,
+            children: children
+                .map(
+                  (e) => e is SimulcastWidget
+                      ? e.copyWith(
+                          isSelected: e.simulcast == simulcast,
+                          onTap: (simulcast) => onTap?.call(simulcast),
+                        )
+                      : e,
+                )
+                .toList(),
           ),
         ),
       ],

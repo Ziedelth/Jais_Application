@@ -106,7 +106,7 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                         value: platform.id,
                         child: Text(platform.name),
                       ),
-                )
+                    )
                     .toList(),
                 onChanged: (platform) {
                   if (platform == null) return;

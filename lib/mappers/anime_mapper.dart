@@ -10,6 +10,7 @@ import 'package:jais/models/episode.dart';
 import 'package:jais/models/scan.dart';
 import 'package:jais/models/simulcast.dart';
 import 'package:jais/utils/country.dart';
+import 'package:jais/utils/decompress.dart';
 import 'package:url/url.dart';
 
 class AnimeMapper extends IMapper<Anime> {
@@ -41,7 +42,7 @@ class AnimeMapper extends IMapper<Anime> {
     if (simulcast == null) return;
 
     final response = await URL().get(
-      'https://api.ziedelth.fr/v1/animes/country/${Country.name}/simulcast/${simulcast?.id}/page/$currentPage/limit/$limit',
+      'https://api.ziedelth.fr/v2/animes/country/${Country.name}/simulcast/${simulcast?.id}/page/$currentPage/limit/$limit',
     );
 
     if (response == null || response.statusCode != 200) {
@@ -50,7 +51,7 @@ class AnimeMapper extends IMapper<Anime> {
     }
 
     removeLoader();
-    list.addAll(toWidgets(stringTo(utf8.decode(response.bodyBytes))));
+    list.addAll(toWidgets(stringTo(fromBrotly(response.body))));
     onSuccess?.call();
   }
 
@@ -58,26 +59,26 @@ class AnimeMapper extends IMapper<Anime> {
     Anime anime,
   ) async {
     final response = await URL().get(
-      'https://api.ziedelth.fr/v1/episodes/anime/${anime.url}',
+      'https://api.ziedelth.fr/v2/episodes/anime/${anime.url}',
     );
 
     if (response == null || response.statusCode != 200) {
       return null;
     }
 
-    return EpisodeMapper().stringTo(utf8.decode(response.bodyBytes));
+    return EpisodeMapper().stringTo(fromBrotly(response.body));
   }
 
   Future<List<Scan>?> loadScans(Anime anime) async {
     final response = await URL().get(
-      'https://api.ziedelth.fr/v1/scans/anime/${anime.url}',
+      'https://api.ziedelth.fr/v2/scans/anime/${anime.url}',
     );
 
     if (response == null || response.statusCode != 200) {
       return null;
     }
 
-    return ScanMapper().stringTo(utf8.decode(response.bodyBytes));
+    return ScanMapper().stringTo(fromBrotly(response.body));
   }
 
   Future<void> __loadEpisodes(Anime anime) async {
@@ -117,13 +118,13 @@ class AnimeMapper extends IMapper<Anime> {
     required String query,
   }) async {
     final response = await URL().get(
-      'https://api.ziedelth.fr/v1/animes/country/${Country.name}/search/$query',
+      'https://api.ziedelth.fr/v2/animes/country/${Country.name}/search/$query',
     );
 
     if (response == null || response.statusCode != 200) {
       return null;
     }
 
-    return toWidgets(stringTo(utf8.decode(response.bodyBytes)));
+    return toWidgets(stringTo(fromBrotly(response.body)));
   }
 }

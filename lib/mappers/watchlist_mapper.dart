@@ -7,6 +7,7 @@ import 'package:jais/components/scans/scan_widget.dart';
 import 'package:jais/mappers/imapper.dart';
 import 'package:jais/models/episode.dart';
 import 'package:jais/models/scan.dart';
+import 'package:jais/utils/decompress.dart';
 import 'package:url/url.dart';
 
 class WatchlistMapper {
@@ -52,7 +53,7 @@ class WatchlistEpisodeMapper extends IMapper<Episode> {
     Function()? onFailure,
   }) async {
     final response = await URL().get(
-      'https://api.ziedelth.fr/v1/watchlist/episodes/member/$pseudo/page/$currentPage/limit/$limit',
+      'https://api.ziedelth.fr/v2/watchlist/episodes/member/$pseudo/page/$currentPage/limit/$limit',
     );
 
     if (response == null || response.statusCode != 200) {
@@ -61,7 +62,7 @@ class WatchlistEpisodeMapper extends IMapper<Episode> {
     }
 
     removeLoader();
-    list.addAll(toWidgets(stringTo(utf8.decode(response.bodyBytes))));
+    list.addAll(toWidgets(stringTo(fromBrotly(response.body))));
     onSuccess?.call();
   }
 }
@@ -94,7 +95,7 @@ class WatchlistScanMapper extends IMapper<Scan> {
     Function()? onFailure,
   }) async {
     final response = await URL().get(
-      'https://api.ziedelth.fr/v1/watchlist/scans/member/$pseudo/page/$currentPage/limit/$limit',
+      'https://api.ziedelth.fr/v2/watchlist/scans/member/$pseudo/page/$currentPage/limit/$limit',
     );
 
     if (response == null || response.statusCode != 200) {
@@ -103,7 +104,7 @@ class WatchlistScanMapper extends IMapper<Scan> {
     }
 
     removeLoader();
-    list.addAll(toWidgets(stringTo(utf8.decode(response.bodyBytes))));
+    list.addAll(toWidgets(stringTo(fromBrotly(response.body))));
     onSuccess?.call();
   }
 }
