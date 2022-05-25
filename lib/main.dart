@@ -6,6 +6,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:jais/components/custom_gesture_detector.dart';
 import 'package:jais/components/roundborder_widget.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
+import 'package:jais/mappers/navbar_mapper.dart';
 import 'package:jais/utils/jais_ad.dart';
 import 'package:jais/utils/main_color.dart';
 import 'package:jais/utils/utils.dart';
@@ -67,6 +68,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final NavbarMapper navbarMapper = NavbarMapper();
   final _animesKey = GlobalKey<AnimesViewState>();
   int _currentIndex = 0;
   late final PageController _pageController;
@@ -152,35 +154,25 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: globalBannerAd != null
                             ? AdWidget(ad: globalBannerAd!)
                             : Container(
-                                color: Theme.of(context).backgroundColor,
-                              ),
+                          color: Theme.of(context).backgroundColor,
+                        ),
                       ),
                     if (kIsWeb) ...[
                       const Spacer(),
-                      if (!isOnMobile(context)) ...[
-                        TextButton(
-                          onPressed: () => _pageController.jumpToPage(0),
-                          child: const Text('Épisodes'),
-                        ),
-                        TextButton(
-                          onPressed: () => _pageController.jumpToPage(1),
-                          child: const Text('Scans'),
-                        ),
-                        TextButton(
-                          onPressed: () => _pageController.jumpToPage(2),
-                          child: const Text('Animes'),
-                        ),
-                        if (member_mapper.isConnected())
-                          TextButton(
-                            onPressed: () => _pageController.jumpToPage(3),
-                            child: const Text('Watchlist'),
-                          ),
-                        TextButton(
-                          onPressed: () => _pageController
-                              .jumpToPage(member_mapper.isConnected() ? 4 : 3),
-                          child: const Text('Paramètres'),
-                        ),
-                      ],
+                      if (!isOnMobile(context))
+                        ...navbarMapper.items
+                            .asMap()
+                            .map(
+                              (i, e) => MapEntry(
+                                i,
+                                e.toTextButton(
+                                  onPressed: () =>
+                                      _pageController.jumpToPage(i),
+                                ),
+                              ),
+                            )
+                            .values
+                            .toList(),
                       const Spacer()
                     ],
                     const SizedBox(width: 10),
@@ -218,7 +210,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       bottomNavigationBar: ((kIsWeb && isOnMobile(context)) || !kIsWeb)
           ? BottomNavigationBar(
-              showSelectedLabels: false,
+        showSelectedLabels: false,
               showUnselectedLabels: false,
               selectedItemColor: Theme.of(context).primaryColor,
               unselectedItemColor: Colors.grey,
@@ -228,29 +220,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 duration: const Duration(milliseconds: 500),
                 curve: Curves.ease,
               ),
-              items: [
-                const BottomNavigationBarItem(
-                  icon: Icon(Icons.subscriptions),
-                  label: 'Episodes',
-                ),
-                const BottomNavigationBarItem(
-                  icon: Icon(Icons.library_books),
-                  label: 'Scans',
-                ),
-                const BottomNavigationBarItem(
-                  icon: Icon(Icons.live_tv),
-                  label: 'Animes',
-                ),
-                if (member_mapper.isConnected())
-                  const BottomNavigationBarItem(
-                    icon: Icon(Icons.playlist_add_check),
-                    label: 'Watchlist',
-                  ),
-                const BottomNavigationBarItem(
-                  icon: Icon(Icons.settings),
-                  label: 'Paramètres',
-                ),
-              ],
+              items: navbarMapper.items
+                  .map((e) => e.toBottomNavigationBarItem())
+                  .toList(),
             )
           : null,
     );
