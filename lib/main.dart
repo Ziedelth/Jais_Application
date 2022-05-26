@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:jais/components/custom_gesture_detector.dart';
 import 'package:jais/components/roundborder_widget.dart';
+import 'package:jais/mappers/display_mapper.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/mappers/navbar_mapper.dart';
 import 'package:jais/utils/jais_ad.dart';
@@ -21,16 +22,9 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Catch errors
-  FlutterError.onError = (FlutterErrorDetails details) {
-    logger.error(details.toString(), details.exception, details.stack);
-  };
-
   if (!kIsWeb) await MobileAds.instance.initialize();
   await notifications.init();
   await member_mapper.init();
-
   runApp(const MyApp());
 }
 
@@ -68,21 +62,18 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final NavbarMapper navbarMapper = NavbarMapper();
+  final DisplayMapper _displayMapper = DisplayMapper();
+  final NavbarMapper _navbarMapper = NavbarMapper();
   final _animesKey = GlobalKey<AnimesViewState>();
-  int _currentIndex = 0;
-  late final PageController _pageController;
-
-  void _changeTab(int index) => setState(() => _currentIndex = index);
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: _currentIndex);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (!kIsWeb) createGlobalBanner();
+      if (_displayMapper.isOnApp) createGlobalBanner();
       await member_mapper.loginWithToken();
+
       if (!mounted) return;
       setState(() {});
 
@@ -149,25 +140,25 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     const SizedBox(width: 10),
-                    if (!kIsWeb)
+                    if (_displayMapper.isOnApp)
                       Expanded(
                         child: globalBannerAd != null
                             ? AdWidget(ad: globalBannerAd!)
                             : Container(
-                          color: Theme.of(context).backgroundColor,
-                        ),
+                                color: Theme.of(context).backgroundColor,
+                              ),
                       ),
-                    if (kIsWeb) ...[
+                    if (_displayMapper.isOnWeb) ...[
                       const Spacer(),
-                      if (!isOnMobile(context))
-                        ...navbarMapper.items
+                      if (!_displayMapper.isOnMobile(context))
+                        ..._navbarMapper.items
                             .asMap()
                             .map(
                               (i, e) => MapEntry(
                                 i,
                                 e.toTextButton(
-                                  onPressed: () =>
-                                      _pageController.jumpToPage(i),
+                                  onPressed: () => _navbarMapper.pageController
+                                      .jumpToPage(i),
                                 ),
                               ),
                             )
@@ -176,7 +167,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       const Spacer()
                     ],
                     const SizedBox(width: 10),
-                    if (_currentIndex == 2)
+                    if (_navbarMapper.currentPage == 2)
                       IconButton(
                         alignment: Alignment.centerRight,
                         icon: const Icon(Icons.search),
@@ -188,19 +179,19 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Expanded(
               child: PageView(
-                controller: _pageController,
-                onPageChanged: _changeTab,
+                controller: _navbarMapper.pageController,
+                onPageChanged: (i) => setState(() => _navbarMapper.currentPage = i),
                 children: <Widget>[
                   const EpisodesView(),
                   const ScansView(),
                   AnimesView(key: _animesKey),
                   if (member_mapper.isConnected()) const WatchlistView(),
-                  SettingsView(
-                    onLogin: () {
-                      _changeTab(4);
-                      _pageController.jumpToPage(5);
-                    },
-                    onLogout: () => _changeTab(3),
+                  const SettingsView(
+                    // onLogin: () {
+                    //   _changeTab(4);
+                    //   _navbarMapper.pageController.jumpToPage(5);
+                    // },
+                    // onLogout: () => _changeTab(3),
                   ),
                 ],
               ),
@@ -208,21 +199,15 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      bottomNavigationBar: ((kIsWeb && isOnMobile(context)) || !kIsWeb)
+      bottomNavigationBar: _displayMapper.isOnMobileOnWebOrUseApp(context)
           ? BottomNavigationBar(
-        showSelectedLabels: false,
+              showSelectedLabels: false,
               showUnselectedLabels: false,
               selectedItemColor: Theme.of(context).primaryColor,
               unselectedItemColor: Colors.grey,
-              currentIndex: _currentIndex,
-              onTap: (index) => _pageController.animateToPage(
-                index,
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.ease,
-              ),
-              items: navbarMapper.items
-                  .map((e) => e.toBottomNavigationBarItem())
-                  .toList(),
+              currentIndex: _navbarMapper.currentPage,
+              onTap: (index) => _navbarMapper.pageController.jumpToPage(index),
+              items: _navbarMapper.itemsBottomNavBar,
             )
           : null,
     );

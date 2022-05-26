@@ -72,12 +72,8 @@ class EpisodeWidget extends StatelessWidget {
               height: 10,
             ),
             Text(
-              episode.title ?? '＞﹏＜',
+              episode.title?.replaceAll("\n", ' ') ?? '＞﹏＜',
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                // fontSize: 13,
-              ),
             ),
             Text(
               '${episode.anime.country.season} ${episode.season} • ${episode.episodeType.fr} ${episode.number} ${episode.langType.fr}',
