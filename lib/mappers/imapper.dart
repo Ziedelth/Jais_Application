@@ -36,8 +36,5 @@ abstract class IMapper<T> extends ChangeNotifier {
   List<T> stringTo(String string);
   List<Widget> toWidgets(List<T> objects);
 
-  Future<void> updateCurrentPage({
-    Function()? onSuccess,
-    Function()? onFailure,
-  });
+  Future<void> updateCurrentPage();
 }

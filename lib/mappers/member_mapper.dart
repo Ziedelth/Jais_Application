@@ -77,7 +77,8 @@ Future<void> loginWithToken() async {
     }
 
     final member = Member.fromJson(
-        jsonDecode(fromBrotly(response.body)) as Map<String, dynamic>);
+      jsonDecode(fromBrotly(response.body)) as Map<String, dynamic>,
+    );
 
     if (member.token == null) {
       setMember(null);

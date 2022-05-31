@@ -35,24 +35,20 @@ class AnimeMapper extends IMapper<Anime> {
   }
 
   @override
-  Future<void> updateCurrentPage({
-    Function()? onSuccess,
-    Function()? onFailure,
-  }) async {
+  Future<void> updateCurrentPage() async {
     if (simulcast == null) return;
+    addLoader();
 
     final response = await URL().get(
       'https://api.ziedelth.fr/v2/animes/country/${Country.name}/simulcast/${simulcast?.id}/page/$currentPage/limit/$limit',
     );
 
     if (response == null || response.statusCode != 200) {
-      onFailure?.call();
       return;
     }
 
-    removeLoader();
     list.addAll(toWidgets(stringTo(fromBrotly(response.body))));
-    onSuccess?.call();
+    removeLoader();
   }
 
   Future<List<Episode>?> loadEpisodes(

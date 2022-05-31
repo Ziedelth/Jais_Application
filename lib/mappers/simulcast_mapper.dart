@@ -29,21 +29,18 @@ class SimulcastMapper extends IMapper<Simulcast> {
   }
 
   @override
-  Future<void> updateCurrentPage({
-    Function()? onSuccess,
-    Function()? onFailure,
-  }) async {
+  Future<void> updateCurrentPage() async {
+    addLoader();
+
     final response = await URL().get(
       'https://api.ziedelth.fr/v2/simulcasts',
     );
 
     if (response == null || response.statusCode != 200) {
-      onFailure?.call();
       return;
     }
 
-    removeLoader();
     list.addAll(toWidgets(stringTo(fromBrotly(response.body))));
-    onSuccess?.call();
+    removeLoader();
   }
 }

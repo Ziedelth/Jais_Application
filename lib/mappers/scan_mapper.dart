@@ -28,10 +28,7 @@ class ScanMapper extends IMapper<Scan> {
   }
 
   @override
-  Future<void> updateCurrentPage({
-    Function()? onSuccess,
-    Function()? onFailure,
-  }) async {
+  Future<void> updateCurrentPage() async {
     addLoader();
 
     final response = await URL().get(

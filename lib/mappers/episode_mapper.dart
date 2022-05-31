@@ -30,10 +30,7 @@ class EpisodeMapper extends IMapper<Episode> {
   }
 
   @override
-  Future<void> updateCurrentPage({
-    Function()? onSuccess,
-    Function()? onFailure,
-  }) async {
+  Future<void> updateCurrentPage() async {
     addLoader();
 
     final response = await URL().get(

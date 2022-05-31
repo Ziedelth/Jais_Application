@@ -36,8 +36,8 @@ class _ScansViewState extends State<ScansView> {
         _scanMapper.clear();
         await _scanMapper.updateCurrentPage();
       },
-      child: ChangeNotifierProvider<ScanMapper>(
-        create: (_) => _scanMapper,
+      child: ChangeNotifierProvider<ScanMapper>.value(
+        value: _scanMapper,
         child: Consumer<ScanMapper>(
           builder: (context, scanMapper, _) {
             return ScanList(
@@ -54,6 +54,5 @@ class _ScansViewState extends State<ScansView> {
   void dispose() {
     super.dispose();
     _scrollController.dispose();
-    _scanMapper.dispose();
   }
 }

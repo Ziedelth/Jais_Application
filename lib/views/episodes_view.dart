@@ -36,13 +36,13 @@ class _EpisodesViewState extends State<EpisodesView> {
         _episodeMapper.clear();
         await _episodeMapper.updateCurrentPage();
       },
-      child: ChangeNotifierProvider<EpisodeMapper>(
-        create: (_) => _episodeMapper,
+      child: ChangeNotifierProvider<EpisodeMapper>.value(
+        value: _episodeMapper,
         child: Consumer<EpisodeMapper>(
           builder: (context, episodeMapper, _) {
             return EpisodeList(
               scrollController: _scrollController,
-              children: _episodeMapper.list,
+              children: episodeMapper.list,
             );
           },
         ),
@@ -54,6 +54,5 @@ class _EpisodesViewState extends State<EpisodesView> {
   void dispose() {
     super.dispose();
     _scrollController.dispose();
-    _episodeMapper.dispose();
   }
 }
