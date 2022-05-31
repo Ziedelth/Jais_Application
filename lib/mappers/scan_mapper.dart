@@ -32,17 +32,17 @@ class ScanMapper extends IMapper<Scan> {
     Function()? onSuccess,
     Function()? onFailure,
   }) async {
+    addLoader();
+
     final response = await URL().get(
       'https://api.ziedelth.fr/v2/scans/country/${Country.name}/page/$currentPage/limit/$limit',
     );
 
     if (response == null || response.statusCode != 200) {
-      onFailure?.call();
       return;
     }
 
-    removeLoader();
     list.addAll(toWidgets(stringTo(fromBrotly(response.body))));
-    onSuccess?.call();
+    removeLoader();
   }
 }

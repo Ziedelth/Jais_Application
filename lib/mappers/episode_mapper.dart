@@ -9,7 +9,9 @@ import 'package:jais/utils/decompress.dart';
 import 'package:url/url.dart';
 
 class EpisodeMapper extends IMapper<Episode> {
-  EpisodeMapper() : super(limit: 12, loaderWidget: const EpisodeLoaderWidget());
+  EpisodeMapper() : super(limit: 12, loaderWidget: const EpisodeLoaderWidget()) {
+    notifyListeners();
+  }
 
   @override
   List<Episode> stringTo(String string) {
@@ -32,17 +34,17 @@ class EpisodeMapper extends IMapper<Episode> {
     Function()? onSuccess,
     Function()? onFailure,
   }) async {
+    addLoader();
+
     final response = await URL().get(
       'https://api.ziedelth.fr/v2/episodes/country/${Country.name}/page/$currentPage/limit/$limit',
     );
 
     if (response == null || response.statusCode != 200) {
-      onFailure?.call();
       return;
     }
 
-    removeLoader();
     list.addAll(toWidgets(stringTo(fromBrotly(response.body))));
-    onSuccess?.call();
+    removeLoader();
   }
 }

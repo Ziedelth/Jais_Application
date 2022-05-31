@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 
 class NavbarMapper {
-  final PageController pageController = PageController();
+  late final PageController pageController;
+
+  NavbarMapper({int defaultPage = 0})
+      : pageController = PageController(initialPage: defaultPage);
 
   int get currentPage {
     try {
@@ -40,6 +43,21 @@ class NavbarMapper {
 
   List<BottomNavigationBarItem> get itemsBottomNavBar =>
       items.map((e) => e.toBottomNavigationBarItem()).toList();
+
+  List<Widget> itemsTopNavBar(NavbarMapper navbarMapper) {
+    return items
+        .asMap()
+        .map(
+          (i, e) => MapEntry(
+            i,
+            e.toTextButton(
+              onPressed: () => navbarMapper.pageController.jumpToPage(i),
+            ),
+          ),
+        )
+        .values
+        .toList();
+  }
 }
 
 class NavbarLink {

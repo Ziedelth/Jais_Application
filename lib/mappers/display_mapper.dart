@@ -7,5 +7,6 @@ class DisplayMapper {
 
   bool get isOnWeb => kIsWeb;
   bool get isOnApp => !kIsWeb;
-  bool isOnMobileOnWebOrUseApp(BuildContext context) => (isOnWeb && isOnMobile(context)) || isOnApp;
+  bool isOnMobileOnWebOrUseApp(BuildContext context) =>
+      (isOnWeb && isOnMobile(context)) || isOnApp;
 }
