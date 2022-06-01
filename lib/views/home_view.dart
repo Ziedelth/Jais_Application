@@ -145,8 +145,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPageChanged: (i) =>
                     setState(() => _navbarMapper.currentPage = i),
                 children: <Widget>[
-                  const EpisodesView(),
-                  const ScansView(),
+                  EpisodesView(),
+                  ScansView(),
                   AnimesView(key: _animesKey),
                   if (member_mapper.isConnected()) const WatchlistView(),
                   const SettingsView(

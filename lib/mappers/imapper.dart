@@ -3,10 +3,23 @@ import 'package:flutter/material.dart';
 abstract class IMapper<T> extends ChangeNotifier {
   final int limit;
   final Widget loaderWidget;
+  final list = <Widget>[];
+  final scrollController = ScrollController();
   int currentPage = 1;
-  final List<Widget> list = [];
 
-  IMapper({required this.limit, required this.loaderWidget});
+  IMapper(
+      {required this.limit, required this.loaderWidget, bool listener = true}) {
+    if (listener) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => updateCurrentPage());
+
+      scrollController.addListener(() {
+        if (scrollController.position.extentAfter <= 0) {
+          currentPage++;
+          updateCurrentPage();
+        }
+      });
+    }
+  }
 
   List<Widget> get _defaultList => List.filled(
         limit,
@@ -35,6 +48,5 @@ abstract class IMapper<T> extends ChangeNotifier {
 
   List<T> stringTo(String string);
   List<Widget> toWidgets(List<T> objects);
-
   Future<void> updateCurrentPage();
 }

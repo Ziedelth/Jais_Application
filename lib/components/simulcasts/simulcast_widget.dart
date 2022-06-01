@@ -6,12 +6,10 @@ class SimulcastWidget extends StatelessWidget {
     Key? key,
     required this.simulcast,
     this.isSelected = false,
-    this.onTap,
   }) : super(key: key);
 
   final Simulcast simulcast;
   final bool isSelected;
-  final Function(Simulcast)? onTap;
 
   // Copy function
   SimulcastWidget copyWith({
@@ -24,7 +22,6 @@ class SimulcastWidget extends StatelessWidget {
         key: key ?? this.key,
         simulcast: simulcast ?? this.simulcast,
         isSelected: isSelected ?? this.isSelected,
-        onTap: onTap ?? this.onTap,
       );
 
   @override
@@ -38,20 +35,17 @@ class SimulcastWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         color: isSelected ? Theme.of(context).primaryColor : Colors.transparent,
       ),
-      child: GestureDetector(
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Center(
-            child: Text(
-              simulcast.simulcast,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: isSelected ? FontWeight.bold : null,
-              ),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Center(
+          child: Text(
+            simulcast.simulcast,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: isSelected ? FontWeight.bold : null,
             ),
           ),
         ),
-        onTap: () => onTap?.call(simulcast),
       ),
     );
   }

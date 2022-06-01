@@ -33,8 +33,8 @@ class _WatchlistViewState extends State<WatchlistView>
           child: TabBarView(
             controller: _tabController,
             children: [
-              WatchlistEpisodesView(_watchlistMapper),
-              WatchlistScansView(_watchlistMapper),
+              WatchlistEpisodesView(_watchlistMapper.watchlistEpisodeMapper),
+              WatchlistScansView(_watchlistMapper.watchlistScanMapper),
             ],
           ),
         ),

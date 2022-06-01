@@ -9,8 +9,11 @@ import 'package:jais/utils/decompress.dart';
 import 'package:url/url.dart';
 
 class SimulcastMapper extends IMapper<Simulcast> {
-  SimulcastMapper()
-      : super(limit: 5, loaderWidget: const SimulcastLoaderWidget());
+  SimulcastMapper({bool listener = true})
+      : super(
+            limit: 5,
+            loaderWidget: const SimulcastLoaderWidget(),
+            listener: listener);
 
   @override
   List<Simulcast> stringTo(String string) {
@@ -42,5 +45,24 @@ class SimulcastMapper extends IMapper<Simulcast> {
 
     list.addAll(toWidgets(stringTo(fromBrotly(response.body))));
     removeLoader();
+  }
+
+  List<Widget> toWidgetsSelected(Simulcast? simulcast) {
+    if (simulcast == null) {
+      return this.list;
+    }
+
+    // Copy list to avoid modifying the original list
+    final list = this.list.toList();
+    final index = this.list.indexWhere((element) =>
+        element is SimulcastWidget && element.simulcast.id == simulcast.id);
+
+    if (index == -1) {
+      return this.list;
+    }
+
+    // Change the same simulcast in the list to the selected simulcast
+    list[index] = SimulcastWidget(simulcast: simulcast, isSelected: true);
+    return list;
   }
 }

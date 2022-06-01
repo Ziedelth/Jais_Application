@@ -3,52 +3,23 @@ import 'package:jais/components/episodes/episode_list.dart';
 import 'package:jais/mappers/watchlist_mapper.dart';
 import 'package:provider/provider.dart';
 
-class WatchlistEpisodesView extends StatefulWidget {
-  final WatchlistMapper watchlistMapper;
+class WatchlistEpisodesView extends StatelessWidget {
+  final WatchlistEpisodeMapper watchlistEpisodeMapper;
 
-  const WatchlistEpisodesView(this.watchlistMapper, {Key? key})
-      : super(key: key);
-
-  @override
-  _WatchlistEpisodesViewState createState() => _WatchlistEpisodesViewState();
-}
-
-class _WatchlistEpisodesViewState extends State<WatchlistEpisodesView> {
-  final _scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) =>
-        widget.watchlistMapper.watchlistEpisodeMapper.updateCurrentPage());
-
-    _scrollController.addListener(() {
-      if (_scrollController.position.extentAfter <= 0) {
-        widget.watchlistMapper.watchlistEpisodeMapper.currentPage++;
-        widget.watchlistMapper.watchlistEpisodeMapper.addLoader();
-        widget.watchlistMapper.watchlistEpisodeMapper.updateCurrentPage();
-      }
-    });
-  }
+  const WatchlistEpisodesView(this.watchlistEpisodeMapper, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<WatchlistEpisodeMapper>.value(
-      value: widget.watchlistMapper.watchlistEpisodeMapper,
+      value: watchlistEpisodeMapper,
       child: Consumer<WatchlistEpisodeMapper>(
         builder: (context, watchlistEpisodeMapper, _) {
           return EpisodeList(
-            scrollController: _scrollController,
+            scrollController: watchlistEpisodeMapper.scrollController,
             children: watchlistEpisodeMapper.list,
           );
         },
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _scrollController.dispose();
   }
 }
