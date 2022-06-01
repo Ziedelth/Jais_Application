@@ -9,7 +9,8 @@ import 'package:jais/utils/decompress.dart';
 import 'package:url/url.dart';
 
 class EpisodeMapper extends IMapper<Episode> {
-  EpisodeMapper() : super(limit: 12, loaderWidget: const EpisodeLoaderWidget()) {
+  EpisodeMapper()
+      : super(limit: 12, loaderWidget: const EpisodeLoaderWidget()) {
     notifyListeners();
   }
 
@@ -31,6 +32,7 @@ class EpisodeMapper extends IMapper<Episode> {
 
   @override
   Future<void> updateCurrentPage() async {
+    print('updateCurrentPage');
     addLoader();
 
     final response = await URL().get(

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:jais/components/full_widget.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/models/member.dart';
-import 'package:jais/utils/decompress.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:logger/logger.dart' as logger;
 import 'package:url/url.dart';
@@ -121,7 +120,7 @@ class _LoginViewState extends State<LoginView> {
 
                           try {
                             final response = await URL().post(
-                              "https://api.ziedelth.fr/v2/member/login",
+                              "https://api.ziedelth.fr/v1/member/login",
                               body: {
                                 "email": _emailController.text.trim(),
                                 "password": _passwordController.text.trim(),
@@ -147,8 +146,7 @@ class _LoginViewState extends State<LoginView> {
 
                             // Decode response to member
                             final member = Member.fromJson(
-                              jsonDecode(fromBrotly(response.body))
-                                  as Map<String, dynamic>,
+                              jsonDecode(response.body) as Map<String, dynamic>,
                             );
 
                             // If responseBody not contains token, return an error

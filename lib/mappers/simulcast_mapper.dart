@@ -11,9 +11,10 @@ import 'package:url/url.dart';
 class SimulcastMapper extends IMapper<Simulcast> {
   SimulcastMapper({bool listener = true})
       : super(
-            limit: 5,
-            loaderWidget: const SimulcastLoaderWidget(),
-            listener: listener);
+          limit: 5,
+          loaderWidget: const SimulcastLoaderWidget(),
+          listener: listener,
+        );
 
   @override
   List<Simulcast> stringTo(String string) {
@@ -54,8 +55,11 @@ class SimulcastMapper extends IMapper<Simulcast> {
 
     // Copy list to avoid modifying the original list
     final list = this.list.toList();
-    final index = this.list.indexWhere((element) =>
-        element is SimulcastWidget && element.simulcast.id == simulcast.id);
+    final index = this.list.indexWhere(
+          (element) =>
+              element is SimulcastWidget &&
+              element.simulcast.id == simulcast.id,
+        );
 
     if (index == -1) {
       return this.list;

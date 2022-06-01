@@ -148,7 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   EpisodesView(),
                   ScansView(),
                   AnimesView(key: _animesKey),
-                  if (member_mapper.isConnected()) const WatchlistView(),
+                  if (member_mapper.isConnected()) WatchlistView(),
                   const SettingsView(
                       // onLogin: () {
                       //   _changeTab(4);

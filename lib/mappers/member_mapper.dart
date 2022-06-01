@@ -65,7 +65,7 @@ Future<void> loginWithToken() async {
 
   try {
     final response = await URL().post(
-      "https://api.ziedelth.fr/v2/member/token",
+      "https://api.ziedelth.fr/v1/member/token",
       body: {
         "token": getMember()!.token!,
       },

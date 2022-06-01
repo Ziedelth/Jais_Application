@@ -7,8 +7,11 @@ abstract class IMapper<T> extends ChangeNotifier {
   final scrollController = ScrollController();
   int currentPage = 1;
 
-  IMapper(
-      {required this.limit, required this.loaderWidget, bool listener = true}) {
+  IMapper({
+    required this.limit,
+    required this.loaderWidget,
+    bool listener = true,
+  }) {
     if (listener) {
       WidgetsBinding.instance.addPostFrameCallback((_) => updateCurrentPage());
 
@@ -47,6 +50,8 @@ abstract class IMapper<T> extends ChangeNotifier {
   }
 
   List<T> stringTo(String string);
+
   List<Widget> toWidgets(List<T> objects);
+
   Future<void> updateCurrentPage();
 }

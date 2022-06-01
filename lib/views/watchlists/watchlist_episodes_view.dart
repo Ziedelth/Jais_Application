@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 class WatchlistEpisodesView extends StatelessWidget {
   final WatchlistEpisodeMapper watchlistEpisodeMapper;
 
-  const WatchlistEpisodesView(this.watchlistEpisodeMapper, {super.key});
+  const WatchlistEpisodesView(this.watchlistEpisodeMapper);
 
   @override
   Widget build(BuildContext context) {
