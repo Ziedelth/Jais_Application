@@ -9,7 +9,7 @@ import 'package:jais/views/updates/anime_update_view.dart';
 class AnimeWidget extends StatelessWidget {
   final Anime anime;
 
-  const AnimeWidget({required this.anime, Key? key}) : super(key: key);
+  const AnimeWidget({required this.anime, super.key});
 
   @override
   Widget build(BuildContext context) {

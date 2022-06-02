@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jais/components/skeleton.dart';
 
 class SimulcastLoaderWidget extends StatelessWidget {
-  const SimulcastLoaderWidget({Key? key}) : super(key: key);
+  const SimulcastLoaderWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

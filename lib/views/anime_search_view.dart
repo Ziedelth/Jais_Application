@@ -7,14 +7,14 @@ import 'package:jais/models/anime.dart';
 import 'package:jais/utils/jais_ad.dart';
 
 class AnimeSearchView extends StatefulWidget {
+  final AnimeMapper animeMapper;
+  final Function(Anime) onTap;
+
   const AnimeSearchView({
     required this.animeMapper,
     required this.onTap,
-    Key? key,
-  }) : super(key: key);
-
-  final AnimeMapper animeMapper;
-  final Function(Anime) onTap;
+    super.key,
+  });
 
   @override
   _AnimeSearchViewState createState() => _AnimeSearchViewState();

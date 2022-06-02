@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:jais/models/simulcast.dart';
 
 class SimulcastWidget extends StatelessWidget {
-  const SimulcastWidget({
-    Key? key,
-    required this.simulcast,
-    this.isSelected = false,
-  }) : super(key: key);
-
   final Simulcast simulcast;
   final bool isSelected;
+
+  const SimulcastWidget({
+    required this.simulcast,
+    this.isSelected = false,
+    super.key,
+  });
 
   // Copy function
   SimulcastWidget copyWith({

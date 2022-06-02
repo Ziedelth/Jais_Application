@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jais/components/skeleton.dart';
 
 class AnimeLoaderWidget extends StatelessWidget {
-  const AnimeLoaderWidget({Key? key}) : super(key: key);
+  const AnimeLoaderWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

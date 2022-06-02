@@ -5,14 +5,20 @@ import 'package:jais/components/roundborder_widget.dart';
 import 'package:jais/mappers/display_mapper.dart';
 import 'package:jais/mappers/navbar_mapper.dart';
 import 'package:jais/utils/jais_ad.dart';
+import 'package:jais/views/animes_view.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class Navbar extends StatelessWidget {
   final DisplayMapper _displayMapper = DisplayMapper();
   final NavbarMapper navbarMapper;
   final Function(int)? onPageChanged;
+  final GlobalKey<AnimesViewState>? animesKey;
 
-  Navbar({required this.navbarMapper, this.onPageChanged, super.key}) {
+  Navbar(
+      {required this.navbarMapper,
+      this.onPageChanged,
+      this.animesKey,
+      super.key}) {
     if (_displayMapper.isOnApp) createGlobalBanner();
   }
 
@@ -78,17 +84,16 @@ class Navbar extends StatelessWidget {
             const Spacer()
           ],
           const SizedBox(width: 10),
-          if (navbarMapper.currentPage == 2)
-            ...[
-              const Spacer(),
-              IconButton(
-                alignment: Alignment.centerRight,
-                icon: const Icon(Icons.search),
-                onPressed: () {
-                  // _animesKey.currentState?.showSearch();
-                },
-              ),
-            ],
+          if (navbarMapper.currentPage == 2) ...[
+            if (_displayMapper.isOnWeb) const Spacer(),
+            IconButton(
+              alignment: Alignment.centerRight,
+              icon: const Icon(Icons.search),
+              onPressed: () {
+                animesKey?.currentState?.showSearch();
+              },
+            ),
+          ],
         ],
       ),
     );

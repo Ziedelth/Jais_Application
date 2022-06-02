@@ -13,11 +13,7 @@ class AnimeUpdateView extends StatefulWidget {
   final Member member;
   final Anime anime;
 
-  const AnimeUpdateView({
-    required this.member,
-    required this.anime,
-    Key? key,
-  }) : super(key: key);
+  const AnimeUpdateView({required this.member, required this.anime, super.key});
 
   @override
   _AnimeUpdateViewState createState() => _AnimeUpdateViewState();

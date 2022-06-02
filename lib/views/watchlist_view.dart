@@ -6,6 +6,8 @@ import 'package:jais/views/watchlists/watchlist_episodes_view.dart';
 import 'package:jais/views/watchlists/watchlist_scans_view.dart';
 
 class WatchlistView extends StatefulWidget {
+  const WatchlistView({super.key});
+
   @override
   _WatchlistViewState createState() => _WatchlistViewState();
 }

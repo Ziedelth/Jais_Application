@@ -15,11 +15,7 @@ class ScanUpdateView extends StatefulWidget {
   final Member member;
   final Scan scan;
 
-  const ScanUpdateView({
-    required this.member,
-    required this.scan,
-    Key? key,
-  }) : super(key: key);
+  const ScanUpdateView({required this.member, required this.scan, super.key});
 
   @override
   _ScanUpdateViewState createState() => _ScanUpdateViewState();

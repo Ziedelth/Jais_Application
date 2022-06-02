@@ -6,7 +6,12 @@ class SectionWidget extends StatelessWidget {
   final String title;
   final List<Widget>? widgets;
 
-  const SectionWidget({required this.icon, required this.title, this.widgets});
+  const SectionWidget({
+    required this.icon,
+    required this.title,
+    this.widgets,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

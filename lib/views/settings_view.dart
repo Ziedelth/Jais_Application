@@ -11,7 +11,7 @@ class SettingsView extends StatefulWidget {
   final Function()? onLogin;
   final Function()? onLogout;
 
-  const SettingsView({this.onLogin, this.onLogout, Key? key}) : super(key: key);
+  const SettingsView({this.onLogin, this.onLogout, super.key});
 
   @override
   _SettingsViewState createState() => _SettingsViewState();

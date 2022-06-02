@@ -18,8 +18,8 @@ class EpisodeUpdateView extends StatefulWidget {
   const EpisodeUpdateView({
     required this.member,
     required this.episode,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _EpisodeUpdateViewState createState() => _EpisodeUpdateViewState();

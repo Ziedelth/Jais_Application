@@ -9,7 +9,7 @@ class PlatformWidget extends StatelessWidget {
   static const double _width = 20;
   static const double _height = 20;
 
-  const PlatformWidget(this._platform, {Key? key}) : super(key: key);
+  const PlatformWidget(this._platform, {super.key});
 
   @override
   Widget build(BuildContext context) {

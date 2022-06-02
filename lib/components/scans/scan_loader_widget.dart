@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jais/components/skeleton.dart';
 
 class ScanLoaderWidget extends StatelessWidget {
-  const ScanLoaderWidget({Key? key}) : super(key: key);
+  const ScanLoaderWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

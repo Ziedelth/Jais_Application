@@ -8,11 +8,7 @@ class EpisodeList extends StatelessWidget {
   final ScrollController? scrollController;
   final List<Widget> children;
 
-  const EpisodeList({
-    this.scrollController,
-    required this.children,
-    Key? key,
-  }) : super(key: key);
+  const EpisodeList({this.scrollController, required this.children, super.key});
 
   @override
   Widget build(BuildContext context) {

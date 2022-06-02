@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
 
-class JTab extends StatefulWidget {
-  const JTab(this.tabController, {Key? key}) : super(key: key);
-
+class JTab extends StatelessWidget {
   final TabController tabController;
 
-  @override
-  _JTabState createState() => _JTabState();
-}
+  const JTab(this.tabController, {super.key});
 
-class _JTabState extends State<JTab> {
   @override
   Widget build(BuildContext context) {
     return TabBar(
-      controller: widget.tabController,
+      controller: tabController,
       indicatorColor: Colors.black,
       labelColor: Theme.of(context).primaryColor,
       unselectedLabelColor: Colors.grey,

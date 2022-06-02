@@ -16,7 +16,9 @@ class _EpisodesViewState extends State<EpisodesView> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _episodeMapper.updateCurrentPage());
+    _episodeMapper.clear();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _episodeMapper.updateCurrentPage());
   }
 
   @override

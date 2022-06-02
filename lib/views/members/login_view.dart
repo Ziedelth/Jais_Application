@@ -11,7 +11,7 @@ import 'package:url/url.dart';
 class LoginView extends StatefulWidget {
   final Function()? onLogin;
 
-  const LoginView({this.onLogin, Key? key}) : super(key: key);
+  const LoginView({this.onLogin, super.key});
 
   @override
   _LoginViewState createState() => _LoginViewState();

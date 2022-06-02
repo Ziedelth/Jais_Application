@@ -9,7 +9,7 @@ import 'package:url/url.dart';
 class RegisterView extends StatefulWidget {
   final Function()? onLogin;
 
-  const RegisterView({this.onLogin, Key? key}) : super(key: key);
+  const RegisterView({this.onLogin, super.key});
 
   @override
   _RegisterViewState createState() => _RegisterViewState();

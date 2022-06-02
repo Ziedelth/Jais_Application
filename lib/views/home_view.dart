@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:jais/components/custom_gesture_detector.dart';
 import 'package:jais/components/navbar.dart';
-import 'package:jais/components/roundborder_widget.dart';
 import 'package:jais/mappers/display_mapper.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/mappers/navbar_mapper.dart';
-import 'package:jais/utils/jais_ad.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:jais/views/animes_view.dart';
 import 'package:jais/views/episodes_view.dart';
 import 'package:jais/views/scans_view.dart';
 import 'package:jais/views/settings_view.dart';
 import 'package:jais/views/watchlist_view.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -52,49 +47,53 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Navbar(
-              navbarMapper: _navbarMapper,
-              onPageChanged: (page) =>
-                  setState(() => _navbarMapper.currentPage = page),
-            ),
-            Expanded(
-              child: PageView(
-                controller: _navbarMapper.pageController,
-                onPageChanged: (i) => setState(() => _navbarMapper.currentPage = i),
-                children: <Widget>[
-                  const EpisodesView(),
-                  const ScansView(),
-                  AnimesView(key: _animesKey),
-                  if (member_mapper.isConnected()) WatchlistView(),
-                  const SettingsView(
-                      // onLogin: () {
-                      //   _changeTab(4);
-                      //   _navbarMapper.pageController.jumpToPage(5);
-                      // },
-                      // onLogout: () => _changeTab(3),
-                      ),
+    return ChangeNotifierProvider<NavbarMapper>.value(
+      value: _navbarMapper,
+      child: Consumer<NavbarMapper>(
+        builder: (context, navbarMapper, _) {
+          return Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: SafeArea(
+              child: Column(
+                children: [
+                  Navbar(
+                    navbarMapper: navbarMapper,
+                    onPageChanged: (page) => navbarMapper.currentPage = page,
+                    animesKey: _animesKey,
+                  ),
+                  Expanded(
+                    child: PageView(
+                      controller: navbarMapper.pageController,
+                      onPageChanged: (i) => navbarMapper.currentPage = i,
+                      children: <Widget>[
+                        const EpisodesView(),
+                        const ScansView(),
+                        AnimesView(key: _animesKey),
+                        if (member_mapper.isConnected()) const WatchlistView(),
+                        SettingsView(
+                          onLogin: () => navbarMapper.currentPage = 5,
+                          onLogout: () => navbarMapper.currentPage = 0,
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-          ],
-        ),
+            bottomNavigationBar: _displayMapper.isOnMobileOnWebOrUseApp(context)
+                ? BottomNavigationBar(
+                    showSelectedLabels: false,
+                    showUnselectedLabels: false,
+                    selectedItemColor: Theme.of(context).primaryColor,
+                    unselectedItemColor: Colors.grey,
+                    currentIndex: navbarMapper.currentPage,
+                    onTap: (index) => navbarMapper.currentPage = index,
+                    items: navbarMapper.itemsBottomNavBar,
+                  )
+                : null,
+          );
+        },
       ),
-      bottomNavigationBar: _displayMapper.isOnMobileOnWebOrUseApp(context)
-          ? BottomNavigationBar(
-              showSelectedLabels: false,
-              showUnselectedLabels: false,
-              selectedItemColor: Theme.of(context).primaryColor,
-              unselectedItemColor: Colors.grey,
-              currentIndex: _navbarMapper.currentPage,
-              onTap: (index) => _navbarMapper.currentPage = index,
-              items: _navbarMapper.itemsBottomNavBar,
-            )
-          : null,
     );
   }
 }

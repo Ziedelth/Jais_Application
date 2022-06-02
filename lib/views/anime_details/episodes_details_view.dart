@@ -6,7 +6,7 @@ import 'package:jais/models/anime.dart';
 class EpisodesDetailsView extends StatefulWidget {
   final Anime _anime;
 
-  const EpisodesDetailsView(this._anime);
+  const EpisodesDetailsView(this._anime, {super.key});
 
   @override
   _EpisodesDetailsViewState createState() => _EpisodesDetailsViewState();

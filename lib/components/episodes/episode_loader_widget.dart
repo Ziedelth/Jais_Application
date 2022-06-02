@@ -3,7 +3,7 @@ import 'package:jais/components/skeleton.dart';
 import 'package:jais/utils/utils.dart';
 
 class EpisodeLoaderWidget extends StatelessWidget {
-  const EpisodeLoaderWidget({Key? key}) : super(key: key);
+  const EpisodeLoaderWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -16,7 +16,9 @@ class _ScansViewState extends State<ScansView> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _scanMapper.updateCurrentPage());
+    _scanMapper.clear();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _scanMapper.updateCurrentPage());
   }
 
   @override

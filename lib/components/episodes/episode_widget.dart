@@ -13,7 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 class EpisodeWidget extends StatelessWidget {
   final Episode episode;
 
-  const EpisodeWidget({required this.episode, Key? key}) : super(key: key);
+  const EpisodeWidget({required this.episode, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -96,8 +96,12 @@ class EpisodeWidget extends StatelessWidget {
                   image: imageProvider,
                   fit: BoxFit.cover,
                 ),
-                placeholder: (context, url) => const Skeleton(),
-                errorWidget: (context, url, error) => const Skeleton(),
+                placeholder: (context, url) => const Skeleton(
+                  height: 200,
+                ),
+                errorWidget: (context, url, error) => const Skeleton(
+                  height: 200,
+                ),
               ),
             ),
             const SizedBox(

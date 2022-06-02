@@ -14,7 +14,7 @@ import 'package:jais/views/anime_search_view.dart';
 import 'package:provider/provider.dart';
 
 class AnimesView extends StatefulWidget {
-  const AnimesView({Key? key}) : super(key: key);
+  const AnimesView({super.key});
 
   @override
   AnimesViewState createState() => AnimesViewState();
@@ -91,6 +91,7 @@ class AnimesViewState extends State<AnimesView> {
   @override
   void initState() {
     super.initState();
+    _simulcastMapper.clear();
     _animeMapper.clear();
     WidgetsBinding.instance.addPostFrameCallback((_) async => init());
   }

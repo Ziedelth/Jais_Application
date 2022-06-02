@@ -2,14 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class Skeleton extends StatelessWidget {
-  const Skeleton({
-    Key? key,
-    this.width,
-    this.height,
-  }) : super(key: key);
-
   final double? width;
   final double? height;
+
+  const Skeleton({this.width, this.height, super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -9,7 +9,7 @@ import 'package:jais/models/member.dart';
 class MemberView extends StatelessWidget {
   final Member member;
 
-  const MemberView({required this.member, Key? key}) : super(key: key);
+  const MemberView({required this.member, super.key});
 
   @override
   Widget build(BuildContext context) {
