@@ -1,11 +1,10 @@
-import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:jais/components/episodes/episode_list.dart';
 import 'package:jais/mappers/episode_mapper.dart';
-import 'package:jais/utils/utils.dart';
+import 'package:provider/provider.dart';
 
 class EpisodesView extends StatefulWidget {
-  const EpisodesView({Key? key}) : super(key: key);
+  const EpisodesView({super.key});
 
   @override
   _EpisodesViewState createState() => _EpisodesViewState();
@@ -13,52 +12,18 @@ class EpisodesView extends StatefulWidget {
 
 class _EpisodesViewState extends State<EpisodesView> {
   final _episodeMapper = EpisodeMapper();
-  final _scrollController = ScrollController();
-  GlobalKey _key = GlobalKey();
-  bool _isLoading = true;
-  CancelableOperation? _cancelableOperation;
-
-  void _update(bool isLoading) {
-    _isLoading = isLoading;
-    if (!mounted) return;
-    setState(() {});
-  }
-
-  Future<void> rebuildEpisodes({bool isNew = false}) async {
-    await _episodeMapper.updateCurrentPage(
-      onSuccess: () {
-        _update(false);
-
-        if (isNew) {
-          _key = GlobalKey();
-        }
-      },
-      onFailure: () =>
-          showSnackBar(context, 'An error occurred while loading episodes'),
-    );
-  }
-
-  void setOperation({bool isNew = false}) {
-    _cancelableOperation?.cancel();
-    _cancelableOperation =
-        CancelableOperation.fromFuture(rebuildEpisodes(isNew: isNew));
-  }
+  UniqueKey _key = UniqueKey();
 
   @override
   void initState() {
     super.initState();
     _episodeMapper.clear();
-    WidgetsBinding.instance
-        ?.addPostFrameCallback((_) => setOperation(isNew: true));
 
-    _scrollController.addListener(() {
-      if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
-        _isLoading = true;
-        _episodeMapper.currentPage++;
-        _episodeMapper.addLoader();
-        _update(true);
-        setOperation();
-      }
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _episodeMapper.updateCurrentPage();
+
+      if (!mounted) return;
+      setState(() => _key = UniqueKey());
     });
   }
 
@@ -67,22 +32,20 @@ class _EpisodesViewState extends State<EpisodesView> {
     return RefreshIndicator(
       onRefresh: () async {
         _episodeMapper.clear();
-        _update(true);
-        setOperation();
+        _episodeMapper.updateCurrentPage();
       },
-      child: EpisodeList(
-        key: _key,
-        scrollController: _scrollController,
-        children: _episodeMapper.list,
+      child: ChangeNotifierProvider<EpisodeMapper>.value(
+        value: _episodeMapper,
+        child: Consumer<EpisodeMapper>(
+          builder: (context, episodeMapper, _) {
+            return EpisodeList(
+              key: _key,
+              scrollController: _episodeMapper.scrollController,
+              children: episodeMapper.list,
+            );
+          },
+        ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _cancelableOperation?.cancel();
-    _scrollController.dispose();
-    _episodeMapper.clear();
   }
 }

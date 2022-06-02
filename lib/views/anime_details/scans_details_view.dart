@@ -5,15 +5,8 @@ import 'package:jais/models/anime.dart';
 
 class ScansDetailsView extends StatelessWidget {
   final Anime _anime;
-  late final List<Widget> _scans;
 
-  ScansDetailsView(this._anime) {
-    _scans = _anime.scans
-        .map<Widget>(
-          (element) => ScanWidget(scan: element),
-        )
-        .toList();
-  }
+  const ScansDetailsView(this._anime, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +29,9 @@ class ScansDetailsView extends StatelessWidget {
       children: [
         Expanded(
           child: ScanList(
-            children: _scans,
+            children: _anime.scans
+                .map<Widget>((element) => ScanWidget(scan: element))
+                .toList(),
           ),
         ),
       ],

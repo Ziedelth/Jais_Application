@@ -1,64 +1,28 @@
-import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:jais/components/scans/scan_list.dart';
 import 'package:jais/mappers/scan_mapper.dart';
-import 'package:jais/utils/utils.dart';
+import 'package:provider/provider.dart';
 
 class ScansView extends StatefulWidget {
-  const ScansView({Key? key}) : super(key: key);
+  const ScansView({super.key});
 
   @override
   _ScansViewState createState() => _ScansViewState();
 }
 
 class _ScansViewState extends State<ScansView> {
-  final ScanMapper _scanMapper = ScanMapper();
-  final ScrollController _scrollController = ScrollController();
-  GlobalKey _key = GlobalKey();
-  bool _isLoading = true;
-  CancelableOperation? _cancelableOperation;
-
-  void _update(bool isLoading) {
-    _isLoading = isLoading;
-    if (!mounted) return;
-    setState(() {});
-  }
-
-  Future<void> rebuildScans({bool isNew = false}) async {
-    await _scanMapper.updateCurrentPage(
-      onSuccess: () {
-        _update(false);
-
-        if (isNew) {
-          _key = GlobalKey();
-        }
-      },
-      onFailure: () =>
-          showSnackBar(context, 'An error occurred while loading scans'),
-    );
-  }
-
-  void setOperation({bool isNew = false}) {
-    _cancelableOperation?.cancel();
-    _cancelableOperation =
-        CancelableOperation.fromFuture(rebuildScans(isNew: isNew));
-  }
+  final _scanMapper = ScanMapper();
+  UniqueKey _key = UniqueKey();
 
   @override
   void initState() {
     super.initState();
     _scanMapper.clear();
-    WidgetsBinding.instance
-        ?.addPostFrameCallback((_) => setOperation(isNew: true));
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _scanMapper.updateCurrentPage();
 
-    _scrollController.addListener(() {
-      if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
-        _isLoading = true;
-        _scanMapper.currentPage++;
-        _scanMapper.addLoader();
-        _update(true);
-        setOperation();
-      }
+      if (!mounted) return;
+      setState(() => _key = UniqueKey());
     });
   }
 
@@ -67,22 +31,20 @@ class _ScansViewState extends State<ScansView> {
     return RefreshIndicator(
       onRefresh: () async {
         _scanMapper.clear();
-        _update(true);
-        setOperation();
+        _scanMapper.updateCurrentPage();
       },
-      child: ScanList(
-        key: _key,
-        scrollController: _scrollController,
-        children: _scanMapper.list,
+      child: ChangeNotifierProvider<ScanMapper>.value(
+        value: _scanMapper,
+        child: Consumer<ScanMapper>(
+          builder: (context, scanMapper, _) {
+            return ScanList(
+              key: _key,
+              scrollController: scanMapper.scrollController,
+              children: scanMapper.list,
+            );
+          },
+        ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _cancelableOperation?.cancel();
-    _scrollController.dispose();
-    _scanMapper.clear();
   }
 }

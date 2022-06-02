@@ -1,80 +1,46 @@
-import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:jais/components/scans/scan_list.dart';
 import 'package:jais/mappers/watchlist_mapper.dart';
-import 'package:jais/utils/utils.dart';
+import 'package:provider/provider.dart';
 
 class WatchlistScansView extends StatefulWidget {
-  final WatchlistMapper watchlistMapper;
+  final WatchlistScanMapper watchlistScanMapper;
 
-  const WatchlistScansView(this.watchlistMapper, {Key? key}) : super(key: key);
+  const WatchlistScansView(this.watchlistScanMapper, {super.key});
 
   @override
   _WatchlistScansViewState createState() => _WatchlistScansViewState();
 }
 
 class _WatchlistScansViewState extends State<WatchlistScansView> {
-  final _scrollController = ScrollController();
-  GlobalKey _key = GlobalKey();
-  bool _isLoading = true;
-  CancelableOperation? _cancelableOperation;
-
-  void _update(bool isLoading) {
-    _isLoading = isLoading;
-    if (!mounted) return;
-    setState(() {});
-  }
-
-  Future<void> rebuildScans({bool isNew = false}) async {
-    await widget.watchlistMapper.updateScansCurrentPage(
-      onSuccess: () {
-        _update(false);
-
-        if (isNew) {
-          _key = GlobalKey();
-        }
-      },
-      onFailure: () =>
-          showSnackBar(context, 'An error occurred while loading scans'),
-    );
-  }
-
-  void setOperation({bool isNew = false}) {
-    _cancelableOperation?.cancel();
-    _cancelableOperation =
-        CancelableOperation.fromFuture(rebuildScans(isNew: isNew));
-  }
+  UniqueKey _key = UniqueKey();
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance
-        ?.addPostFrameCallback((_) => setOperation(isNew: true));
+    widget.watchlistScanMapper.clear();
 
-    _scrollController.addListener(() {
-      if (_scrollController.position.extentAfter <= 0 && !_isLoading) {
-        _isLoading = true;
-        widget.watchlistMapper.currentPageScans++;
-        widget.watchlistMapper.addScanLoader();
-        _update(true);
-        setOperation();
-      }
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await widget.watchlistScanMapper.updateCurrentPage();
+
+      if (!mounted) return;
+      setState(() => _key = UniqueKey());
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return ScanList(
-      scrollController: _scrollController,
-      key: _key,
-      children: widget.watchlistMapper.scansList,
+    return ChangeNotifierProvider<WatchlistScanMapper>.value(
+      value: widget.watchlistScanMapper,
+      child: Consumer<WatchlistScanMapper>(
+        builder: (context, watchlistScanMapper, _) {
+          return ScanList(
+            key: _key,
+            scrollController: watchlistScanMapper.scrollController,
+            children: watchlistScanMapper.list,
+          );
+        },
+      ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _cancelableOperation?.cancel();
-    _scrollController.dispose();
   }
 }

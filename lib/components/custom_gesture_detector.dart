@@ -10,8 +10,8 @@ class CustomGestureDetector extends StatelessWidget {
     required this.child,
     this.duration = const Duration(milliseconds: 500),
     this.onLongPress,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

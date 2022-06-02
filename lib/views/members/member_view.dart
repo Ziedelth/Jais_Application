@@ -9,7 +9,7 @@ import 'package:jais/models/member.dart';
 class MemberView extends StatelessWidget {
   final Member member;
 
-  const MemberView({required this.member, Key? key}) : super(key: key);
+  const MemberView({required this.member, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +17,10 @@ class MemberView extends StatelessWidget {
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         title: const Text('Profil'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: SafeArea(
         child: Column(
@@ -61,13 +65,17 @@ class MemberView extends StatelessWidget {
     return member.watchlist.map<Widget>(
       (e) {
         // Copy e
-        final anime = e.copyWith(
-          name: utf8.decode(e.name.codeUnits),
-          description:
-              (e.description != null && e.description?.isNotEmpty == true)
-                  ? utf8.decode(e.description!.codeUnits)
-                  : null,
-        );
+        var anime = e;
+
+        try {
+          anime = e.copyWith(
+            name: utf8.decode(e.name.codeUnits),
+            description:
+                (e.description != null && e.description?.isNotEmpty == true)
+                    ? utf8.decode(e.description!.codeUnits)
+                    : null,
+          );
+        } catch (_) {}
 
         return AnimeWidget(
           anime: anime,

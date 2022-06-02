@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:jais/components/skeleton.dart';
+import 'package:jais/mappers/display_mapper.dart';
 
 class ScanLoaderWidget extends StatelessWidget {
-  const ScanLoaderWidget({Key? key}) : super(key: key);
+  final _displayMapper = DisplayMapper();
+
+  ScanLoaderWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +28,11 @@ class ScanLoaderWidget extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10),
-          const Skeleton(width: 250, height: 15), // Info
-          const SizedBox(height: 5),
+          if (_displayMapper.isOnMobile(context))
+            const Skeleton(width: 250, height: 20)
+          else
+            const Expanded(child: Skeleton(width: 250)), // Info
+          const SizedBox(height: 10),
           const Skeleton(width: 200, height: 15), // Time since
         ],
       ),

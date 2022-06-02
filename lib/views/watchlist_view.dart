@@ -6,7 +6,7 @@ import 'package:jais/views/watchlists/watchlist_episodes_view.dart';
 import 'package:jais/views/watchlists/watchlist_scans_view.dart';
 
 class WatchlistView extends StatefulWidget {
-  const WatchlistView({Key? key}) : super(key: key);
+  const WatchlistView({super.key});
 
   @override
   _WatchlistViewState createState() => _WatchlistViewState();
@@ -33,8 +33,8 @@ class _WatchlistViewState extends State<WatchlistView>
           child: TabBarView(
             controller: _tabController,
             children: [
-              WatchlistEpisodesView(_watchlistMapper),
-              WatchlistScansView(_watchlistMapper),
+              WatchlistEpisodesView(_watchlistMapper.watchlistEpisodeMapper),
+              WatchlistScansView(_watchlistMapper.watchlistScanMapper),
             ],
           ),
         ),

@@ -7,11 +7,10 @@ import 'package:jais/models/platform.dart';
 import 'package:notifications/notifications.dart' as notifications;
 
 class AnimeDetailsHeader extends StatefulWidget {
-  const AnimeDetailsHeader(this._callback, this._anime, {Key? key})
-      : super(key: key);
-
   final VoidCallback _callback;
   final Anime _anime;
+
+  const AnimeDetailsHeader(this._callback, this._anime, {super.key});
 
   @override
   _AnimeDetailsHeaderState createState() => _AnimeDetailsHeaderState();

@@ -1,9 +1,9 @@
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-BannerAd? bannerAd;
+BannerAd? globalBannerAd;
 
-void createBanner() {
-  bannerAd = BannerAd(
+void createGlobalBanner() {
+  globalBannerAd = BannerAd(
     adUnitId: 'ca-app-pub-5658764393995798/7021730383',
     size: AdSize.banner,
     request: const AdRequest(),
@@ -14,5 +14,5 @@ void createBanner() {
     ),
   );
 
-  bannerAd?.load();
+  globalBannerAd?.load();
 }

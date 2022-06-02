@@ -11,7 +11,7 @@ class SettingsView extends StatefulWidget {
   final Function()? onLogin;
   final Function()? onLogout;
 
-  const SettingsView({this.onLogin, this.onLogout, Key? key}) : super(key: key);
+  const SettingsView({this.onLogin, this.onLogout, super.key});
 
   @override
   _SettingsViewState createState() => _SettingsViewState();
@@ -48,6 +48,7 @@ class _SettingsViewState extends State<SettingsView> {
                     },
                   ),
                 ),
+                const SizedBox(height: 16),
                 FullWidget(
                   widget: ElevatedButton(
                     child: const Text('Connexion'),
@@ -81,6 +82,7 @@ class _SettingsViewState extends State<SettingsView> {
                     },
                   ),
                 ),
+                const SizedBox(height: 16),
                 FullWidget(
                   widget: ElevatedButton(
                     child: const Text('Déconnexion'),
@@ -113,6 +115,7 @@ class _SettingsViewState extends State<SettingsView> {
                     child: const Text('Par défaut'),
                   ),
                 ),
+                const SizedBox(height: 16),
                 FullWidget(
                   widget: ElevatedButton(
                     onPressed: (isDefaultMode || isWatchlistModeOrNeedUpdate)

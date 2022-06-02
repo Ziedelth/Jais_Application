@@ -12,11 +12,11 @@ class Anime {
   final List<String> codes;
   final List<Genre> genres;
   final Country country;
-  final String releaseDate;
-  final String name;
-  final String? url;
-  final String image;
-  final String? description;
+  String releaseDate;
+  String name;
+  String? url;
+  String image;
+  String? description;
 
   @JsonKey(ignore: true)
   final List<Episode> episodes = <Episode>[];

@@ -4,14 +4,14 @@ import 'package:jais/mappers/anime_mapper.dart';
 import 'package:jais/models/anime.dart';
 
 class AnimeSearchView extends StatefulWidget {
+  final AnimeMapper animeMapper;
+  final Function(Anime) onTap;
+
   const AnimeSearchView({
     required this.animeMapper,
     required this.onTap,
-    Key? key,
-  }) : super(key: key);
-
-  final AnimeMapper animeMapper;
-  final Function(Anime) onTap;
+    super.key,
+  });
 
   @override
   _AnimeSearchViewState createState() => _AnimeSearchViewState();
@@ -31,13 +31,13 @@ class _AnimeSearchViewState extends State<AnimeSearchView> {
             border: InputBorder.none,
           ),
           autofocus: true,
-          onChanged: (value) async {
+          onSubmitted: (value) async {
             final animes = await widget.animeMapper.search(query: value);
             if (animes == null) return;
 
-            setState(() {
-              _animeWidgets.clear();
-              _animeWidgets.addAll(
+            _animeWidgets
+              ..clear()
+              ..addAll(
                 animes
                     .map<Widget>(
                       (e) => GestureDetector(
@@ -50,7 +50,8 @@ class _AnimeSearchViewState extends State<AnimeSearchView> {
                     )
                     .toList(),
               );
-            });
+
+            setState(() {});
           },
         ),
       ),

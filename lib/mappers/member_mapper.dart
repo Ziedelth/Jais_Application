@@ -4,7 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/member.dart';
-import 'package:logger/logger.dart' as logger;
+import 'package:jais/models/member_role.dart';
+import 'package:jais/utils/decompress.dart';
 import 'package:notifications/notifications.dart' as notifications;
 import 'package:url/url.dart';
 
@@ -30,13 +31,10 @@ final inputFormatters = [
 late final GetStorage _getStorage;
 
 Future<void> init() async {
-  logger.info("Initializing member mapper");
   await GetStorage.init('member_data');
   _getStorage = GetStorage('member_data');
-  logger.info("Initializing member mapper done");
 }
 
-// Get member save in storage
 Member? getMember() {
   final memberJson = _getStorage.read('member') as String?;
 
@@ -55,7 +53,6 @@ void setMember(Member? member) {
   }
 }
 
-// Is connected, check if token key is present and pseudo is present
 bool isConnected() {
   final member = getMember();
   return member != null && member.token != null && member.token!.isNotEmpty;
@@ -74,42 +71,33 @@ Future<void> loginWithToken() async {
       },
     );
 
-    // If response is null or response code is not 200, return an error
     if (response == null || response.statusCode != 200) {
       setMember(null);
       throw Exception("Error while logging in");
     }
 
-    // Decode response to member
-    final member = Member.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+    final member = Member.fromJson(
+      jsonDecode(fromBrotly(response.body)) as Map<String, dynamic>,
+    );
 
-    // If responseBody not contains token, return an error
     if (member.token == null) {
       setMember(null);
       throw Exception("Error while logging in");
     }
 
-    // Save token and pseudo in shared preferences
     setMember(member);
-  } catch (exception, stackTrace) {
-    logger.error(
-      'Exception when trying to login',
-      exception: exception,
-      stackTrace: stackTrace,
-    );
-  }
+  } catch (_) {}
 }
 
-// Has anime in watchlist
 bool hasAnimeInWatchlist(Anime anime) {
   if (!isConnected()) {
     return false;
   }
 
-  return getMember()?.watchlist.any((element) => element.id == anime.id) ?? false;
+  return getMember()?.watchlist.any((element) => element.id == anime.id) ??
+      false;
 }
 
-// Add anime in watchlist
 Future<void> addAnimeInWatchlist(Anime anime) async {
   if (!isConnected()) {
     return;
@@ -131,16 +119,9 @@ Future<void> addAnimeInWatchlist(Anime anime) async {
         "animeId": anime.id.toString(),
       },
     );
-  } catch (exception, stackTrace) {
-    logger.error(
-      'Exception when trying to add anime in watchlist',
-      exception: exception,
-      stackTrace: stackTrace,
-    );
-  }
+  } catch (_) {}
 }
 
-// Remove anime in watchlist
 Future<void> removeAnimeInWatchlist(Anime anime) async {
   if (!isConnected()) {
     return;
@@ -162,13 +143,7 @@ Future<void> removeAnimeInWatchlist(Anime anime) async {
         "animeId": anime.id.toString(),
       },
     );
-  } catch (exception, stackTrace) {
-    logger.error(
-      'Exception when trying to remove anime in watchlist',
-      exception: exception,
-      stackTrace: stackTrace,
-    );
-  }
+  } catch (_) {}
 }
 
 String notificationsMode() {
@@ -182,7 +157,6 @@ String notificationsMode() {
 void setDefaultNotifications() {
   notifications.removeAllTopics();
   notifications.addTopic("animes");
-  logger.info("Set default notifications");
 }
 
 void setWatchlistNotifications() {
@@ -199,7 +173,7 @@ void setWatchlistNotifications() {
 
 String roleToString(int? role) {
   switch (role) {
-    case 100:
+    case MemberRole.admin:
       return "Administrateur";
     case 0:
     default:

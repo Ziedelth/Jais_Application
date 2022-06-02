@@ -8,7 +8,7 @@ void show(
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      backgroundColor: Colors.black,
+      backgroundColor: Theme.of(context).backgroundColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
         side: BorderSide(color: Theme.of(context).primaryColor),

@@ -4,11 +4,7 @@ class FullWidget extends StatelessWidget {
   final Widget widget;
   final Icon? icon;
 
-  const FullWidget({
-    required this.widget,
-    this.icon,
-    Key? key,
-  }) : super(key: key);
+  const FullWidget({required this.widget, this.icon, super.key});
 
   @override
   Widget build(BuildContext context) {

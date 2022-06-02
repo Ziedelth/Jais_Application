@@ -11,7 +11,7 @@ import 'package:url/url.dart';
 class LoginView extends StatefulWidget {
   final Function()? onLogin;
 
-  const LoginView({this.onLogin, Key? key}) : super(key: key);
+  const LoginView({this.onLogin, super.key});
 
   @override
   _LoginViewState createState() => _LoginViewState();
@@ -34,6 +34,7 @@ class _LoginViewState extends State<LoginView> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
               const SizedBox(height: 16),
@@ -144,8 +145,9 @@ class _LoginViewState extends State<LoginView> {
                             }
 
                             // Decode response to member
-                            final member = Member.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
-
+                            final member = Member.fromJson(
+                              jsonDecode(response.body) as Map<String, dynamic>,
+                            );
 
                             // If responseBody not contains token, return an error
                             if (member.token == null) {
@@ -187,8 +189,8 @@ class _LoginViewState extends State<LoginView> {
 
                             logger.error(
                               'Exception when trying to login',
-                              exception: exception,
-                              stackTrace: stackTrace,
+                              exception,
+                              stackTrace,
                             );
 
                             showSnackBar(context, 'Une erreur est survenue');

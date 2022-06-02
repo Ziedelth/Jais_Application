@@ -9,13 +9,13 @@ part 'scan.g.dart';
 @JsonSerializable(explicitToJson: true)
 class Scan {
   final int id;
-  final Platform platform;
+  Platform platform;
   final Anime anime;
-  final EpisodeType episodeType;
-  final LangType langType;
-  final String releaseDate;
-  final int number;
-  final String url;
+  EpisodeType episodeType;
+  LangType langType;
+  String releaseDate;
+  int number;
+  String url;
 
   Scan(
     this.id,

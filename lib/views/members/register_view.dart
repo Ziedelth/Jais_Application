@@ -9,7 +9,7 @@ import 'package:url/url.dart';
 class RegisterView extends StatefulWidget {
   final Function()? onLogin;
 
-  const RegisterView({this.onLogin, Key? key}) : super(key: key);
+  const RegisterView({this.onLogin, super.key});
 
   @override
   _RegisterViewState createState() => _RegisterViewState();
@@ -38,6 +38,7 @@ class _RegisterViewState extends State<RegisterView> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
               const SizedBox(height: 16),
@@ -233,8 +234,8 @@ class _RegisterViewState extends State<RegisterView> {
 
                             logger.error(
                               'Exception when trying to register user',
-                              exception: exception,
-                              stackTrace: stackTrace,
+                              exception,
+                              stackTrace,
                             );
 
                             showSnackBar(context, 'Une erreur est survenue');
