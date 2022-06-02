@@ -13,14 +13,19 @@ class WatchlistEpisodesView extends StatefulWidget {
 }
 
 class _WatchlistEpisodesViewState extends State<WatchlistEpisodesView> {
+  UniqueKey _key = UniqueKey();
+
   @override
   void initState() {
     super.initState();
     widget.watchlistEpisodeMapper.clear();
 
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => widget.watchlistEpisodeMapper.updateCurrentPage(),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await widget.watchlistEpisodeMapper.updateCurrentPage();
+
+      if (!mounted) return;
+      setState(() => _key = UniqueKey());
+    });
   }
 
   @override
@@ -30,6 +35,7 @@ class _WatchlistEpisodesViewState extends State<WatchlistEpisodesView> {
       child: Consumer<WatchlistEpisodeMapper>(
         builder: (context, watchlistEpisodeMapper, _) {
           return EpisodeList(
+            key: _key,
             scrollController: watchlistEpisodeMapper.scrollController,
             children: watchlistEpisodeMapper.list,
           );

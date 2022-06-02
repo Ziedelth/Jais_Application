@@ -13,14 +13,19 @@ class WatchlistScansView extends StatefulWidget {
 }
 
 class _WatchlistScansViewState extends State<WatchlistScansView> {
+  UniqueKey _key = UniqueKey();
+
   @override
   void initState() {
     super.initState();
     widget.watchlistScanMapper.clear();
 
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => widget.watchlistScanMapper.updateCurrentPage(),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await widget.watchlistScanMapper.updateCurrentPage();
+
+      if (!mounted) return;
+      setState(() => _key = UniqueKey());
+    });
   }
 
   @override
@@ -30,6 +35,7 @@ class _WatchlistScansViewState extends State<WatchlistScansView> {
       child: Consumer<WatchlistScanMapper>(
         builder: (context, watchlistScanMapper, _) {
           return ScanList(
+            key: _key,
             scrollController: watchlistScanMapper.scrollController,
             children: watchlistScanMapper.list,
           );

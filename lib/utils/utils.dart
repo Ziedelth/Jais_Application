@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-bool isOnMobile(BuildContext context) =>
-    MediaQuery.of(context).size.width < 600;
-
 String printTimeSince(DateTime? dateTime) {
   if (dateTime == null) {
     return 'erreur';

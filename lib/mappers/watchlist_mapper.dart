@@ -29,7 +29,7 @@ class WatchlistEpisodeMapper extends IMapper<Episode> {
   final String pseudo;
 
   WatchlistEpisodeMapper({required this.pseudo})
-      : super(limit: 12, loaderWidget: const EpisodeLoaderWidget());
+      : super(limit: 21, loaderWidget: EpisodeLoaderWidget());
 
   @override
   List<Episode> stringTo(String string) {
@@ -68,7 +68,7 @@ class WatchlistScanMapper extends IMapper<Scan> {
   final String pseudo;
 
   WatchlistScanMapper({required this.pseudo})
-      : super(limit: 33, loaderWidget: const ScanLoaderWidget());
+      : super(limit: 33, loaderWidget: ScanLoaderWidget());
 
   @override
   List<Scan> stringTo(String string) {

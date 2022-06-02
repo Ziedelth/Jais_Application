@@ -120,47 +120,51 @@ class AnimesViewState extends State<AnimesView> {
             child: ChangeNotifierProvider<SimulcastMapper>.value(
               value: _simulcastMapper,
               child: Consumer<SimulcastMapper>(
-                builder: (context, simulcastMapper, _) => SimulcastsWidget(
-                  scrollController: simulcastMapper.scrollController,
-                  simulcast: _animeMapper.simulcast,
-                  children: simulcastMapper
-                      .toWidgetsSelected(_animeMapper.simulcast)
-                      .map(
-                        (e) => e is SimulcastWidget
-                            ? GestureDetector(
-                                onTap: () {
-                                  _animeMapper.scrollController.jumpTo(0);
-                                  _animeMapper.simulcast = e.simulcast;
-                                  _animeMapper.clear();
-                                  rebuildAnimes(force: true);
-                                  setState(() {});
-                                },
-                                child: e,
-                              )
-                            : e,
-                      )
-                      .toList(),
-                ),
+                builder: (context, simulcastMapper, _) {
+                  return SimulcastsWidget(
+                    scrollController: simulcastMapper.scrollController,
+                    simulcast: _animeMapper.simulcast,
+                    children: simulcastMapper
+                        .toWidgetsSelected(_animeMapper.simulcast)
+                        .map(
+                          (e) => e is SimulcastWidget
+                              ? GestureDetector(
+                                  onTap: () {
+                                    _animeMapper.scrollController.jumpTo(0);
+                                    _animeMapper.simulcast = e.simulcast;
+                                    _animeMapper.clear();
+                                    rebuildAnimes(force: true);
+                                    setState(() {});
+                                  },
+                                  child: e,
+                                )
+                              : e,
+                        )
+                        .toList(),
+                  );
+                },
               ),
             ),
           ),
           Expanded(
-            flex: isOnMobile(context) ? 9 : 4,
+            flex: 9,
             child: ChangeNotifierProvider<AnimeMapper>.value(
               value: _animeMapper,
               child: Consumer<AnimeMapper>(
-                builder: (context, animeMapper, _) => AnimeList(
-                  scrollController: animeMapper.scrollController,
-                  children: animeMapper.list
-                      .map<Widget>(
-                        (e) => GestureDetector(
-                          child: e,
-                          onTap: () =>
-                              e is AnimeWidget ? _onTap(e.anime) : null,
-                        ),
-                      )
-                      .toList(),
-                ),
+                builder: (context, animeMapper, _) {
+                  return AnimeList(
+                    scrollController: animeMapper.scrollController,
+                    children: animeMapper.list
+                        .map<Widget>(
+                          (e) => GestureDetector(
+                            child: e,
+                            onTap: () =>
+                                e is AnimeWidget ? _onTap(e.anime) : null,
+                          ),
+                        )
+                        .toList(),
+                  );
+                },
               ),
             ),
           ),

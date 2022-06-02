@@ -16,20 +16,3 @@ void createGlobalBanner() {
 
   globalBannerAd?.load();
 }
-
-BannerAd? searchBannerAd;
-
-void createSearchBanner() {
-  searchBannerAd = BannerAd(
-    adUnitId: 'ca-app-pub-5658764393995798/3944268183',
-    size: AdSize.banner,
-    request: const AdRequest(),
-    listener: BannerAdListener(
-      onAdFailedToLoad: (Ad ad, LoadAdError error) {
-        ad.dispose();
-      },
-    ),
-  );
-
-  searchBannerAd?.load();
-}

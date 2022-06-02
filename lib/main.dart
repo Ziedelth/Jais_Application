@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/utils/main_color.dart';
@@ -13,6 +14,12 @@ Future<void> main() async {
   if (!kIsWeb) await MobileAds.instance.initialize();
   await notifications.init();
   await member_mapper.init();
+
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
   runApp(const MyApp());
 }
 

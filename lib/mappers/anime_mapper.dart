@@ -16,7 +16,7 @@ import 'package:url/url.dart';
 class AnimeMapper extends IMapper<Anime> {
   Simulcast? simulcast;
 
-  AnimeMapper() : super(limit: 18, loaderWidget: const AnimeLoaderWidget());
+  AnimeMapper() : super(limit: 21, loaderWidget: const AnimeLoaderWidget());
 
   @override
   List<Anime> stringTo(String string) {

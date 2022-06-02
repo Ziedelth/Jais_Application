@@ -67,7 +67,7 @@ class ScanWidget extends StatelessWidget {
             Text(
               '${scan.episodeType.fr} ${scan.number} ${scan.langType.fr} ',
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 10),
             Text(
               'Il y a ${printTimeSince(DateTime.parse(scan.releaseDate))}',
             ),

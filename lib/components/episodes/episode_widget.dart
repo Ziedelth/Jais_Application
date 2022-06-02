@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:jais/components/platform_widget.dart';
 import 'package:jais/components/roundborder_widget.dart';
 import 'package:jais/components/skeleton.dart';
+import 'package:jais/mappers/display_mapper.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/models/episode.dart';
 import 'package:jais/models/member_role.dart';
@@ -11,9 +12,10 @@ import 'package:jais/views/updates/episode_update_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class EpisodeWidget extends StatelessWidget {
+  final _displayMapper = DisplayMapper();
   final Episode episode;
 
-  const EpisodeWidget({required this.episode, super.key});
+  EpisodeWidget({required this.episode, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -89,21 +91,33 @@ class EpisodeWidget extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            RoundBorderWidget(
-              widget: CachedNetworkImage(
-                imageUrl: 'https://ziedelth.fr/${episode.image}',
-                imageBuilder: (context, imageProvider) => Image(
-                  image: imageProvider,
-                  fit: BoxFit.cover,
+            if (_displayMapper.isOnMobile(context))
+              RoundBorderWidget(
+                widget: CachedNetworkImage(
+                  imageUrl: 'https://ziedelth.fr/${episode.image}',
+                  imageBuilder: (context, imageProvider) => Image(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                  placeholder: (context, url) => const Skeleton(height: 200),
+                  errorWidget: (context, url, error) =>
+                      const Skeleton(height: 200),
                 ),
-                placeholder: (context, url) => const Skeleton(
-                  height: 200,
-                ),
-                errorWidget: (context, url, error) => const Skeleton(
-                  height: 200,
+              )
+            else
+              Expanded(
+                child: RoundBorderWidget(
+                  widget: CachedNetworkImage(
+                    imageUrl: 'https://ziedelth.fr/${episode.image}',
+                    imageBuilder: (context, imageProvider) => Image(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                    placeholder: (context, url) => const Skeleton(),
+                    errorWidget: (context, url, error) => const Skeleton(),
+                  ),
                 ),
               ),
-            ),
             const SizedBox(
               height: 10,
             ),

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:jais/components/skeleton.dart';
-import 'package:jais/utils/utils.dart';
+import 'package:jais/mappers/display_mapper.dart';
 
 class EpisodeLoaderWidget extends StatelessWidget {
-  const EpisodeLoaderWidget({super.key});
+  final _displayMapper = DisplayMapper();
+
+  EpisodeLoaderWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +36,10 @@ class EpisodeLoaderWidget extends StatelessWidget {
           const SizedBox(height: 5),
           const Skeleton(width: 100, height: 20),
           const SizedBox(height: 10),
-          if (!isOnMobile(context))
-            const Expanded(
-              child: Skeleton(),
-            ),
-          if (isOnMobile(context)) const Skeleton(height: 200),
+          if (_displayMapper.isOnMobile(context))
+            const Skeleton(height: 200)
+          else
+            const Expanded(child: Skeleton()),
           const SizedBox(height: 10),
           const Skeleton(width: 200, height: 20),
         ],

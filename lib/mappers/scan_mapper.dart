@@ -9,7 +9,7 @@ import 'package:jais/utils/decompress.dart';
 import 'package:url/url.dart';
 
 class ScanMapper extends IMapper<Scan> {
-  ScanMapper() : super(limit: 33, loaderWidget: const ScanLoaderWidget());
+  ScanMapper() : super(limit: 33, loaderWidget: ScanLoaderWidget());
 
   @override
   List<Scan> stringTo(String string) {

@@ -25,12 +25,12 @@ class AnimeLoaderWidget extends StatelessWidget {
                   children: const [
                     Skeleton(height: 20),
                     SizedBox(height: 10),
-                    Skeleton(height: 70),
+                    Skeleton(height: 90),
                   ],
                 ),
               ),
               const SizedBox(width: 10),
-              const Skeleton(width: 75, height: 100)
+              const Skeleton(width: 75, height: 120),
             ],
           ),
         ],

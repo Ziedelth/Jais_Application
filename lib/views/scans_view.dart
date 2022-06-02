@@ -12,13 +12,18 @@ class ScansView extends StatefulWidget {
 
 class _ScansViewState extends State<ScansView> {
   final _scanMapper = ScanMapper();
+  UniqueKey _key = UniqueKey();
 
   @override
   void initState() {
     super.initState();
     _scanMapper.clear();
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => _scanMapper.updateCurrentPage());
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _scanMapper.updateCurrentPage();
+
+      if (!mounted) return;
+      setState(() => _key = UniqueKey());
+    });
   }
 
   @override
@@ -33,6 +38,7 @@ class _ScansViewState extends State<ScansView> {
         child: Consumer<ScanMapper>(
           builder: (context, scanMapper, _) {
             return ScanList(
+              key: _key,
               scrollController: scanMapper.scrollController,
               children: scanMapper.list,
             );
