@@ -13,8 +13,6 @@ abstract class IMapper<T> extends ChangeNotifier {
     bool listener = true,
   }) {
     if (listener) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => updateCurrentPage());
-
       scrollController.addListener(() {
         if (scrollController.position.extentAfter <= 0) {
           currentPage++;
@@ -24,14 +22,14 @@ abstract class IMapper<T> extends ChangeNotifier {
     }
   }
 
-  List<Widget> get _defaultList => List.filled(
+  List<Widget> get defaultList => List.filled(
         limit,
         loaderWidget,
         growable: true,
       );
 
   void addLoader() {
-    list.addAll(_defaultList);
+    list.addAll(defaultList);
     notifyListeners();
   }
 

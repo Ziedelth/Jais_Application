@@ -32,7 +32,6 @@ class EpisodeMapper extends IMapper<Episode> {
 
   @override
   Future<void> updateCurrentPage() async {
-    print('updateCurrentPage');
     addLoader();
 
     final response = await URL().get(

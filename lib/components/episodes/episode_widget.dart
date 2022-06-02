@@ -89,36 +89,17 @@ class EpisodeWidget extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            if (!isOnMobile(context))
-              Expanded(
-                child: RoundBorderWidget(
-                  widget: CachedNetworkImage(
-                    imageUrl: 'https://ziedelth.fr/${episode.image}',
-                    imageBuilder: (context, imageProvider) => Image(
-                      image: imageProvider,
-                      fit: BoxFit.cover,
-                    ),
-                    placeholder: (context, url) => const Skeleton(),
-                    errorWidget: (context, url, error) => const Skeleton(),
-                  ),
+            RoundBorderWidget(
+              widget: CachedNetworkImage(
+                imageUrl: 'https://ziedelth.fr/${episode.image}',
+                imageBuilder: (context, imageProvider) => Image(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
                 ),
+                placeholder: (context, url) => const Skeleton(),
+                errorWidget: (context, url, error) => const Skeleton(),
               ),
-            if (isOnMobile(context))
-              RoundBorderWidget(
-                widget: CachedNetworkImage(
-                  imageUrl: 'https://ziedelth.fr/${episode.image}',
-                  imageBuilder: (context, imageProvider) => Image(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
-                  ),
-                  placeholder: (context, url) => const Skeleton(
-                    height: 200,
-                  ),
-                  errorWidget: (context, url, error) => const Skeleton(
-                    height: 200,
-                  ),
-                ),
-              ),
+            ),
             const SizedBox(
               height: 10,
             ),

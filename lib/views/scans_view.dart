@@ -3,8 +3,21 @@ import 'package:jais/components/scans/scan_list.dart';
 import 'package:jais/mappers/scan_mapper.dart';
 import 'package:provider/provider.dart';
 
-class ScansView extends StatelessWidget {
+class ScansView extends StatefulWidget {
+  const ScansView({super.key});
+
+  @override
+  _ScansViewState createState() => _ScansViewState();
+}
+
+class _ScansViewState extends State<ScansView> {
   final _scanMapper = ScanMapper();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scanMapper.updateCurrentPage());
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 
-class NavbarMapper {
+class NavbarMapper extends ChangeNotifier {
   late final PageController pageController;
 
   NavbarMapper({int defaultPage = 0})
@@ -15,7 +15,10 @@ class NavbarMapper {
     }
   }
 
-  set currentPage(int page) => pageController.jumpToPage(page);
+  set currentPage(int page) {
+    pageController.jumpToPage(page);
+    notifyListeners();
+  }
 
   List<NavbarLink> get items => <NavbarLink>[
         const NavbarLink(
@@ -44,20 +47,16 @@ class NavbarMapper {
   List<BottomNavigationBarItem> get itemsBottomNavBar =>
       items.map((e) => e.toBottomNavigationBarItem()).toList();
 
-  List<Widget> itemsTopNavBar(NavbarMapper navbarMapper) {
-    return items
-        .asMap()
-        .map(
-          (i, e) => MapEntry(
-            i,
-            e.toTextButton(
-              onPressed: () => navbarMapper.pageController.jumpToPage(i),
-            ),
-          ),
-        )
-        .values
-        .toList();
-  }
+  List<Widget> itemsTopNavBar([Function(int)? callback]) => items
+      .asMap()
+      .map(
+        (i, e) => MapEntry(
+          i,
+          e.toTextButton(onPressed: () => callback?.call(i)),
+        ),
+      )
+      .values
+      .toList();
 }
 
 class NavbarLink {

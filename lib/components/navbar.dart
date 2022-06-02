@@ -10,8 +10,11 @@ import 'package:package_info_plus/package_info_plus.dart';
 class Navbar extends StatelessWidget {
   final DisplayMapper _displayMapper = DisplayMapper();
   final NavbarMapper navbarMapper;
+  final Function(int)? onPageChanged;
 
-  Navbar({required this.navbarMapper, super.key});
+  Navbar({required this.navbarMapper, this.onPageChanged, super.key}) {
+    if (_displayMapper.isOnApp) createGlobalBanner();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,18 +74,21 @@ class Navbar extends StatelessWidget {
             ),
           if (isOnWebAndMobile) ...[
             const Spacer(),
-            ...navbarMapper.itemsTopNavBar(navbarMapper),
+            ...navbarMapper.itemsTopNavBar(onPageChanged),
             const Spacer()
           ],
           const SizedBox(width: 10),
           if (navbarMapper.currentPage == 2)
-            IconButton(
-              alignment: Alignment.centerRight,
-              icon: const Icon(Icons.search),
-              onPressed: () {
-                // _animesKey.currentState?.showSearch();
-              },
-            ),
+            ...[
+              const Spacer(),
+              IconButton(
+                alignment: Alignment.centerRight,
+                icon: const Icon(Icons.search),
+                onPressed: () {
+                  // _animesKey.currentState?.showSearch();
+                },
+              ),
+            ],
         ],
       ),
     );
