@@ -14,11 +14,12 @@ class Navbar extends StatelessWidget {
   final Function(int)? onPageChanged;
   final GlobalKey<AnimesViewState>? animesKey;
 
-  Navbar(
-      {required this.navbarMapper,
-      this.onPageChanged,
-      this.animesKey,
-      super.key}) {
+  Navbar({
+    required this.navbarMapper,
+    this.onPageChanged,
+    this.animesKey,
+    super.key,
+  }) {
     if (_displayMapper.isOnApp) createGlobalBanner();
   }
 
