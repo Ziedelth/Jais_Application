@@ -149,9 +149,13 @@ Future<void> removeAnimeInWatchlist(Anime anime) async {
 String notificationsMode() {
   if (notifications.hasTopic("animes")) {
     return "default";
-  } else {
-    return "watchlist";
   }
+
+  if (notifications.getTopics().isEmpty) {
+    return "disabled";
+  }
+
+  return "watchlist";
 }
 
 void setDefaultNotifications() {
@@ -169,6 +173,14 @@ void setWatchlistNotifications() {
   for (final anime in getMember()!.watchlist) {
     notifications.addTopic(anime.id.toString());
   }
+}
+
+void disabledNotifications() {
+  if (!isConnected()) {
+    return;
+  }
+
+  notifications.removeAllTopics();
 }
 
 String roleToString(int? role) {

@@ -23,6 +23,7 @@ class _SettingsViewState extends State<SettingsView> {
     final isDefaultMode = member_mapper.notificationsMode() == "default";
     final isWatchlistModeOrNeedUpdate =
         member_mapper.notificationsMode() == "watchlist" && !_same();
+    final isDisabledMode = member_mapper.notificationsMode() == "disabled";
 
     return SingleChildScrollView(
       child: Column(
@@ -128,6 +129,19 @@ class _SettingsViewState extends State<SettingsView> {
                     child: Text(
                       'Watchlist${isWatchlistModeOrNeedUpdate ? ' (Mettre à jour)' : ''}',
                     ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                FullWidget(
+                  widget: ElevatedButton(
+                    onPressed: isDisabledMode
+                        ? null
+                        : () {
+                            member_mapper.disabledNotifications();
+                            if (!mounted) return;
+                            setState(() {});
+                          },
+                    child: const Text('Désactiver'),
                   ),
                 ),
               ],
