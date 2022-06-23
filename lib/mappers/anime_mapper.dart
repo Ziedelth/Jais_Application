@@ -4,10 +4,8 @@ import 'package:jais/components/animes/anime_loader_widget.dart';
 import 'package:jais/components/animes/anime_widget.dart';
 import 'package:jais/mappers/episode_mapper.dart';
 import 'package:jais/mappers/imapper.dart';
-import 'package:jais/mappers/scan_mapper.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/episode.dart';
-import 'package:jais/models/scan.dart';
 import 'package:jais/models/simulcast.dart';
 import 'package:jais/utils/country.dart';
 import 'package:jais/utils/decompress.dart';
@@ -65,18 +63,6 @@ class AnimeMapper extends IMapper<Anime> {
     return EpisodeMapper().stringTo(fromBrotly(response.body));
   }
 
-  Future<List<Scan>?> loadScans(Anime anime) async {
-    final response = await URL().get(
-      'https://api.ziedelth.fr/v2/scans/anime/${anime.url}',
-    );
-
-    if (response == null || response.statusCode != 200) {
-      return null;
-    }
-
-    return ScanMapper().stringTo(fromBrotly(response.body));
-  }
-
   Future<void> __loadEpisodes(Anime anime) async {
     final episodes = await loadEpisodes(anime);
 
@@ -88,23 +74,11 @@ class AnimeMapper extends IMapper<Anime> {
     anime.episodes.addAll(episodes);
   }
 
-  Future<void> __loadScans(Anime anime) async {
-    final scans = await loadScans(anime);
-
-    if (scans == null) {
-      return;
-    }
-
-    anime.scans.clear();
-    anime.scans.addAll(scans);
-  }
-
   Future<Anime?> loadDetails(
     Anime anime,
   ) async {
     await Future.wait([
       __loadEpisodes(anime),
-      __loadScans(anime),
     ]);
 
     return anime;

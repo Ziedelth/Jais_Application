@@ -1,7 +1,6 @@
 import 'package:jais/models/country.dart';
 import 'package:jais/models/episode.dart';
 import 'package:jais/models/genre.dart';
-import 'package:jais/models/scan.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'anime.g.dart';
@@ -20,8 +19,6 @@ class Anime {
 
   @JsonKey(ignore: true)
   final List<Episode> episodes = <Episode>[];
-  @JsonKey(ignore: true)
-  final List<Scan> scans = <Scan>[];
 
   Anime(
     this.id,

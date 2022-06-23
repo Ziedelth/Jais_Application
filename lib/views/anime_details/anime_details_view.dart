@@ -1,77 +1,95 @@
 import 'package:flutter/material.dart';
-import 'package:jais/components/jtab.dart';
+import 'package:jais/components/episodes/episode_list.dart';
+import 'package:jais/components/episodes/episode_widget.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/views/anime_details/anime_details_header.dart';
-import 'package:jais/views/anime_details/episodes_details_view.dart';
-import 'package:jais/views/anime_details/scans_details_view.dart';
 
 class AnimeDetailsView extends StatefulWidget {
   final Anime _anime;
-  final VoidCallback _callback;
 
-  const AnimeDetailsView(this._anime, this._callback, {super.key});
+  const AnimeDetailsView(this._anime, {super.key});
 
   @override
   _AnimeDetailsViewState createState() => _AnimeDetailsViewState();
 }
 
-class _AnimeDetailsViewState extends State<AnimeDetailsView>
-    with SingleTickerProviderStateMixin {
-  late final TabController _tabController;
+class _AnimeDetailsViewState extends State<AnimeDetailsView> {
+  late final List<int> seasons;
+  late final List<DropdownMenuItem<int>> _dropdownItems;
+  List<Widget>? _episodes;
+  int? _selectedSeason;
+
+  void _changeSeason(int? newValue) => setState(() {
+        _selectedSeason = newValue;
+        _episodes = widget._anime.episodes
+            .where((element) => element.season == newValue)
+            .map<Widget>((element) => EpisodeWidget(episode: element))
+            .toList();
+      });
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-  }
+    seasons = widget._anime.episodes.map((e) => e.season).toSet().toList();
 
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
+    if (seasons.isNotEmpty) {
+      _selectedSeason = seasons.first;
 
-  List<Widget> buildWidgets() {
-    final bool seasonsNotEmpty =
-        widget._anime.episodes.map<int>((e) => e.season).toSet().isNotEmpty;
-    final bool scansNotEmpty = widget._anime.scans.isNotEmpty;
+      _dropdownItems = seasons
+          .map<DropdownMenuItem<int>>(
+            (e) => DropdownMenuItem(
+              value: e,
+              child: Text('${widget._anime.country.season} $e'),
+            ),
+          )
+          .toList();
 
-    if (seasonsNotEmpty && scansNotEmpty) {
-      return [
-        JTab(_tabController),
-        Expanded(
-          child: TabBarView(
-            controller: _tabController,
-            children: [
-              EpisodesDetailsView(widget._anime),
-              ScansDetailsView(widget._anime),
-            ],
-          ),
-        ),
-      ];
+      _episodes = widget._anime.episodes
+          .where((element) => element.season == _selectedSeason)
+          .map<Widget>((element) => EpisodeWidget(episode: element))
+          .toList();
     }
-
-    return [
-      if (seasonsNotEmpty)
-        Expanded(
-          child: EpisodesDetailsView(widget._anime),
-        ),
-      if (scansNotEmpty)
-        Expanded(
-          child: ScansDetailsView(widget._anime),
-        ),
-    ];
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        AnimeDetailsHeader(widget._callback, widget._anime),
+        AnimeDetailsHeader(widget._anime),
         const Divider(
           height: 2,
         ),
-        ...buildWidgets(),
+        Expanded(
+          child: seasons.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Icon(
+                        Icons.close,
+                        color: Colors.red,
+                      ),
+                      Text("Il n'y a pas d'épisodes pour cet anime"),
+                    ],
+                  ),
+                )
+              : Column(
+                  children: [
+                    if (seasons.length > 1)
+                      DropdownButton<int>(
+                        value: _selectedSeason,
+                        onChanged: _changeSeason,
+                        items: _dropdownItems,
+                      ),
+                    if (_episodes != null)
+                      Expanded(
+                        child: EpisodeList(
+                          children: _episodes!,
+                        ),
+                      ),
+                  ],
+                ),
+        ),
       ],
     );
   }

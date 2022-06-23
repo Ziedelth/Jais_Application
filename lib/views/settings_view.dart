@@ -20,9 +20,9 @@ class SettingsView extends StatefulWidget {
 class _SettingsViewState extends State<SettingsView> {
   @override
   Widget build(BuildContext context) {
-    final isDefaultMode = member_mapper.notificationsMode() == "default";
+    final isDefaultMode = notifications.getType() == "default";
     final isWatchlistModeOrNeedUpdate =
-        member_mapper.notificationsMode() == "watchlist" && !_same();
+        notifications.getType() == "watchlist" && !_same();
 
     return SingleChildScrollView(
       child: Column(

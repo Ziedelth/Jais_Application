@@ -9,8 +9,6 @@ import 'package:jais/mappers/simulcast_mapper.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/simulcast.dart';
 import 'package:jais/utils/utils.dart';
-import 'package:jais/views/anime_details/anime_details_view.dart';
-import 'package:jais/views/anime_search_view.dart';
 import 'package:provider/provider.dart';
 
 class AnimesView extends StatefulWidget {
@@ -23,37 +21,21 @@ class AnimesView extends StatefulWidget {
 class AnimesViewState extends State<AnimesView> {
   final SimulcastMapper _simulcastMapper = SimulcastMapper(listener: false);
   final AnimeMapper _animeMapper = AnimeMapper();
-  Anime? _anime;
 
-  void showSearch() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => AnimeSearchView(
-          animeMapper: _animeMapper,
-          onTap: _onTap,
-        ),
-      ),
-    );
+  Future<void> rebuildAnimes({bool force = false}) async {
+    if (force) _animeMapper.clear();
+    await _animeMapper.updateCurrentPage();
   }
-
-  void _setDetails({Anime? anime}) {
-    setState(() => _anime = anime);
-  }
-
-  // Show loader dialog with a builder context
-  Future<void> _showLoader(BuildContext context) async => showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) => const AlertDialog(
-          content: Loading(),
-        ),
-      );
 
   Future<void> _onTap(Anime anime) async {
-    _anime = null;
-    setState(() {});
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => const AlertDialog(
+        content: Loading(),
+      ),
+    );
 
-    _showLoader(context);
     final details = await _animeMapper.loadDetails(anime);
     if (!mounted) return;
     Navigator.pop(context);
@@ -64,14 +46,7 @@ class AnimesViewState extends State<AnimesView> {
       return;
     }
 
-    _setDetails(
-      anime: details,
-    );
-  }
-
-  Future<void> rebuildAnimes({bool force = false}) async {
-    if (force) _animeMapper.clear();
-    await _animeMapper.updateCurrentPage();
+    Navigator.pushNamed(context, '/anime', arguments: details);
   }
 
   void scrollToEndSimulcasts() {
@@ -108,10 +83,6 @@ class AnimesViewState extends State<AnimesView> {
 
   @override
   Widget build(BuildContext context) {
-    if (_anime != null) {
-      return AnimeDetailsView(_anime!, _setDetails);
-    }
-
     return RefreshIndicator(
       onRefresh: () async => init(),
       child: Column(

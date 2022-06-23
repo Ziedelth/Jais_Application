@@ -7,10 +7,9 @@ import 'package:jais/models/platform.dart';
 import 'package:notifications/notifications.dart' as notifications;
 
 class AnimeDetailsHeader extends StatefulWidget {
-  final VoidCallback _callback;
   final Anime _anime;
 
-  const AnimeDetailsHeader(this._callback, this._anime, {super.key});
+  const AnimeDetailsHeader(this._anime, {super.key});
 
   @override
   _AnimeDetailsHeaderState createState() => _AnimeDetailsHeaderState();
@@ -24,11 +23,7 @@ class _AnimeDetailsHeaderState extends State<AnimeDetailsHeader> {
           (element) => !platforms.containsKey(element.platform.id),
         )
         .forEach((e) => platforms[e.platform.id] = e.platform);
-    widget._anime.scans
-        .where(
-          (element) => !platforms.containsKey(element.platform.id),
-        )
-        .forEach((e) => platforms[e.platform.id] = e.platform);
+
     final List<PlatformWidget> widgets = platforms.values
         .toSet()
         .map<PlatformWidget>((e) => PlatformWidget(e))
@@ -41,7 +36,7 @@ class _AnimeDetailsHeaderState extends State<AnimeDetailsHeader> {
     return Row(
       children: [
         BackButton(
-          onPressed: widget._callback,
+          onPressed: () => Navigator.pop(context),
         ),
         Expanded(
           flex: 5,
@@ -70,7 +65,8 @@ class _AnimeDetailsHeaderState extends State<AnimeDetailsHeader> {
                         : Colors.green,
                   ),
                   onPressed: () async {
-                    final isWatchlistMode = notificationsMode() == 'watchlist';
+                    final isWatchlistMode =
+                        notifications.getType() == 'watchlist';
 
                     if (hasAnimeInWatchlist(widget._anime)) {
                       await removeAnimeInWatchlist(widget._anime);

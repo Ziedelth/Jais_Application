@@ -18,16 +18,14 @@ class NavbarMapper extends ChangeNotifier {
   set currentPage(int page) {
     pageController.jumpToPage(page);
     notifyListeners();
+    PaintingBinding.instance.imageCache.clear();
+    PaintingBinding.instance.imageCache.clearLiveImages();
   }
 
   List<NavbarLink> get items => <NavbarLink>[
         const NavbarLink(
           name: 'Épisodes',
           icon: Icon(Icons.subscriptions),
-        ),
-        const NavbarLink(
-          name: 'Scans',
-          icon: Icon(Icons.library_books),
         ),
         const NavbarLink(
           name: 'Animes',

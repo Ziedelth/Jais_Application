@@ -1,42 +1,33 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/member.dart';
 import 'package:jais/models/member_role.dart';
 import 'package:jais/utils/decompress.dart';
 import 'package:notifications/notifications.dart' as notifications;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url/url.dart';
 
-// Email regex
 final emailRegExp = RegExp(
   r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$',
 );
-
-// Pseudo regex with min 4 characters and max 16 characters, with only letters and numbers
-final pseudoRegExp = RegExp(
-  r'^[a-zA-Z\d]{4,16}$',
-);
-
-// Password regex (at least 8 characters, at least 1 uppercase, at least 1 lowercase, at least 1 number, at least 1 special character)
+final pseudoRegExp = RegExp(r'^[a-zA-Z\d]{4,16}$');
 final passwordRegExp = RegExp(
   r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
 );
-
-final inputFormatters = [
-  FilteringTextInputFormatter.deny(RegExp(r'\s')),
-];
-
-late final GetStorage _getStorage;
+final inputFormatters = [FilteringTextInputFormatter.deny(RegExp(r'\s'))];
+late final SharedPreferences _sharedPreferences;
+const _memberKey = 'member';
 
 Future<void> init() async {
-  await GetStorage.init('member_data');
-  _getStorage = GetStorage('member_data');
+  _sharedPreferences = await SharedPreferences.getInstance();
 }
 
 Member? getMember() {
-  final memberJson = _getStorage.read('member') as String?;
+  final memberJson = _sharedPreferences.containsKey(_memberKey)
+      ? _sharedPreferences.getString(_memberKey)
+      : null;
 
   if (memberJson == null) {
     return null;
@@ -45,11 +36,11 @@ Member? getMember() {
   return Member.fromJson(jsonDecode(memberJson) as Map<String, dynamic>);
 }
 
-void setMember(Member? member) {
+Future<void> setMember(Member? member) async {
   if (member == null) {
-    _getStorage.remove('member');
+    await _sharedPreferences.remove(_memberKey);
   } else {
-    _getStorage.write('member', jsonEncode(member.toJson()));
+    await _sharedPreferences.setString(_memberKey, jsonEncode(member.toJson()));
   }
 }
 
@@ -72,7 +63,7 @@ Future<void> loginWithToken() async {
     );
 
     if (response == null || response.statusCode != 200) {
-      setMember(null);
+      await setMember(null);
       throw Exception("Error while logging in");
     }
 
@@ -81,11 +72,11 @@ Future<void> loginWithToken() async {
     );
 
     if (member.token == null) {
-      setMember(null);
+      await setMember(null);
       throw Exception("Error while logging in");
     }
 
-    setMember(member);
+    await setMember(member);
   } catch (_) {}
 }
 
@@ -109,7 +100,7 @@ Future<void> addAnimeInWatchlist(Anime anime) async {
 
   final member = getMember()!;
   member.watchlist.add(anime);
-  setMember(member);
+  await setMember(member);
 
   try {
     await URL().post(
@@ -133,7 +124,7 @@ Future<void> removeAnimeInWatchlist(Anime anime) async {
 
   final member = getMember()!;
   member.watchlist.removeWhere((element) => element.id == anime.id);
-  setMember(member);
+  await setMember(member);
 
   try {
     await URL().post(
@@ -146,28 +137,20 @@ Future<void> removeAnimeInWatchlist(Anime anime) async {
   } catch (_) {}
 }
 
-String notificationsMode() {
-  if (notifications.hasTopic("animes")) {
-    return "default";
-  } else {
-    return "watchlist";
-  }
+Future<void> setDefaultNotifications() async {
+  await notifications.removeAllTopics();
+  await notifications.addTopic("animes");
 }
 
-void setDefaultNotifications() {
-  notifications.removeAllTopics();
-  notifications.addTopic("animes");
-}
-
-void setWatchlistNotifications() {
+Future<void> setWatchlistNotifications() async {
   if (!isConnected()) {
     return;
   }
 
-  notifications.removeAllTopics();
+  await notifications.removeAllTopics();
 
   for (final anime in getMember()!.watchlist) {
-    notifications.addTopic(anime.id.toString());
+    await notifications.addTopic(anime.id.toString());
   }
 }
 
