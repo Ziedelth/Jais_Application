@@ -5,7 +5,7 @@ import 'package:jais/components/episodes/episode_widget.dart';
 import 'package:jais/mappers/imapper.dart';
 import 'package:jais/models/episode.dart';
 import 'package:jais/utils/country.dart';
-import 'package:jais/utils/decompress.dart';
+import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
 class EpisodeMapper extends IMapper<Episode> {
@@ -41,7 +41,7 @@ class EpisodeMapper extends IMapper<Episode> {
       return;
     }
 
-    list.addAll(toWidgets(stringTo(fromBrotly(response.body))));
+    list.addAll(toWidgets(stringTo(fromBrotli(response.body))));
     removeLoader();
   }
 }

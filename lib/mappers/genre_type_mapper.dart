@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:jais/models/genre.dart';
-import 'package:jais/utils/decompress.dart';
+import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
 class GenreMapper {
@@ -28,7 +28,7 @@ class GenreMapper {
       return;
     }
 
-    final genres = stringToGenres(fromBrotly(response.body));
+    final genres = stringToGenres(fromBrotli(response.body));
 
     if (genres == null || genres.isEmpty) {
       return;

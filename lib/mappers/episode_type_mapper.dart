@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:jais/models/episode_type.dart';
-import 'package:jais/utils/decompress.dart';
+import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
 class EpisodeTypeMapper {
@@ -28,7 +28,7 @@ class EpisodeTypeMapper {
       return;
     }
 
-    final episodeTypes = stringToEpisodeTypes(fromBrotly(response.body));
+    final episodeTypes = stringToEpisodeTypes(fromBrotli(response.body));
 
     if (episodeTypes == null || episodeTypes.isEmpty) {
       return;

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:jais/models/lang_type.dart';
-import 'package:jais/utils/decompress.dart';
+import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
 class LangTypeMapper {
@@ -28,7 +28,7 @@ class LangTypeMapper {
       return;
     }
 
-    final langTypes = stringToLangTypes(fromBrotly(response.body));
+    final langTypes = stringToLangTypes(fromBrotli(response.body));
 
     if (langTypes == null || langTypes.isEmpty) {
       return;

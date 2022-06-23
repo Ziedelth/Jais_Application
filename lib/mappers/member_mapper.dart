@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/member.dart';
 import 'package:jais/models/member_role.dart';
-import 'package:jais/utils/decompress.dart';
+import 'package:jais/utils/utils.dart';
 import 'package:notifications/notifications.dart' as notifications;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url/url.dart';
@@ -68,7 +68,7 @@ Future<void> loginWithToken() async {
     }
 
     final member = Member.fromJson(
-      jsonDecode(fromBrotly(response.body)) as Map<String, dynamic>,
+      jsonDecode(fromBrotli(response.body)) as Map<String, dynamic>,
     );
 
     if (member.token == null) {

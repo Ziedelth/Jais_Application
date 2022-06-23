@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:jais/models/platform.dart';
-import 'package:jais/utils/decompress.dart';
+import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
 class PlatformMapper {
@@ -28,7 +28,7 @@ class PlatformMapper {
       return;
     }
 
-    final platforms = stringToPlatforms(fromBrotly(response.body));
+    final platforms = stringToPlatforms(fromBrotli(response.body));
 
     if (platforms == null || platforms.isEmpty) {
       return;

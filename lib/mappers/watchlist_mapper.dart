@@ -4,7 +4,7 @@ import 'package:jais/components/episodes/episode_loader_widget.dart';
 import 'package:jais/components/episodes/episode_widget.dart';
 import 'package:jais/mappers/imapper.dart';
 import 'package:jais/models/episode.dart';
-import 'package:jais/utils/decompress.dart';
+import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
 class WatchlistMapper {
@@ -53,7 +53,7 @@ class WatchlistEpisodeMapper extends IMapper<Episode> {
       return;
     }
 
-    list.addAll(toWidgets(stringTo(fromBrotly(response.body))));
+    list.addAll(toWidgets(stringTo(fromBrotli(response.body))));
     removeLoader();
   }
 }

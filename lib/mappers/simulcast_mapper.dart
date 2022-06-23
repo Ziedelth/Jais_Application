@@ -5,7 +5,7 @@ import 'package:jais/components/simulcasts/simulcast_loader_widget.dart';
 import 'package:jais/components/simulcasts/simulcast_widget.dart';
 import 'package:jais/mappers/imapper.dart';
 import 'package:jais/models/simulcast.dart';
-import 'package:jais/utils/decompress.dart';
+import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
 class SimulcastMapper extends IMapper<Simulcast> {
@@ -44,7 +44,7 @@ class SimulcastMapper extends IMapper<Simulcast> {
       return;
     }
 
-    list.addAll(toWidgets(stringTo(fromBrotly(response.body))));
+    list.addAll(toWidgets(stringTo(fromBrotli(response.body))));
     removeLoader();
   }
 

@@ -8,7 +8,7 @@ import 'package:jais/models/anime.dart';
 import 'package:jais/models/episode.dart';
 import 'package:jais/models/simulcast.dart';
 import 'package:jais/utils/country.dart';
-import 'package:jais/utils/decompress.dart';
+import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
 class AnimeMapper extends IMapper<Anime> {
@@ -38,14 +38,15 @@ class AnimeMapper extends IMapper<Anime> {
     addLoader();
 
     final response = await URL().get(
-      'https://api.ziedelth.fr/v2/animes/country/${Country.name}/simulcast/${simulcast?.id}/page/$currentPage/limit/$limit',
+      'https://api.ziedelth.fr/v2/animes/country/${Country
+          .name}/simulcast/${simulcast?.id}/page/$currentPage/limit/$limit',
     );
 
     if (response == null || response.statusCode != 200) {
       return;
     }
 
-    list.addAll(toWidgets(stringTo(fromBrotly(response.body))));
+    list.addAll(toWidgets(stringTo(fromBrotli(response.body))));
     removeLoader();
   }
 
@@ -60,7 +61,7 @@ class AnimeMapper extends IMapper<Anime> {
       return null;
     }
 
-    return EpisodeMapper().stringTo(fromBrotly(response.body));
+    return EpisodeMapper().stringTo(fromBrotli(response.body));
   }
 
   Future<void> __loadEpisodes(Anime anime) async {
@@ -95,6 +96,6 @@ class AnimeMapper extends IMapper<Anime> {
       return null;
     }
 
-    return toWidgets(stringTo(fromBrotly(response.body)));
+    return toWidgets(stringTo(fromBrotli(response.body)));
   }
 }

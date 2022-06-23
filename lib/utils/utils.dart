@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:brotli/brotli.dart';
 import 'package:flutter/material.dart';
 
 String printTimeSince(DateTime? dateTime) {
@@ -70,3 +74,10 @@ void showSnackBar(BuildContext context, String message) {
     ),
   );
 }
+
+String fromUTF8(List<int> bytes) => utf8.decode(bytes);
+
+Uint8List fromBase64(String string) => base64.decode(string);
+
+String fromBrotli(String string) =>
+    fromUTF8(brotli.decode(fromBase64(string.trim())));
