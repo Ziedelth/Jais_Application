@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:jais/components/episodes/episode_loader_widget.dart';
 import 'package:jais/components/episodes/episode_widget.dart';
+import 'package:jais/mappers/country_mapper.dart';
 import 'package:jais/mappers/imapper.dart';
 import 'package:jais/models/episode.dart';
-import 'package:jais/utils/country.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
@@ -34,7 +34,7 @@ class EpisodeMapper extends IMapper<Episode> {
     addLoader();
 
     final response = await URL().get(
-      'https://api.ziedelth.fr/v2/episodes/country/${Country.name}/page/$currentPage/limit/$limit',
+      'https://api.ziedelth.fr/v2/episodes/country/${CountryMapper.selectedCountry?.tag}/page/$currentPage/limit/$limit',
     );
 
     if (response == null || response.statusCode != 200) {

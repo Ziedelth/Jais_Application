@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jais/components/full_widget.dart';
 import 'package:jais/components/section_widget.dart';
+import 'package:jais/mappers/country_mapper.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/views/members/login_view.dart';
 import 'package:jais/views/members/member_view.dart';
@@ -25,8 +26,22 @@ class _SettingsViewState extends State<SettingsView> {
         notifications.getType() == "watchlist" && !_same();
 
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         children: [
+          SectionWidget(
+            icon: const Icon(Icons.flag),
+            title: 'Pays',
+            widgets: [
+              for (final country in CountryMapper.list)
+                FullWidget(
+                  widget: ElevatedButton(
+                    onPressed: null,
+                    child: Text('${country.flag}  ${country.name}'),
+                  ),
+                )
+            ],
+          ),
           SectionWidget(
             icon: const Icon(Icons.person),
             title: member_mapper.isConnected()
@@ -48,7 +63,7 @@ class _SettingsViewState extends State<SettingsView> {
                     },
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 8),
                 FullWidget(
                   widget: ElevatedButton(
                     child: const Text('Connexion'),
@@ -115,7 +130,7 @@ class _SettingsViewState extends State<SettingsView> {
                     child: const Text('Par défaut'),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 8),
                 FullWidget(
                   widget: ElevatedButton(
                     onPressed: (isDefaultMode || isWatchlistModeOrNeedUpdate)

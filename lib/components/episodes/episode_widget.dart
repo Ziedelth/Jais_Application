@@ -20,8 +20,10 @@ class EpisodeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => launchUrl(Uri.parse(episode.url),
-          mode: LaunchMode.externalApplication),
+      onTap: () => launchUrl(
+        Uri.parse(episode.url),
+        mode: LaunchMode.externalApplication,
+      ),
       onLongPress: () {
         if (!member_mapper.isConnected()) {
           return;

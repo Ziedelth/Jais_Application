@@ -3,10 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:jais/mappers/country_mapper.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/models/anime.dart';
-import 'package:jais/utils/main_color.dart';
-import 'package:jais/views/anime_details/anime_details_view.dart';
+import 'package:jais/utils/utils.dart';
+import 'package:jais/views/anime_details_view.dart';
 import 'package:jais/views/anime_search_view.dart';
 import 'package:jais/views/home_view.dart';
 import 'package:notifications/notifications.dart' as notifications;
@@ -16,6 +17,7 @@ Future<void> main() async {
   await MobileAds.instance.initialize();
   await notifications.init();
   await member_mapper.init();
+  await CountryMapper().update();
 
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

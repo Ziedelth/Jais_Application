@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:jais/components/animes/anime_loader_widget.dart';
 import 'package:jais/components/animes/anime_widget.dart';
+import 'package:jais/mappers/country_mapper.dart';
 import 'package:jais/mappers/episode_mapper.dart';
 import 'package:jais/mappers/imapper.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/episode.dart';
 import 'package:jais/models/simulcast.dart';
-import 'package:jais/utils/country.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
@@ -38,8 +38,7 @@ class AnimeMapper extends IMapper<Anime> {
     addLoader();
 
     final response = await URL().get(
-      'https://api.ziedelth.fr/v2/animes/country/${Country
-          .name}/simulcast/${simulcast?.id}/page/$currentPage/limit/$limit',
+      'https://api.ziedelth.fr/v2/animes/country/${CountryMapper.selectedCountry?.tag}/simulcast/${simulcast?.id}/page/$currentPage/limit/$limit',
     );
 
     if (response == null || response.statusCode != 200) {
@@ -89,7 +88,7 @@ class AnimeMapper extends IMapper<Anime> {
     required String query,
   }) async {
     final response = await URL().get(
-      'https://api.ziedelth.fr/v2/animes/country/${Country.name}/search/$query',
+      'https://api.ziedelth.fr/v2/animes/country/${CountryMapper.selectedCountry?.tag}/search/$query',
     );
 
     if (response == null || response.statusCode != 200) {
