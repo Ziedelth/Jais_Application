@@ -68,17 +68,18 @@ class EpisodeWidget extends StatelessWidget {
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
                       fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(
-              height: 10,
-            ),
             Text(
               episode.title?.replaceAll("\n", ' ') ?? '＞﹏＜',
               overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             Text(
               '${episode.anime.country.season} ${episode.season} • ${episode.episodeType.fr} ${episode.number} ${episode.langType.fr}',
