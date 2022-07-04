@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:jais/components/animes/anime_list.dart';
 import 'package:jais/components/animes/anime_widget.dart';
-import 'package:jais/components/jlist.dart';
 import 'package:jais/components/loading_widget.dart';
+import 'package:jais/components/simulcasts/simulcast_list.dart';
 import 'package:jais/components/simulcasts/simulcast_widget.dart';
 import 'package:jais/mappers/anime_mapper.dart';
 import 'package:jais/mappers/simulcast_mapper.dart';
 import 'package:jais/models/anime.dart';
-import 'package:jais/models/simulcast.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -95,7 +94,7 @@ class AnimesViewState extends State<AnimesView> {
               value: _simulcastMapper,
               child: Consumer<SimulcastMapper>(
                 builder: (context, simulcastMapper, _) {
-                  return SimulcastsWidget(
+                  return SimulcastList(
                     scrollController: simulcastMapper.scrollController,
                     simulcast: _animeMapper.simulcast,
                     children: simulcastMapper
@@ -144,34 +143,6 @@ class AnimesViewState extends State<AnimesView> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class SimulcastsWidget extends StatelessWidget {
-  const SimulcastsWidget({
-    Key? key,
-    required this.scrollController,
-    required this.children,
-    this.simulcast,
-  }) : super(key: key);
-
-  final ScrollController scrollController;
-  final List<Widget> children;
-  final Simulcast? simulcast;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: JList(
-            direction: Axis.horizontal,
-            controller: scrollController,
-            children: children,
-          ),
-        ),
-      ],
     );
   }
 }
