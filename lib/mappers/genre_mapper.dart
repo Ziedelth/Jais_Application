@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:jais/models/genre.dart';
+import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
@@ -20,9 +21,7 @@ class GenreMapper {
   }
 
   Future<void> update() async {
-    final response = await URL().get(
-      'https://api.ziedelth.fr/v2/genres',
-    );
+    final response = await URL().get(getGenresUrl());
 
     if (response == null || response.statusCode != 200) {
       return;

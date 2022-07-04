@@ -2,12 +2,11 @@ import 'dart:convert';
 
 import 'package:jais/components/animes/anime_loader_widget.dart';
 import 'package:jais/components/animes/anime_widget.dart';
-import 'package:jais/mappers/country_mapper.dart';
 import 'package:jais/mappers/episode_mapper.dart';
 import 'package:jais/mappers/imapper.dart';
 import 'package:jais/models/anime.dart';
-import 'package:jais/models/episode.dart';
 import 'package:jais/models/simulcast.dart';
+import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
@@ -37,9 +36,8 @@ class AnimeMapper extends IMapper<Anime> {
     if (simulcast == null) return;
     addLoader();
 
-    final response = await URL().get(
-      'https://api.ziedelth.fr/v2/animes/country/${CountryMapper.selectedCountry?.tag}/simulcast/${simulcast?.id}/page/$currentPage/limit/$limit',
-    );
+    final response =
+        await URL().get(getAnimesUrl(simulcast, currentPage, limit));
 
     if (response == null || response.statusCode != 200) {
       return;
@@ -49,26 +47,16 @@ class AnimeMapper extends IMapper<Anime> {
     removeLoader();
   }
 
-  Future<List<Episode>?> loadEpisodes(
+  Future<void> loadEpisodes(
     Anime anime,
   ) async {
-    final response = await URL().get(
-      'https://api.ziedelth.fr/v2/episodes/anime/${anime.url}',
-    );
+    final response = await URL().get(getAnimeDetailsUrl(anime.url));
 
     if (response == null || response.statusCode != 200) {
-      return null;
-    }
-
-    return EpisodeMapper().stringTo(fromBrotli(response.body));
-  }
-
-  Future<void> __loadEpisodes(Anime anime) async {
-    final episodes = await loadEpisodes(anime);
-
-    if (episodes == null) {
       return;
     }
+
+    final episodes = EpisodeMapper().stringTo(fromBrotli(response.body));
 
     anime.episodes.clear();
     anime.episodes.addAll(episodes);
@@ -78,7 +66,7 @@ class AnimeMapper extends IMapper<Anime> {
     Anime anime,
   ) async {
     await Future.wait([
-      __loadEpisodes(anime),
+      loadEpisodes(anime),
     ]);
 
     return anime;
@@ -87,9 +75,7 @@ class AnimeMapper extends IMapper<Anime> {
   Future<List<AnimeWidget>?> search({
     required String query,
   }) async {
-    final response = await URL().get(
-      'https://api.ziedelth.fr/v2/animes/country/${CountryMapper.selectedCountry?.tag}/search/$query',
-    );
+    final response = await URL().get(getAnimesSearchUrl(query));
 
     if (response == null || response.statusCode != 200) {
       return null;

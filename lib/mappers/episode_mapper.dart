@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:jais/components/episodes/episode_loader_widget.dart';
 import 'package:jais/components/episodes/episode_widget.dart';
-import 'package:jais/mappers/country_mapper.dart';
 import 'package:jais/mappers/imapper.dart';
 import 'package:jais/models/episode.dart';
+import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
@@ -32,10 +32,7 @@ class EpisodeMapper extends IMapper<Episode> {
   @override
   Future<void> updateCurrentPage() async {
     addLoader();
-
-    final response = await URL().get(
-      'https://api.ziedelth.fr/v2/episodes/country/${CountryMapper.selectedCountry?.tag}/page/$currentPage/limit/$limit',
-    );
+    final response = await URL().get(getEpisodesUrl(currentPage, limit));
 
     if (response == null || response.statusCode != 200) {
       return;

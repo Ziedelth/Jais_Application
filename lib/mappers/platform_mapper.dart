@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:jais/models/platform.dart';
+import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
@@ -20,9 +21,7 @@ class PlatformMapper {
   }
 
   Future<void> update() async {
-    final response = await URL().get(
-      'https://api.ziedelth.fr/v2/platforms',
-    );
+    final response = await URL().get(getPlatformsUrl());
 
     if (response == null || response.statusCode != 200) {
       return;

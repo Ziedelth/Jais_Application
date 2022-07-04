@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:jais/components/episodes/episode_loader_widget.dart';
 import 'package:jais/components/episodes/episode_widget.dart';
 import 'package:jais/mappers/imapper.dart';
 import 'package:jais/models/episode.dart';
 import 'package:jais/models/lang_type.dart';
+import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url/url.dart';
@@ -36,9 +36,8 @@ class WatchlistMapper extends IMapper<Episode> {
   Future<void> updateCurrentPage() async {
     addLoader();
 
-    final response = await URL().get(
-      'https://api.ziedelth.fr/v2/watchlist/episodes/member/$pseudo/page/$currentPage/limit/$limit',
-    );
+    final response =
+        await URL().get(getWatchlistEpisodesUrl(pseudo, currentPage, limit));
 
     if (response == null || response.statusCode != 200) {
       return;

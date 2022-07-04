@@ -19,7 +19,7 @@ Future<void> main() async {
 
   try {
     await notifications.init();
-  } catch(_) {}
+  } catch (_) {}
 
   await member_mapper.init();
   await CountryMapper().update();

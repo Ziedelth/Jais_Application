@@ -7,6 +7,7 @@ import 'package:jais/mappers/display_mapper.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/models/episode.dart';
 import 'package:jais/models/member_role.dart';
+import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:jais/views/updates/episode_update_view.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -98,7 +99,7 @@ class EpisodeWidget extends StatelessWidget {
             if (_displayMapper.isOnMobile(context))
               RoundBorderWidget(
                 widget: CachedNetworkImage(
-                  imageUrl: 'https://ziedelth.fr/${episode.image}',
+                  imageUrl: '$attachmentsUrl${episode.image}',
                   imageBuilder: (context, imageProvider) => Image(
                     image: imageProvider,
                     fit: BoxFit.cover,
@@ -112,7 +113,7 @@ class EpisodeWidget extends StatelessWidget {
               Expanded(
                 child: RoundBorderWidget(
                   widget: CachedNetworkImage(
-                    imageUrl: 'https://ziedelth.fr/${episode.image}',
+                    imageUrl: '$attachmentsUrl${episode.image}',
                     imageBuilder: (context, imageProvider) => Image(
                       image: imageProvider,
                       fit: BoxFit.cover,

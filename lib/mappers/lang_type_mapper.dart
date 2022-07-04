@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:jais/models/lang_type.dart';
+import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
@@ -21,9 +22,7 @@ class LangTypeMapper {
   }
 
   Future<void> update() async {
-    final response = await URL().get(
-      'https://api.ziedelth.fr/v2/lang-types',
-    );
+    final response = await URL().get(getLangTypesUrl());
 
     if (response == null || response.statusCode != 200) {
       return;

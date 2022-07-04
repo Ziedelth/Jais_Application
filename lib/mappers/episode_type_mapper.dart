@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:jais/models/episode_type.dart';
+import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
@@ -20,9 +21,7 @@ class EpisodeTypeMapper {
   }
 
   Future<void> update() async {
-    final response = await URL().get(
-      'https://api.ziedelth.fr/v2/episode-types',
-    );
+    final response = await URL().get(getEpisodeTypesUrl());
 
     if (response == null || response.statusCode != 200) {
       return;

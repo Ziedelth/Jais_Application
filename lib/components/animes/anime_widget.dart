@@ -5,6 +5,7 @@ import 'package:jais/components/skeleton.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/member_role.dart';
+import 'package:jais/utils/const.dart';
 import 'package:jais/views/updates/anime_update_view.dart';
 
 class AnimeWidget extends StatelessWidget {
@@ -49,7 +50,7 @@ class AnimeWidget extends StatelessWidget {
             Row(
               children: [
                 CachedNetworkImage(
-                  imageUrl: 'https://ziedelth.fr/${anime.image}',
+                  imageUrl: '$attachmentsUrl${anime.image}',
                   imageBuilder: (context, imageProvider) => RoundBorderWidget(
                     widget: Image(
                       image: imageProvider,

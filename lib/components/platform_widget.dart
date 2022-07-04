@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:jais/components/roundborder_widget.dart';
 import 'package:jais/components/skeleton.dart';
 import 'package:jais/models/platform.dart';
+import 'package:jais/utils/const.dart';
 
 class PlatformWidget extends StatelessWidget {
   final Platform _platform;
@@ -14,7 +15,7 @@ class PlatformWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
-      imageUrl: 'https://ziedelth.fr/${_platform.image}',
+      imageUrl: '$attachmentsUrl${_platform.image}',
       imageBuilder: (context, imageProvider) => RoundBorderWidget(
         radius: 360,
         widget: Image(

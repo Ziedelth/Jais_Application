@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:jais/models/country.dart';
+import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
@@ -21,9 +22,7 @@ class CountryMapper {
   }
 
   Future<void> update() async {
-    final response = await URL().get(
-      'https://api.ziedelth.fr/v2/countries',
-    );
+    final response = await URL().get(getCountriesUrl());
 
     if (response == null || response.statusCode != 200) {
       return;

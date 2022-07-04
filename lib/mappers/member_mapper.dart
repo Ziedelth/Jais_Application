@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/member.dart';
 import 'package:jais/models/member_role.dart';
+import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:notifications/notifications.dart' as notifications;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -56,7 +57,7 @@ Future<void> loginWithToken() async {
 
   try {
     final response = await URL().post(
-      "https://api.ziedelth.fr/v1/member/token",
+      getLoginWithTokenUrl(),
       body: {
         "token": getMember()!.token!,
       },
@@ -104,7 +105,7 @@ Future<void> addAnimeInWatchlist(Anime anime) async {
 
   try {
     await URL().post(
-      "https://api.ziedelth.fr/v1/watchlist/add",
+      getWatchlistAddUrl(),
       body: {
         "token": member.token!,
         "animeId": anime.id.toString(),
@@ -128,7 +129,7 @@ Future<void> removeAnimeInWatchlist(Anime anime) async {
 
   try {
     await URL().post(
-      "https://api.ziedelth.fr/v1/watchlist/remove",
+      getWatchlistRemoveUrl(),
       body: {
         "token": member.token!,
         "animeId": anime.id.toString(),

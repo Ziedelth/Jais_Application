@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:jais/mappers/genre_type_mapper.dart';
+import 'package:jais/mappers/genre_mapper.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/member.dart';
 import 'package:jais/models/member_role.dart';
+import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:logger/logger.dart' as logger;
 import 'package:url/url.dart';
@@ -60,7 +61,7 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
 
               logger.debug("Sending update");
               final response = await URL().put(
-                'https://api.ziedelth.fr/v1/animes/update',
+                getAnimesUpdateUrl(),
                 headers: {
                   'Authorization': widget.member.token!,
                 },

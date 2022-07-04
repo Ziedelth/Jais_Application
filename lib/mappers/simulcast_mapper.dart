@@ -5,6 +5,7 @@ import 'package:jais/components/simulcasts/simulcast_loader_widget.dart';
 import 'package:jais/components/simulcasts/simulcast_widget.dart';
 import 'package:jais/mappers/imapper.dart';
 import 'package:jais/models/simulcast.dart';
+import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
@@ -36,9 +37,7 @@ class SimulcastMapper extends IMapper<Simulcast> {
   Future<void> updateCurrentPage() async {
     addLoader();
 
-    final response = await URL().get(
-      'https://api.ziedelth.fr/v2/simulcasts',
-    );
+    final response = await URL().get(getSimulcastsUrl());
 
     if (response == null || response.statusCode != 200) {
       return;

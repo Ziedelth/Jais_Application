@@ -7,6 +7,7 @@ import 'package:jais/mappers/platform_mapper.dart';
 import 'package:jais/models/episode.dart';
 import 'package:jais/models/member.dart';
 import 'package:jais/models/member_role.dart';
+import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:logger/logger.dart' as logger;
 import 'package:url/url.dart';
@@ -65,7 +66,7 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
 
               logger.debug("Sending update");
               final response = await URL().put(
-                'https://api.ziedelth.fr/v1/episodes/update',
+                getEpisodesUpdateUrl(),
                 headers: {
                   'Authorization': widget.member.token ?? '',
                 },
@@ -156,7 +157,8 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                     .toList(),
                 onChanged: (langType) {
                   if (langType == null) return;
-                  widget.episode.langType = LangTypeMapper.instance.list.firstWhere(
+                  widget.episode.langType =
+                      LangTypeMapper.instance.list.firstWhere(
                     (p) => p.id == langType,
                   );
                   if (!mounted) return;
