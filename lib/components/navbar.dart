@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:jais/components/roundborder_widget.dart';
 import 'package:jais/mappers/navbar_mapper.dart';
-import 'package:jais/utils/jais_ad.dart';
+import 'package:jais/utils/utils.dart';
 
 class Navbar extends StatelessWidget {
   final NavbarMapper navbarMapper;
