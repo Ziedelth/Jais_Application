@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'package:brotli/brotli.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:in_app_review/in_app_review.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 BannerAd? globalBannerAd;
 
@@ -168,3 +170,20 @@ final Map<int, Color> mainColors = {
     1,
   ),
 };
+
+Future<bool> needsToShowReview() async {
+  final sharedPreferences = await SharedPreferences.getInstance();
+  const acceptReviewKey = 'acceptReview';
+  final acceptReview = sharedPreferences.getBool(acceptReviewKey) ?? true;
+
+  if (acceptReview) {
+    const counterKey = 'reviewCounter';
+    var reviewCounter = sharedPreferences.getInt(counterKey) ?? 0;
+    reviewCounter = (reviewCounter + 1) % 5;
+    print('reviewCounter: $reviewCounter');
+    await sharedPreferences.setInt(counterKey, reviewCounter);
+    return reviewCounter == 0 && (await InAppReview.instance.isAvailable());
+  }
+
+  return false;
+}
