@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:jais/components/roundborder_widget.dart';
 import 'package:jais/components/skeleton.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/member_role.dart';
+import 'package:jais/utils/const.dart';
 import 'package:jais/views/updates/anime_update_view.dart';
 
 class AnimeWidget extends StatelessWidget {
@@ -47,6 +49,22 @@ class AnimeWidget extends StatelessWidget {
           children: [
             Row(
               children: [
+                CachedNetworkImage(
+                  imageUrl: '$attachmentsUrl${anime.image}',
+                  imageBuilder: (context, imageProvider) => RoundBorderWidget(
+                    widget: Image(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  placeholder: (context, url) =>
+                      const Skeleton(width: 75, height: 100),
+                  errorWidget: (context, url, error) =>
+                      const Skeleton(width: 75, height: 100),
+                  width: 75,
+                  height: 100,
+                ),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -59,6 +77,7 @@ class AnimeWidget extends StatelessWidget {
                           style: TextStyle(
                             color: Theme.of(context).primaryColor,
                             fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
@@ -67,26 +86,12 @@ class AnimeWidget extends StatelessWidget {
                         child: Text(
                           anime.description ??
                               'Aucune description pour le moment',
-                          maxLines: 5,
+                          maxLines: 4,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(width: 10),
-                CachedNetworkImage(
-                  imageUrl: 'https://ziedelth.fr/${anime.image}',
-                  imageBuilder: (context, imageProvider) => Image(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
-                  ),
-                  placeholder: (context, url) =>
-                      const Skeleton(width: 75, height: 100),
-                  errorWidget: (context, url, error) =>
-                      const Skeleton(width: 75, height: 100),
-                  width: 75,
-                  height: 100,
                 ),
               ],
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jais/components/full_widget.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
+import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:jais/views/members/login_view.dart';
 import 'package:logger/logger.dart' as logger;
@@ -183,7 +184,7 @@ class _RegisterViewState extends State<RegisterView> {
 
                           try {
                             final response = await URL().post(
-                              "https://api.ziedelth.fr/v1/member/register",
+                              getRegisterUrl(),
                               body: {
                                 "email": _emailController.text.trim(),
                                 "pseudo": _pseudoController.text.trim(),

@@ -4,19 +4,16 @@ import 'package:jais/components/animes/anime_loader_widget.dart';
 import 'package:jais/components/animes/anime_widget.dart';
 import 'package:jais/mappers/episode_mapper.dart';
 import 'package:jais/mappers/imapper.dart';
-import 'package:jais/mappers/scan_mapper.dart';
 import 'package:jais/models/anime.dart';
-import 'package:jais/models/episode.dart';
-import 'package:jais/models/scan.dart';
 import 'package:jais/models/simulcast.dart';
-import 'package:jais/utils/country.dart';
-import 'package:jais/utils/decompress.dart';
+import 'package:jais/utils/const.dart';
+import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
 class AnimeMapper extends IMapper<Anime> {
   Simulcast? simulcast;
 
-  AnimeMapper() : super(limit: 21, loaderWidget: const AnimeLoaderWidget());
+  AnimeMapper() : super(limit: 24, loaderWidget: const AnimeLoaderWidget());
 
   @override
   List<Anime> stringTo(String string) {
@@ -39,72 +36,37 @@ class AnimeMapper extends IMapper<Anime> {
     if (simulcast == null) return;
     addLoader();
 
-    final response = await URL().get(
-      'https://api.ziedelth.fr/v2/animes/country/${Country.name}/simulcast/${simulcast?.id}/page/$currentPage/limit/$limit',
-    );
+    final response =
+        await URL().get(getAnimesUrl(simulcast, currentPage, limit));
 
     if (response == null || response.statusCode != 200) {
       return;
     }
 
-    list.addAll(toWidgets(stringTo(fromBrotly(response.body))));
+    list.addAll(toWidgets(stringTo(fromBrotli(response.body))));
     removeLoader();
   }
 
-  Future<List<Episode>?> loadEpisodes(
+  Future<void> loadEpisodes(
     Anime anime,
   ) async {
-    final response = await URL().get(
-      'https://api.ziedelth.fr/v2/episodes/anime/${anime.url}',
-    );
+    final response = await URL().get(getAnimeDetailsUrl(anime.url));
 
     if (response == null || response.statusCode != 200) {
-      return null;
-    }
-
-    return EpisodeMapper().stringTo(fromBrotly(response.body));
-  }
-
-  Future<List<Scan>?> loadScans(Anime anime) async {
-    final response = await URL().get(
-      'https://api.ziedelth.fr/v2/scans/anime/${anime.url}',
-    );
-
-    if (response == null || response.statusCode != 200) {
-      return null;
-    }
-
-    return ScanMapper().stringTo(fromBrotly(response.body));
-  }
-
-  Future<void> __loadEpisodes(Anime anime) async {
-    final episodes = await loadEpisodes(anime);
-
-    if (episodes == null) {
       return;
     }
+
+    final episodes = EpisodeMapper().stringTo(fromBrotli(response.body));
 
     anime.episodes.clear();
     anime.episodes.addAll(episodes);
-  }
-
-  Future<void> __loadScans(Anime anime) async {
-    final scans = await loadScans(anime);
-
-    if (scans == null) {
-      return;
-    }
-
-    anime.scans.clear();
-    anime.scans.addAll(scans);
   }
 
   Future<Anime?> loadDetails(
     Anime anime,
   ) async {
     await Future.wait([
-      __loadEpisodes(anime),
-      __loadScans(anime),
+      loadEpisodes(anime),
     ]);
 
     return anime;
@@ -113,14 +75,12 @@ class AnimeMapper extends IMapper<Anime> {
   Future<List<AnimeWidget>?> search({
     required String query,
   }) async {
-    final response = await URL().get(
-      'https://api.ziedelth.fr/v2/animes/country/${Country.name}/search/$query',
-    );
+    final response = await URL().get(getAnimesSearchUrl(query));
 
     if (response == null || response.statusCode != 200) {
       return null;
     }
 
-    return toWidgets(stringTo(fromBrotly(response.body)));
+    return toWidgets(stringTo(fromBrotli(response.body)));
   }
 }

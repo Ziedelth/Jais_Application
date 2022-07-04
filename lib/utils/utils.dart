@@ -1,4 +1,28 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:brotli/brotli.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:in_app_review/in_app_review.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+BannerAd? globalBannerAd;
+
+void createGlobalBanner() {
+  globalBannerAd = BannerAd(
+    adUnitId: 'ca-app-pub-5658764393995798/7021730383',
+    size: AdSize.banner,
+    request: const AdRequest(),
+    listener: BannerAdListener(
+      onAdFailedToLoad: (Ad ad, LoadAdError error) {
+        ad.dispose();
+      },
+    ),
+  );
+
+  globalBannerAd?.load();
+}
 
 String printTimeSince(DateTime? dateTime) {
   if (dateTime == null) {
@@ -69,4 +93,97 @@ void showSnackBar(BuildContext context, String message) {
       duration: const Duration(seconds: 2),
     ),
   );
+}
+
+String fromUTF8(List<int> bytes) => utf8.decode(bytes);
+
+Uint8List fromBase64(String string) => base64.decode(string);
+
+String fromBrotli(String string) =>
+    fromUTF8(brotli.decode(fromBase64(string.trim())));
+
+const _mainColor = Color(0xFFF2B05E);
+
+final int redMainColor = _mainColor.red;
+final int greenMainColor = _mainColor.green;
+final int blueMainColor = _mainColor.blue;
+
+final Map<int, Color> mainColors = {
+  50: Color.fromRGBO(
+    redMainColor,
+    greenMainColor,
+    blueMainColor,
+    .1,
+  ),
+  100: Color.fromRGBO(
+    redMainColor,
+    greenMainColor,
+    blueMainColor,
+    .2,
+  ),
+  200: Color.fromRGBO(
+    redMainColor,
+    greenMainColor,
+    blueMainColor,
+    .3,
+  ),
+  300: Color.fromRGBO(
+    redMainColor,
+    greenMainColor,
+    blueMainColor,
+    .4,
+  ),
+  400: Color.fromRGBO(
+    redMainColor,
+    greenMainColor,
+    blueMainColor,
+    .5,
+  ),
+  500: Color.fromRGBO(
+    redMainColor,
+    greenMainColor,
+    blueMainColor,
+    .6,
+  ),
+  600: Color.fromRGBO(
+    redMainColor,
+    greenMainColor,
+    blueMainColor,
+    .7,
+  ),
+  700: Color.fromRGBO(
+    redMainColor,
+    greenMainColor,
+    blueMainColor,
+    .8,
+  ),
+  800: Color.fromRGBO(
+    redMainColor,
+    greenMainColor,
+    blueMainColor,
+    .9,
+  ),
+  900: Color.fromRGBO(
+    redMainColor,
+    greenMainColor,
+    blueMainColor,
+    1,
+  ),
+};
+
+Future<bool> needsToShowReview() async {
+  final sharedPreferences = await SharedPreferences.getInstance();
+  const acceptReviewKey = 'acceptReview';
+  final acceptReview = sharedPreferences.getBool(acceptReviewKey) ?? true;
+
+  if (acceptReview) {
+    const counterKey = 'reviewCounter';
+    var reviewCounter = sharedPreferences.getInt(counterKey) ?? 0;
+    reviewCounter = (reviewCounter + 1) % 5;
+    print('reviewCounter: $reviewCounter');
+    await sharedPreferences.setInt(counterKey, reviewCounter);
+    return reviewCounter == 0 && (await InAppReview.instance.isAvailable());
+  }
+
+  return false;
 }

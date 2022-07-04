@@ -7,6 +7,7 @@ import 'package:jais/mappers/display_mapper.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/models/episode.dart';
 import 'package:jais/models/member_role.dart';
+import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:jais/views/updates/episode_update_view.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -20,7 +21,10 @@ class EpisodeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => launchUrl(Uri.parse(episode.url)),
+      onTap: () => launchUrl(
+        Uri.parse(episode.url),
+        mode: LaunchMode.externalApplication,
+      ),
       onLongPress: () {
         if (!member_mapper.isConnected()) {
           return;
@@ -65,17 +69,18 @@ class EpisodeWidget extends StatelessWidget {
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
                       fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(
-              height: 10,
-            ),
             Text(
               episode.title?.replaceAll("\n", ' ') ?? '＞﹏＜',
               overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             Text(
               '${episode.anime.country.season} ${episode.season} • ${episode.episodeType.fr} ${episode.number} ${episode.langType.fr}',
@@ -94,7 +99,7 @@ class EpisodeWidget extends StatelessWidget {
             if (_displayMapper.isOnMobile(context))
               RoundBorderWidget(
                 widget: CachedNetworkImage(
-                  imageUrl: 'https://ziedelth.fr/${episode.image}',
+                  imageUrl: '$attachmentsUrl${episode.image}',
                   imageBuilder: (context, imageProvider) => Image(
                     image: imageProvider,
                     fit: BoxFit.cover,
@@ -108,7 +113,7 @@ class EpisodeWidget extends StatelessWidget {
               Expanded(
                 child: RoundBorderWidget(
                   widget: CachedNetworkImage(
-                    imageUrl: 'https://ziedelth.fr/${episode.image}',
+                    imageUrl: '$attachmentsUrl${episode.image}',
                     imageBuilder: (context, imageProvider) => Image(
                       image: imageProvider,
                       fit: BoxFit.cover,

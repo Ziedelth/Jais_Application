@@ -1,10 +1,12 @@
 import 'dart:convert';
 
 import 'package:jais/models/lang_type.dart';
-import 'package:jais/utils/decompress.dart';
+import 'package:jais/utils/const.dart';
+import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
 class LangTypeMapper {
+  static final instance = LangTypeMapper();
   List<LangType> list = [];
 
   List<LangType>? stringToLangTypes(String? string) {
@@ -20,20 +22,19 @@ class LangTypeMapper {
   }
 
   Future<void> update() async {
-    final response = await URL().get(
-      'https://api.ziedelth.fr/v2/lang-types',
-    );
+    final response = await URL().get(getLangTypesUrl());
 
     if (response == null || response.statusCode != 200) {
       return;
     }
 
-    final langTypes = stringToLangTypes(fromBrotly(response.body));
+    final langTypes = stringToLangTypes(fromBrotli(response.body));
 
     if (langTypes == null || langTypes.isEmpty) {
       return;
     }
 
+    langTypes.removeWhere((element) => element.name == 'UNKNOWN');
     list = langTypes;
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:jais/components/full_widget.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/models/member.dart';
+import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:logger/logger.dart' as logger;
 import 'package:url/url.dart';
@@ -120,7 +121,7 @@ class _LoginViewState extends State<LoginView> {
 
                           try {
                             final response = await URL().post(
-                              "https://api.ziedelth.fr/v1/member/login",
+                              getLoginWithCredentialsUrl(),
                               body: {
                                 "email": _emailController.text.trim(),
                                 "password": _passwordController.text.trim(),

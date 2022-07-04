@@ -2,13 +2,12 @@ library notifications;
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:logger/logger.dart' as logger;
 import 'package:notifications/firebase_options.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-late final GetStorage _getStorage;
-const _key = "topics";
+late final SharedPreferences _sharedPreferences;
+const _topicsKey = "topics";
+const _typeKey = "type";
 
 Future<void> initFirebase() async =>
     Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -16,77 +15,65 @@ Future<void> initFirebase() async =>
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async =>
     initFirebase();
 
-List<String> getTopics() => _getStorage.hasData(_key)
-    ? (_getStorage.read(_key) as List<dynamic>)
-        .map((e) => e.toString())
-        .toList()
-    : List<String>.empty(growable: true);
+List<String> getTopics() => _sharedPreferences.containsKey(_topicsKey)
+    ? _sharedPreferences.getStringList(_topicsKey)!
+    : <String>[];
 
 bool hasTopic(String topic) => getTopics().contains(topic);
 
-void addTopic(String topic) {
+Future<void> addTopic(String topic) async {
   final list = getTopics();
-  logger.info("Adding topic $topic to $list");
 
   if (hasTopic(topic)) {
-    logger.debug("Topic $topic already exists");
     return;
   }
 
   list.add(topic);
-  logger.info("Writing topics $list");
-  _getStorage.write(_key, list);
-
-  logger.info("Subscribing to topic $topic");
-  if (!kIsWeb) FirebaseMessaging.instance.subscribeToTopic(topic);
+  await _sharedPreferences.setStringList(_topicsKey, list);
+  await FirebaseMessaging.instance.subscribeToTopic(topic);
 }
 
-void removeTopic(String topic) {
+Future<void> removeTopic(String topic) async {
   final list = getTopics();
-  logger.info("Removing topic $topic from $list");
 
   if (!hasTopic(topic)) {
-    logger.debug("Topic $topic does not exist");
     return;
   }
 
   list.remove(topic);
-  logger.info("Writing topics $list");
-  _getStorage.write(_key, list);
-
-  logger.info("Unsubscribing from topic $topic");
-  if (!kIsWeb) FirebaseMessaging.instance.unsubscribeFromTopic(topic);
+  await _sharedPreferences.setStringList(_topicsKey, list);
+  await FirebaseMessaging.instance.unsubscribeFromTopic(topic);
 }
 
-void removeAllTopics() {
+Future<void> removeAllTopics() async {
   final list = getTopics();
-  logger.info("Removing all topics $list");
 
-  for (final String topic in list) {
-    logger.info("Unsubscribing from topic $topic");
-    if (!kIsWeb) FirebaseMessaging.instance.unsubscribeFromTopic(topic);
-  }
+  await Future.wait([
+    for (final topic in list)
+      FirebaseMessaging.instance.unsubscribeFromTopic(topic),
+  ]);
 
   list.clear();
-  logger.info("Writing topics $list");
-  _getStorage.write(_key, list);
+  await _sharedPreferences.setStringList(_topicsKey, list);
+}
+
+String getType() => _sharedPreferences.containsKey(_typeKey)
+    ? _sharedPreferences.getString(_typeKey)!
+    : "default";
+
+Future<void> setType(String type) async {
+  await _sharedPreferences.setString(_typeKey, type);
 }
 
 Future<void> init() async {
-  logger.info("Initializing notifications");
-  await GetStorage.init('notifications');
-  _getStorage = GetStorage('notifications');
-  logger.info("Initializing firebase");
+  _sharedPreferences = await SharedPreferences.getInstance();
   await initFirebase();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  final bool firstInit = !_getStorage.hasData('init');
-  logger.debug("First init: $firstInit");
+  final isInit = _sharedPreferences.containsKey(_topicsKey) &&
+      _sharedPreferences.containsKey(_typeKey);
 
-  if (firstInit) {
-    logger.info("Initializing topics");
-    addTopic("animes");
+  if (!isInit) {
+    await addTopic("animes");
+    await setType("default");
   }
-
-  logger.info("Initializing notifications done");
-  _getStorage.write('init', true);
 }

@@ -1,24 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:jais/components/animes/anime_list.dart';
+import 'package:jais/components/loading_widget.dart';
 import 'package:jais/mappers/anime_mapper.dart';
 import 'package:jais/models/anime.dart';
+import 'package:jais/utils/utils.dart';
 
 class AnimeSearchView extends StatefulWidget {
-  final AnimeMapper animeMapper;
-  final Function(Anime) onTap;
-
-  const AnimeSearchView({
-    required this.animeMapper,
-    required this.onTap,
-    super.key,
-  });
+  const AnimeSearchView({super.key});
 
   @override
   _AnimeSearchViewState createState() => _AnimeSearchViewState();
 }
 
 class _AnimeSearchViewState extends State<AnimeSearchView> {
-  final List<Widget> _animeWidgets = [];
+  final _animeMapper = AnimeMapper();
+  final _animeWidgets = <Widget>[];
+
+  Future<void> _onTap(Anime anime) async {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => const AlertDialog(
+        content: Loading(),
+      ),
+    );
+
+    final details = await _animeMapper.loadDetails(anime);
+    if (!mounted) return;
+    Navigator.pop(context);
+
+    // If details is null, show error
+    if (details == null) {
+      showSnackBar(context, 'An error occurred while loading details');
+      return;
+    }
+
+    Navigator.pushNamed(context, '/anime', arguments: details);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +50,7 @@ class _AnimeSearchViewState extends State<AnimeSearchView> {
           ),
           autofocus: true,
           onSubmitted: (value) async {
-            final animes = await widget.animeMapper.search(query: value);
+            final animes = await _animeMapper.search(query: value);
             if (animes == null) return;
 
             _animeWidgets
@@ -44,7 +62,7 @@ class _AnimeSearchViewState extends State<AnimeSearchView> {
                         child: e,
                         onTap: () {
                           Navigator.pop(context);
-                          widget.onTap(e.anime);
+                          _onTap(e.anime);
                         },
                       ),
                     )

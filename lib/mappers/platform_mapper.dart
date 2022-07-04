@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import 'package:jais/models/platform.dart';
-import 'package:jais/utils/decompress.dart';
+import 'package:jais/utils/const.dart';
+import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
 class PlatformMapper {
@@ -20,15 +21,13 @@ class PlatformMapper {
   }
 
   Future<void> update() async {
-    final response = await URL().get(
-      'https://api.ziedelth.fr/v2/platforms',
-    );
+    final response = await URL().get(getPlatformsUrl());
 
     if (response == null || response.statusCode != 200) {
       return;
     }
 
-    final platforms = stringToPlatforms(fromBrotly(response.body));
+    final platforms = stringToPlatforms(fromBrotli(response.body));
 
     if (platforms == null || platforms.isEmpty) {
       return;

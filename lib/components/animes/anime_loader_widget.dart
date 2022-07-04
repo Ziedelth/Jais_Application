@@ -19,18 +19,18 @@ class AnimeLoaderWidget extends StatelessWidget {
         children: [
           Row(
             children: [
+              const Skeleton(width: 75, height: 100),
+              const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: const [
                     Skeleton(height: 20),
                     SizedBox(height: 10),
-                    Skeleton(height: 90),
+                    Skeleton(height: 70),
                   ],
                 ),
               ),
-              const SizedBox(width: 10),
-              const Skeleton(width: 75, height: 120),
             ],
           ),
         ],
