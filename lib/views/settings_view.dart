@@ -4,7 +4,6 @@ import 'package:jais/components/section_widget.dart';
 import 'package:jais/mappers/country_mapper.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/views/members/login_view.dart';
-import 'package:jais/views/members/member_view.dart';
 import 'package:jais/views/members/register_view.dart';
 import 'package:notifications/notifications.dart' as notifications;
 
@@ -83,21 +82,6 @@ class _SettingsViewState extends State<SettingsView> {
                 )
               ],
               if (member_mapper.isConnected()) ...[
-                FullWidget(
-                  widget: ElevatedButton(
-                    child: const Text('Mon profil'),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => MemberView(
-                            member: member_mapper.getMember()!,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(height: 16),
                 FullWidget(
                   widget: ElevatedButton(
                     child: const Text('Déconnexion'),
