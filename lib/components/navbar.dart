@@ -24,7 +24,7 @@ class Navbar extends StatelessWidget {
       child: Row(
         children: [
           RoundBorderWidget(
-            widget: Image.asset('assets/icon.jpg'),
+            widget: Image.asset('assets/icon.png'),
           ),
           const SizedBox(width: 10),
           Text(

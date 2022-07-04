@@ -34,23 +34,22 @@ dev_dependencies:
   lint: ^1.8.2
 
 flutter_icons:
-  image_path: 'assets/icon.jpg'
+  image_path: 'assets/icon.png'
   android: true
   ios: true
 
 flutter_native_splash:
   color: "#ffffff"
   color_dark: "#000000"
-  image: assets/splash.png
+  image: 'assets/icon.png'
 
 flutter:
   uses-material-design: true
 
   assets:
-    - 'assets/icon.jpg'
-    - 'assets/splash.png'
+    - 'assets/icon.png'
 
   fonts:
     - family: Pacifico
       fonts:
-        - asset: assets/fonts/Pacifico-Regular.ttf
+        - asset: 'assets/fonts/Pacifico-Regular.ttf'
