@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:jais/mappers/country_mapper.dart';
+import 'package:jais/mappers/lang_type_mapper.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/models/anime.dart';
 import 'package:jais/utils/utils.dart';
@@ -15,9 +16,14 @@ import 'package:notifications/notifications.dart' as notifications;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await MobileAds.instance.initialize();
-  await notifications.init();
+
+  try {
+    await notifications.init();
+  } catch(_) {}
+
   await member_mapper.init();
   await CountryMapper().update();
+  LangTypeMapper.instance.update();
 
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

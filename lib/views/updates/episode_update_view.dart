@@ -28,7 +28,6 @@ class EpisodeUpdateView extends StatefulWidget {
 class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
   final PlatformMapper platformMapper = PlatformMapper();
   final EpisodeTypeMapper episodeTypeMapper = EpisodeTypeMapper();
-  final LangTypeMapper langTypeMapper = LangTypeMapper();
 
   @override
   void initState() {
@@ -38,7 +37,7 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
       await Future.wait([
         platformMapper.update(),
         episodeTypeMapper.update(),
-        langTypeMapper.update(),
+        LangTypeMapper.instance.update(),
       ]);
 
       if (!mounted) return;
@@ -147,7 +146,7 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                   labelText: 'Langue',
                 ),
                 value: widget.episode.langType.id,
-                items: langTypeMapper.list
+                items: LangTypeMapper.instance.list
                     .map<DropdownMenuItem<int>>(
                       (langType) => DropdownMenuItem<int>(
                         value: langType.id,
@@ -157,7 +156,7 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                     .toList(),
                 onChanged: (langType) {
                   if (langType == null) return;
-                  widget.episode.langType = langTypeMapper.list.firstWhere(
+                  widget.episode.langType = LangTypeMapper.instance.list.firstWhere(
                     (p) => p.id == langType,
                   );
                   if (!mounted) return;

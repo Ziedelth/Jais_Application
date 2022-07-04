@@ -5,6 +5,7 @@ import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
 class LangTypeMapper {
+  static final instance = LangTypeMapper();
   List<LangType> list = [];
 
   List<LangType>? stringToLangTypes(String? string) {
@@ -34,6 +35,7 @@ class LangTypeMapper {
       return;
     }
 
+    langTypes.removeWhere((element) => element.name == 'UNKNOWN');
     list = langTypes;
   }
 }

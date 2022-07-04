@@ -1,28 +1,19 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:jais/components/episodes/episode_loader_widget.dart';
 import 'package:jais/components/episodes/episode_widget.dart';
 import 'package:jais/mappers/imapper.dart';
 import 'package:jais/models/episode.dart';
+import 'package:jais/models/lang_type.dart';
 import 'package:jais/utils/utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url/url.dart';
 
-class WatchlistMapper {
+class WatchlistMapper extends IMapper<Episode> {
   final String pseudo;
-  final WatchlistEpisodeMapper watchlistEpisodeMapper;
 
   WatchlistMapper({required this.pseudo})
-      : watchlistEpisodeMapper = WatchlistEpisodeMapper(pseudo: pseudo);
-
-  void clear() {
-    watchlistEpisodeMapper.clear();
-  }
-}
-
-class WatchlistEpisodeMapper extends IMapper<Episode> {
-  final String pseudo;
-
-  WatchlistEpisodeMapper({required this.pseudo})
       : super(limit: 21, loaderWidget: EpisodeLoaderWidget());
 
   @override
@@ -55,5 +46,31 @@ class WatchlistEpisodeMapper extends IMapper<Episode> {
 
     list.addAll(toWidgets(stringTo(fromBrotli(response.body))));
     removeLoader();
+  }
+
+  static const _filterKey = "langTypesFilter";
+
+  Future<List<String>> getLangTypesFilter() async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+    return sharedPreferences.containsKey(_filterKey)
+        ? sharedPreferences.getStringList(_filterKey)!
+        : [];
+  }
+
+  Future<void> setLangTypesFilter(List<String> langTypes) async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setStringList(_filterKey, langTypes);
+  }
+
+  Future<void> addLangTypeFilter(LangType langType) async {
+    final langTypes = await getLangTypesFilter();
+    langTypes.add(langType.name);
+    await setLangTypesFilter(langTypes);
+  }
+
+  Future<void> removeLangTypeFilter(LangType langType) async {
+    final langTypes = await getLangTypesFilter();
+    langTypes.remove(langType.name);
+    await setLangTypesFilter(langTypes);
   }
 }
