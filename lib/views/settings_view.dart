@@ -23,6 +23,7 @@ class _SettingsViewState extends State<SettingsView> {
     final isDefaultMode = notifications.getType() == "default";
     final isWatchlistModeOrNeedUpdate =
         notifications.getType() == "watchlist" && !_same();
+    final isDisabledMode = notifications.getType() == "disable";
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -80,8 +81,7 @@ class _SettingsViewState extends State<SettingsView> {
                     },
                   ),
                 )
-              ],
-              if (member_mapper.isConnected()) ...[
+              ] else ...[
                 FullWidget(
                   widget: ElevatedButton(
                     child: const Text('Déconnexion'),
@@ -129,6 +129,19 @@ class _SettingsViewState extends State<SettingsView> {
                     ),
                   ),
                 ),
+                const SizedBox(height: 8),
+                FullWidget(
+                  widget: ElevatedButton(
+                    onPressed: isDisabledMode
+                        ? null
+                        : () {
+                            member_mapper.setDisabledNotifications();
+                            if (!mounted) return;
+                            setState(() {});
+                          },
+                    child: const Text('Par défaut'),
+                  ),
+                ),
               ],
             ),
         ],
@@ -137,23 +150,10 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   bool _same() {
-    if (!member_mapper.isConnected()) {
-      return true;
-    }
-
     final topics = notifications.getTopics();
     final watchlist = member_mapper.getMember()!.watchlist;
-
-    if (watchlist.length == topics.length) {
-      for (final element in watchlist) {
-        if (!topics.contains(element.id.toString())) {
-          return false;
-        }
-      }
-
-      return true;
-    }
-
-    return false;
+    return member_mapper.isConnected() &&
+        watchlist.length == topics.length &&
+        watchlist.every((element) => topics.contains(element.id.toString()));
   }
 }
