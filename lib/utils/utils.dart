@@ -24,6 +24,23 @@ void createGlobalBanner() {
   globalBannerAd?.load();
 }
 
+Future<void> showVideoAd({VoidCallback? callback}) async {
+  await RewardedAd.load(
+    adUnitId: 'ca-app-pub-5658764393995798/3650456466',
+    request: const AdRequest(),
+    rewardedAdLoadCallback: RewardedAdLoadCallback(
+      onAdLoaded: (RewardedAd ad) {
+        ad.show(
+          onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {
+            callback?.call();
+          },
+        );
+      },
+      onAdFailedToLoad: (LoadAdError error) {},
+    ),
+  );
+}
+
 String printTimeSince(DateTime? dateTime) {
   if (dateTime == null) {
     return 'erreur';
@@ -180,7 +197,6 @@ Future<bool> needsToShowReview() async {
     const counterKey = 'reviewCounter';
     var reviewCounter = sharedPreferences.getInt(counterKey) ?? 0;
     reviewCounter = (reviewCounter + 1) % 5;
-    print('reviewCounter: $reviewCounter');
     await sharedPreferences.setInt(counterKey, reviewCounter);
     return reviewCounter == 0 && (await InAppReview.instance.isAvailable());
   }
@@ -194,7 +210,7 @@ extension IterableExt<T> on Iterable<T> {
     if (!iterator.moveNext()) return [];
 
     final _l = [iterator.current];
-    
+
     while (iterator.moveNext()) {
       _l
         ..add(separator)

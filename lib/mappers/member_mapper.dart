@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/member.dart';
-import 'package:jais/models/member_role.dart';
 import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:notifications/notifications.dart' as notifications;
@@ -141,6 +140,7 @@ Future<void> removeAnimeInWatchlist(Anime anime) async {
 Future<void> setDefaultNotifications() async {
   await notifications.removeAllTopics();
   await notifications.addTopic("animes");
+  await notifications.setType('default');
 }
 
 Future<void> setWatchlistNotifications() async {
@@ -153,6 +153,8 @@ Future<void> setWatchlistNotifications() async {
   for (final anime in getMember()!.watchlist) {
     await notifications.addTopic(anime.id.toString());
   }
+
+  await notifications.setType('watchlist');
 }
 
 Future<void> setDisabledNotifications() async {
@@ -161,4 +163,5 @@ Future<void> setDisabledNotifications() async {
   }
 
   await notifications.removeAllTopics();
+  await notifications.setType('disable');
 }

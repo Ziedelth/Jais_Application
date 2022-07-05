@@ -23,6 +23,7 @@ class _WatchlistViewState extends State<WatchlistView> {
 
   Future<void> _setFilterWidgets({bool update = false}) async {
     _filter = await _watchlistMapper.getLangTypesFilter();
+    if (!mounted) return;
 
     _filterWidgets.clear();
     _filterWidgets.addAll(
@@ -45,7 +46,7 @@ class _WatchlistViewState extends State<WatchlistView> {
       ),
     );
 
-    if (update && mounted) {
+    if (update) {
       setState(() {});
     }
   }

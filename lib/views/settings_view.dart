@@ -3,6 +3,7 @@ import 'package:jais/components/full_widget.dart';
 import 'package:jais/components/section_widget.dart';
 import 'package:jais/mappers/country_mapper.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
+import 'package:jais/utils/utils.dart';
 import 'package:jais/views/members/login_view.dart';
 import 'package:jais/views/members/register_view.dart';
 import 'package:notifications/notifications.dart' as notifications;
@@ -97,7 +98,7 @@ class _SettingsViewState extends State<SettingsView> {
               ],
             ],
           ),
-          if (member_mapper.isConnected())
+          if (member_mapper.isConnected()) ...[
             SectionWidget(
               icon: const Icon(Icons.notifications),
               title: 'Notifications',
@@ -106,8 +107,8 @@ class _SettingsViewState extends State<SettingsView> {
                   widget: ElevatedButton(
                     onPressed: isDefaultMode
                         ? null
-                        : () {
-                            member_mapper.setDefaultNotifications();
+                        : () async {
+                            await member_mapper.setDefaultNotifications();
                             if (!mounted) return;
                             setState(() {});
                           },
@@ -116,9 +117,10 @@ class _SettingsViewState extends State<SettingsView> {
                 ),
                 FullWidget(
                   widget: ElevatedButton(
-                    onPressed: (isDefaultMode || isWatchlistModeOrNeedUpdate)
-                        ? () {
-                            member_mapper.setWatchlistNotifications();
+                    onPressed: notificationsType != "watchlist" ||
+                            isWatchlistModeOrNeedUpdate
+                        ? () async {
+                            await member_mapper.setWatchlistNotifications();
                             if (!mounted) return;
                             setState(() {});
                           }
@@ -132,16 +134,37 @@ class _SettingsViewState extends State<SettingsView> {
                   widget: ElevatedButton(
                     onPressed: isDisabledMode
                         ? null
-                        : () {
-                            member_mapper.setDisabledNotifications();
+                        : () async {
+                            await member_mapper.setDisabledNotifications();
                             if (!mounted) return;
                             setState(() {});
                           },
-                    child: const Text('Par défaut'),
+                    child: const Text('Désactiver'),
                   ),
                 ),
               ],
             ),
+            SectionWidget(
+              icon: const Icon(Icons.card_giftcard),
+              title: 'Concours',
+              widgets: [
+                FullWidget(
+                  widget: ElevatedButton(
+                    onPressed: () {
+                      showVideoAd(
+                        callback: () {
+                          print('rebuild');
+                          if (!mounted) return;
+                          setState(() {});
+                        },
+                      );
+                    },
+                    child: const Text('Participer'),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );
