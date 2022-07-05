@@ -63,7 +63,6 @@ class _SettingsViewState extends State<SettingsView> {
                     },
                   ),
                 ),
-                const SizedBox(height: 8),
                 FullWidget(
                   widget: ElevatedButton(
                     child: const Text('Connexion'),
@@ -114,7 +113,6 @@ class _SettingsViewState extends State<SettingsView> {
                     child: const Text('Par défaut'),
                   ),
                 ),
-                const SizedBox(height: 8),
                 FullWidget(
                   widget: ElevatedButton(
                     onPressed: (isDefaultMode || isWatchlistModeOrNeedUpdate)
@@ -129,7 +127,6 @@ class _SettingsViewState extends State<SettingsView> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 8),
                 FullWidget(
                   widget: ElevatedButton(
                     onPressed: isDisabledMode
