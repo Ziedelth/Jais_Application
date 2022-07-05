@@ -58,7 +58,7 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.send),
+            icon: const Icon(Icons.cloud_upload),
             onPressed: () async {
               if (widget.member.role != MemberRole.admin) {
                 return;
