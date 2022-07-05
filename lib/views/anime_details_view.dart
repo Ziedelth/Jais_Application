@@ -72,6 +72,9 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
 
   @override
   Widget build(BuildContext context) {
+    final hasAnimeInWatchlist =
+        member_mapper.hasAnimeInWatchlist(widget._anime);
+
     return Column(
       children: [
         Row(
@@ -94,18 +97,16 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
             if (member_mapper.isConnected())
               IconButton(
                 icon: Icon(
-                  member_mapper.hasAnimeInWatchlist(widget._anime)
+                  hasAnimeInWatchlist
                       ? Icons.playlist_remove
                       : Icons.playlist_add,
-                  color: member_mapper.hasAnimeInWatchlist(widget._anime)
-                      ? Colors.red
-                      : Colors.green,
+                  color: hasAnimeInWatchlist ? Colors.red : Colors.green,
                 ),
                 onPressed: () async {
                   final isWatchlistMode =
                       notifications.getType() == 'watchlist';
 
-                  if (member_mapper.hasAnimeInWatchlist(widget._anime)) {
+                  if (hasAnimeInWatchlist) {
                     await member_mapper.removeAnimeInWatchlist(widget._anime);
 
                     if (isWatchlistMode) {

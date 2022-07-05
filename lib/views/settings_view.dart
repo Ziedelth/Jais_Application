@@ -20,10 +20,11 @@ class SettingsView extends StatefulWidget {
 class _SettingsViewState extends State<SettingsView> {
   @override
   Widget build(BuildContext context) {
-    final isDefaultMode = notifications.getType() == "default";
+    final notificationsType = notifications.getType();
+    final isDefaultMode = notificationsType == "default";
     final isWatchlistModeOrNeedUpdate =
-        notifications.getType() == "watchlist" && !_same();
-    final isDisabledMode = notifications.getType() == "disable";
+        notificationsType == "watchlist" && !_same();
+    final isDisabledMode = notificationsType == "disable";
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 16),
