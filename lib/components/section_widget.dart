@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jais/components/full_widget.dart';
+import 'package:jais/utils/utils.dart';
 
 class SectionWidget extends StatelessWidget {
   final Icon icon;
@@ -35,7 +36,7 @@ class SectionWidget extends StatelessWidget {
             height: 1,
           ),
         ),
-        ...?widgets
+        ...?widgets?.superJoin(const SizedBox(height: 8))
       ],
     );
   }

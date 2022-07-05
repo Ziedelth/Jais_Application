@@ -20,9 +20,11 @@ class SettingsView extends StatefulWidget {
 class _SettingsViewState extends State<SettingsView> {
   @override
   Widget build(BuildContext context) {
-    final isDefaultMode = notifications.getType() == "default";
+    final notificationsType = notifications.getType();
+    final isDefaultMode = notificationsType == "default";
     final isWatchlistModeOrNeedUpdate =
-        notifications.getType() == "watchlist" && !_same();
+        notificationsType == "watchlist" && !_same();
+    final isDisabledMode = notificationsType == "disable";
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -62,7 +64,6 @@ class _SettingsViewState extends State<SettingsView> {
                     },
                   ),
                 ),
-                const SizedBox(height: 8),
                 FullWidget(
                   widget: ElevatedButton(
                     child: const Text('Connexion'),
@@ -80,8 +81,7 @@ class _SettingsViewState extends State<SettingsView> {
                     },
                   ),
                 )
-              ],
-              if (member_mapper.isConnected()) ...[
+              ] else ...[
                 FullWidget(
                   widget: ElevatedButton(
                     child: const Text('Déconnexion'),
@@ -114,7 +114,6 @@ class _SettingsViewState extends State<SettingsView> {
                     child: const Text('Par défaut'),
                   ),
                 ),
-                const SizedBox(height: 8),
                 FullWidget(
                   widget: ElevatedButton(
                     onPressed: (isDefaultMode || isWatchlistModeOrNeedUpdate)
@@ -129,6 +128,18 @@ class _SettingsViewState extends State<SettingsView> {
                     ),
                   ),
                 ),
+                FullWidget(
+                  widget: ElevatedButton(
+                    onPressed: isDisabledMode
+                        ? null
+                        : () {
+                            member_mapper.setDisabledNotifications();
+                            if (!mounted) return;
+                            setState(() {});
+                          },
+                    child: const Text('Par défaut'),
+                  ),
+                ),
               ],
             ),
         ],
@@ -137,23 +148,10 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   bool _same() {
-    if (!member_mapper.isConnected()) {
-      return true;
-    }
-
     final topics = notifications.getTopics();
     final watchlist = member_mapper.getMember()!.watchlist;
-
-    if (watchlist.length == topics.length) {
-      for (final element in watchlist) {
-        if (!topics.contains(element.id.toString())) {
-          return false;
-        }
-      }
-
-      return true;
-    }
-
-    return false;
+    return member_mapper.isConnected() &&
+        watchlist.length == topics.length &&
+        watchlist.every((element) => topics.contains(element.id.toString()));
   }
 }

@@ -155,12 +155,10 @@ Future<void> setWatchlistNotifications() async {
   }
 }
 
-String roleToString(int? role) {
-  switch (role) {
-    case MemberRole.admin:
-      return "Administrateur";
-    case 0:
-    default:
-      return "Membre";
+Future<void> setDisabledNotifications() async {
+  if (!isConnected()) {
+    return;
   }
+
+  await notifications.removeAllTopics();
 }
