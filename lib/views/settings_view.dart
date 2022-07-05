@@ -137,7 +137,7 @@ class _SettingsViewState extends State<SettingsView> {
                             if (!mounted) return;
                             setState(() {});
                           },
-                    child: const Text('Par défaut'),
+                    child: const Text('Désactiver'),
                   ),
                 ),
               ],
