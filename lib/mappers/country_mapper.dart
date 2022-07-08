@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:jais/models/country.dart';
 import 'package:jais/utils/const.dart';
+import 'package:jais/utils/url.dart';
 import 'package:jais/utils/utils.dart';
-import 'package:url/url.dart';
 
 class CountryMapper {
   static Country? selectedCountry;

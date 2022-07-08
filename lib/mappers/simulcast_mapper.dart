@@ -6,8 +6,8 @@ import 'package:jais/components/simulcasts/simulcast_widget.dart';
 import 'package:jais/mappers/imapper.dart';
 import 'package:jais/models/simulcast.dart';
 import 'package:jais/utils/const.dart';
+import 'package:jais/utils/url.dart';
 import 'package:jais/utils/utils.dart';
-import 'package:url/url.dart';
 
 class SimulcastMapper extends IMapper<Simulcast> {
   SimulcastMapper({bool listener = true})

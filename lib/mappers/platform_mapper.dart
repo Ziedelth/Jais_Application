@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:jais/models/platform.dart';
 import 'package:jais/utils/const.dart';
+import 'package:jais/utils/url.dart';
 import 'package:jais/utils/utils.dart';
-import 'package:url/url.dart';
 
 class PlatformMapper {
   List<Platform> list = [];

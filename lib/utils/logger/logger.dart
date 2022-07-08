@@ -1,9 +1,7 @@
-library logger;
-
 import 'dart:developer' as dev;
 
 import 'package:intl/intl.dart';
-import 'package:logger/log_type.dart';
+import 'package:jais/utils/logger/log_type.dart';
 import 'package:stack_trace/stack_trace.dart';
 
 void log({required LogType logType, required String message}) {

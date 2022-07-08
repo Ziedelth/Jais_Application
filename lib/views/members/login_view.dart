@@ -5,9 +5,9 @@ import 'package:jais/components/full_widget.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/models/member.dart';
 import 'package:jais/utils/const.dart';
+import 'package:jais/utils/logger/logger.dart' as logger;
+import 'package:jais/utils/url.dart';
 import 'package:jais/utils/utils.dart';
-import 'package:logger/logger.dart' as logger;
-import 'package:url/url.dart';
 
 class LoginView extends StatefulWidget {
   final Function()? onLogin;

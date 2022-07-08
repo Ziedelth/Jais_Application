@@ -7,8 +7,8 @@ import 'package:jais/mappers/imapper.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/simulcast.dart';
 import 'package:jais/utils/const.dart';
+import 'package:jais/utils/url.dart';
 import 'package:jais/utils/utils.dart';
-import 'package:url/url.dart';
 
 class AnimeMapper extends IMapper<Anime> {
   Simulcast? simulcast;

@@ -8,9 +8,9 @@ import 'package:jais/models/episode.dart';
 import 'package:jais/models/member.dart';
 import 'package:jais/models/member_role.dart';
 import 'package:jais/utils/const.dart';
+import 'package:jais/utils/logger/logger.dart' as logger;
+import 'package:jais/utils/url.dart';
 import 'package:jais/utils/utils.dart';
-import 'package:logger/logger.dart' as logger;
-import 'package:url/url.dart';
 
 class EpisodeUpdateView extends StatefulWidget {
   final Member member;

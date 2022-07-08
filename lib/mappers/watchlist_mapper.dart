@@ -6,9 +6,9 @@ import 'package:jais/mappers/imapper.dart';
 import 'package:jais/models/episode.dart';
 import 'package:jais/models/lang_type.dart';
 import 'package:jais/utils/const.dart';
+import 'package:jais/utils/url.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url/url.dart';
 
 class WatchlistMapper extends IMapper<Episode> {
   final String pseudo;

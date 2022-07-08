@@ -3,12 +3,11 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/member.dart';
-import 'package:jais/models/member_role.dart';
 import 'package:jais/utils/const.dart';
+import 'package:jais/utils/notifications/notifications.dart' as notifications;
+import 'package:jais/utils/url.dart';
 import 'package:jais/utils/utils.dart';
-import 'package:notifications/notifications.dart' as notifications;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url/url.dart';
 
 final emailRegExp = RegExp(
   r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$',

@@ -5,8 +5,8 @@ import 'package:jais/components/episodes/episode_widget.dart';
 import 'package:jais/mappers/imapper.dart';
 import 'package:jais/models/episode.dart';
 import 'package:jais/utils/const.dart';
+import 'package:jais/utils/url.dart';
 import 'package:jais/utils/utils.dart';
-import 'package:url/url.dart';
 
 class EpisodeMapper extends IMapper<Episode> {
   EpisodeMapper() : super(limit: 12, loaderWidget: EpisodeLoaderWidget()) {

@@ -7,11 +7,11 @@ import 'package:jais/mappers/country_mapper.dart';
 import 'package:jais/mappers/lang_type_mapper.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/models/anime.dart';
+import 'package:jais/utils/notifications/notifications.dart' as notifications;
 import 'package:jais/utils/utils.dart';
 import 'package:jais/views/anime_details_view.dart';
 import 'package:jais/views/anime_search_view.dart';
 import 'package:jais/views/home_view.dart';
-import 'package:notifications/notifications.dart' as notifications;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
