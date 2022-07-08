@@ -11,6 +11,8 @@ environment:
 dependencies:
   brotli: ^0.5.0
   cached_network_image: ^3.2.1
+  firebase_core: ^1.19.1
+  firebase_messaging: ^11.4.4
   flutter:
     sdk: flutter
   flutter_native_splash: ^2.2.4
@@ -19,8 +21,6 @@ dependencies:
   json_annotation: ^4.5.0
   logger:
     path: dependencies/logger
-  notifications:
-    path: dependencies/notifications
   provider: ^6.0.3
   shared_preferences: ^2.0.15
   shimmer: ^2.0.0
@@ -38,6 +38,7 @@ flutter_icons:
   image_path: 'assets/icon.png'
   android: true
   ios: true
+  windows: true
 
 flutter_native_splash:
   color: "#ffffff"

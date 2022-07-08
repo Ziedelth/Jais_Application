@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:brotli/brotli.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:in_app_review/in_app_review.dart';
@@ -194,7 +196,7 @@ extension IterableExt<T> on Iterable<T> {
     if (!iterator.moveNext()) return [];
 
     final _l = [iterator.current];
-    
+
     while (iterator.moveNext()) {
       _l
         ..add(separator)
@@ -204,3 +206,5 @@ extension IterableExt<T> on Iterable<T> {
     return _l;
   }
 }
+
+bool get runningOnPhone => !kIsWeb && (Platform.isAndroid || Platform.isIOS);

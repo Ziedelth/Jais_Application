@@ -6,7 +6,7 @@ import 'package:jais/components/platform_widget.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/platform.dart';
-import 'package:notifications/notifications.dart' as notifications;
+import 'package:jais/utils/notifications/notifications.dart' as notifications;
 
 class AnimeDetailsView extends StatefulWidget {
   final Anime _anime;

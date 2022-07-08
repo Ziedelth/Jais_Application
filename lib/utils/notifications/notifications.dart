@@ -1,8 +1,7 @@
-library notifications;
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:notifications/firebase_options.dart';
+import 'package:jais/utils/notifications/firebase_options.dart';
+import 'package:jais/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 late final SharedPreferences _sharedPreferences;
@@ -30,7 +29,7 @@ Future<void> addTopic(String topic) async {
 
   list.add(topic);
   await _sharedPreferences.setStringList(_topicsKey, list);
-  await FirebaseMessaging.instance.subscribeToTopic(topic);
+  if (runningOnPhone) await FirebaseMessaging.instance.subscribeToTopic(topic);
 }
 
 Future<void> removeTopic(String topic) async {
@@ -42,16 +41,21 @@ Future<void> removeTopic(String topic) async {
 
   list.remove(topic);
   await _sharedPreferences.setStringList(_topicsKey, list);
-  await FirebaseMessaging.instance.unsubscribeFromTopic(topic);
+
+  if (runningOnPhone) {
+    await FirebaseMessaging.instance.unsubscribeFromTopic(topic);
+  }
 }
 
 Future<void> removeAllTopics() async {
   final list = getTopics();
 
-  await Future.wait([
-    for (final topic in list)
-      FirebaseMessaging.instance.unsubscribeFromTopic(topic),
-  ]);
+  if (runningOnPhone) {
+    await Future.wait([
+      for (final topic in list)
+        FirebaseMessaging.instance.unsubscribeFromTopic(topic),
+    ]);
+  }
 
   list.clear();
   await _sharedPreferences.setStringList(_topicsKey, list);
@@ -67,8 +71,12 @@ Future<void> setType(String type) async {
 
 Future<void> init() async {
   _sharedPreferences = await SharedPreferences.getInstance();
-  await initFirebase();
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  if (runningOnPhone) {
+    await initFirebase();
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  }
+
   final isInit = _sharedPreferences.containsKey(_topicsKey) &&
       _sharedPreferences.containsKey(_typeKey);
 

@@ -13,7 +13,7 @@ class Navbar extends StatelessWidget {
     this.onPageChanged,
     super.key,
   }) {
-    createGlobalBanner();
+    if (runningOnPhone) createGlobalBanner();
   }
 
   @override

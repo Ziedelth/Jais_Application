@@ -3,9 +3,9 @@ import 'package:jais/components/full_widget.dart';
 import 'package:jais/components/section_widget.dart';
 import 'package:jais/mappers/country_mapper.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
+import 'package:jais/utils/notifications/notifications.dart' as notifications;
 import 'package:jais/views/members/login_view.dart';
 import 'package:jais/views/members/register_view.dart';
-import 'package:notifications/notifications.dart' as notifications;
 
 class SettingsView extends StatefulWidget {
   final Function()? onLogin;
