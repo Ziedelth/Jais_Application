@@ -6,6 +6,7 @@ abstract class IMapper<T> extends ChangeNotifier {
   final list = <Widget>[];
   final scrollController = ScrollController();
   int currentPage = 1;
+  bool isLoading = false;
 
   IMapper({
     required this.limit,
@@ -13,10 +14,12 @@ abstract class IMapper<T> extends ChangeNotifier {
     bool listener = true,
   }) {
     if (listener) {
-      scrollController.addListener(() {
-        if (scrollController.position.extentAfter <= 0) {
+      scrollController.addListener(() async {
+        if (scrollController.position.extentAfter <= 0 && !isLoading) {
+          isLoading = true;
           currentPage++;
-          updateCurrentPage();
+          await updateCurrentPage();
+          isLoading = false;
         }
       });
     }

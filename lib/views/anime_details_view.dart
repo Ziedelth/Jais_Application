@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:jais/components/episodes/episode_list.dart';
-import 'package:jais/components/episodes/episode_widget.dart';
 import 'package:jais/components/jdialog.dart';
-import 'package:jais/components/platform_widget.dart';
+import 'package:jais/mappers/anime_details_mapper.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/models/anime.dart';
-import 'package:jais/models/platform.dart';
 import 'package:notifications/notifications.dart' as notifications;
+import 'package:provider/provider.dart';
 
 class AnimeDetailsView extends StatefulWidget {
   final Anime _anime;
@@ -18,56 +17,20 @@ class AnimeDetailsView extends StatefulWidget {
 }
 
 class _AnimeDetailsViewState extends State<AnimeDetailsView> {
-  late final List<int> seasons;
-  late final List<DropdownMenuItem<int>> _dropdownItems;
-  List<Widget>? _episodes;
-  int? _selectedSeason;
-
-  List<PlatformWidget> _buildPlatforms() {
-    final Map<int, Platform> platforms = <int, Platform>{};
-    widget._anime.episodes
-        .where(
-          (element) => !platforms.containsKey(element.platform.id),
-        )
-        .forEach((e) => platforms[e.platform.id] = e.platform);
-
-    final List<PlatformWidget> widgets = platforms.values
-        .toSet()
-        .map<PlatformWidget>((e) => PlatformWidget(e))
-        .toList();
-    return widgets;
-  }
-
-  void _changeSeason(int? newValue) => setState(() {
-        _selectedSeason = newValue;
-        _episodes = widget._anime.episodes
-            .where((element) => element.season == newValue)
-            .map<Widget>((element) => EpisodeWidget(episode: element))
-            .toList();
-      });
+  late final AnimeDetailsMapper _animeDetailsMapper;
+  UniqueKey _key = UniqueKey();
 
   @override
   void initState() {
     super.initState();
-    seasons = widget._anime.episodes.map((e) => e.season).toSet().toList();
+    _animeDetailsMapper = AnimeDetailsMapper(widget._anime);
 
-    if (seasons.isNotEmpty) {
-      _selectedSeason = seasons.first;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _animeDetailsMapper.updateCurrentPage();
 
-      _dropdownItems = seasons
-          .map<DropdownMenuItem<int>>(
-            (e) => DropdownMenuItem(
-              value: e,
-              child: Text('${widget._anime.country.season} $e'),
-            ),
-          )
-          .toList();
-
-      _episodes = widget._anime.episodes
-          .where((element) => element.season == _selectedSeason)
-          .map<Widget>((element) => EpisodeWidget(episode: element))
-          .toList();
-    }
+      if (!mounted) return;
+      setState(() => _key = UniqueKey());
+    });
   }
 
   @override
@@ -131,33 +94,20 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
                   context,
                   widget: Column(
                     children: [
-                      Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: _buildPlatforms(),
-                          ),
-                          if (widget._anime.genres.isNotEmpty) ...[
-                            const Padding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 2.5,
-                              ),
-                            ),
-                            Text(
-                              widget._anime.genres.map((e) => e.fr).join(', '),
-                              style: const TextStyle(fontSize: 18),
-                            ),
-                          ],
-                          const Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 10,
-                            ),
-                            child: Divider(
-                              height: 5,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
+                      if (widget._anime.genres.isNotEmpty) ...[
+                        Text(
+                          widget._anime.genres.map((e) => e.fr).join(', '),
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                      ],
+                      const Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 10,
+                        ),
+                        child: Divider(
+                          height: 5,
+                          color: Colors.white,
+                        ),
                       ),
                       Text(
                         widget._anime.description ?? 'No description',
@@ -173,35 +123,24 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
           height: 2,
         ),
         Expanded(
-          child: seasons.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      Icon(
-                        Icons.close,
-                        color: Colors.red,
-                      ),
-                      Text("Il n'y a pas d'épisodes pour cet anime"),
-                    ],
-                  ),
-                )
-              : Column(
-                  children: [
-                    if (seasons.length > 1)
-                      DropdownButton<int>(
-                        value: _selectedSeason,
-                        onChanged: _changeSeason,
-                        items: _dropdownItems,
-                      ),
-                    if (_episodes != null)
-                      Expanded(
-                        child: EpisodeList(
-                          children: _episodes!,
-                        ),
-                      ),
-                  ],
-                ),
+          child: RefreshIndicator(
+            onRefresh: () async {
+              _animeDetailsMapper.clear();
+              _animeDetailsMapper.updateCurrentPage();
+            },
+            child: ChangeNotifierProvider<AnimeDetailsMapper>.value(
+              value: _animeDetailsMapper,
+              child: Consumer<AnimeDetailsMapper>(
+                builder: (context, animeDetailsMapper, _) {
+                  return EpisodeList(
+                    key: _key,
+                    scrollController: animeDetailsMapper.scrollController,
+                    children: animeDetailsMapper.list,
+                  );
+                },
+              ),
+            ),
+          ),
         ),
       ],
     );

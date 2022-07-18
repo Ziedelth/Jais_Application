@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/member.dart';
-import 'package:jais/models/member_role.dart';
 import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:notifications/notifications.dart' as notifications;
@@ -11,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url/url.dart';
 
 final emailRegExp = RegExp(
-  r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$',
+  r'^[a-zA-Z\d.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z\d-]+)*$',
 );
 final pseudoRegExp = RegExp(r'^[a-zA-Z\d]{4,16}$');
 final passwordRegExp = RegExp(
@@ -139,6 +138,7 @@ Future<void> removeAnimeInWatchlist(Anime anime) async {
 }
 
 Future<void> setDefaultNotifications() async {
+  await notifications.setType("default");
   await notifications.removeAllTopics();
   await notifications.addTopic("animes");
 }
@@ -148,6 +148,7 @@ Future<void> setWatchlistNotifications() async {
     return;
   }
 
+  await notifications.setType("watchlist");
   await notifications.removeAllTopics();
 
   for (final anime in getMember()!.watchlist) {
@@ -160,5 +161,6 @@ Future<void> setDisabledNotifications() async {
     return;
   }
 
+  await notifications.setType("disable");
   await notifications.removeAllTopics();
 }

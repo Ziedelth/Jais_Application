@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:jais/components/animes/anime_loader_widget.dart';
 import 'package:jais/components/animes/anime_widget.dart';
-import 'package:jais/mappers/episode_mapper.dart';
 import 'package:jais/mappers/imapper.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/simulcast.dart';
@@ -45,31 +44,6 @@ class AnimeMapper extends IMapper<Anime> {
 
     list.addAll(toWidgets(stringTo(fromBrotli(response.body))));
     removeLoader();
-  }
-
-  Future<void> loadEpisodes(
-    Anime anime,
-  ) async {
-    final response = await URL().get(getAnimeDetailsUrl(anime.url));
-
-    if (response == null || response.statusCode != 200) {
-      return;
-    }
-
-    final episodes = EpisodeMapper().stringTo(fromBrotli(response.body));
-
-    anime.episodes.clear();
-    anime.episodes.addAll(episodes);
-  }
-
-  Future<Anime?> loadDetails(
-    Anime anime,
-  ) async {
-    await Future.wait([
-      loadEpisodes(anime),
-    ]);
-
-    return anime;
   }
 
   Future<List<AnimeWidget>?> search({

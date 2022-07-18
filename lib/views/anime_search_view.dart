@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jais/components/animes/anime_list.dart';
-import 'package:jais/components/loading_widget.dart';
 import 'package:jais/mappers/anime_mapper.dart';
-import 'package:jais/models/anime.dart';
-import 'package:jais/utils/utils.dart';
 
 class AnimeSearchView extends StatefulWidget {
   const AnimeSearchView({super.key});
@@ -15,28 +12,6 @@ class AnimeSearchView extends StatefulWidget {
 class _AnimeSearchViewState extends State<AnimeSearchView> {
   final _animeMapper = AnimeMapper();
   final _animeWidgets = <Widget>[];
-
-  Future<void> _onTap(Anime anime) async {
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) => const AlertDialog(
-        content: Loading(),
-      ),
-    );
-
-    final details = await _animeMapper.loadDetails(anime);
-    if (!mounted) return;
-    Navigator.pop(context);
-
-    // If details is null, show error
-    if (details == null) {
-      showSnackBar(context, 'An error occurred while loading details');
-      return;
-    }
-
-    Navigator.pushNamed(context, '/anime', arguments: details);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +37,11 @@ class _AnimeSearchViewState extends State<AnimeSearchView> {
                         child: e,
                         onTap: () {
                           Navigator.pop(context);
-                          _onTap(e.anime);
+                          Navigator.pushNamed(
+                            context,
+                            '/anime',
+                            arguments: e.anime,
+                          );
                         },
                       ),
                     )
