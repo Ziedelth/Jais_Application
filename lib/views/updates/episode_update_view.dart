@@ -9,7 +9,6 @@ import 'package:jais/models/member.dart';
 import 'package:jais/models/member_role.dart';
 import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
-import 'package:logger/logger.dart' as logger;
 import 'package:url/url.dart';
 
 class EpisodeUpdateView extends StatefulWidget {
@@ -64,7 +63,6 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 return;
               }
 
-              logger.debug("Sending update");
               final response = await URL().put(
                 getEpisodesUpdateUrl(),
                 headers: {
@@ -76,15 +74,10 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
               if (!mounted) return;
 
               if (response == null || response.statusCode != 200) {
-                logger.warning(
-                  "Failed to send update (${response?.statusCode}) : ${response?.body}",
-                );
-
                 showSnackBar(context, 'Erreur lors de la mise à jour');
                 return;
               }
 
-              logger.debug("Update sent");
               showSnackBar(context, 'Mise à jour effectuée');
             },
           ),
