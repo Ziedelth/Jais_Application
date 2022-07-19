@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jais/components/animes/anime_list.dart';
+import 'package:jais/components/animes/anime_widget.dart';
 import 'package:jais/mappers/anime_mapper.dart';
 
 class AnimeSearchView extends StatefulWidget {
@@ -36,6 +37,7 @@ class _AnimeSearchViewState extends State<AnimeSearchView> {
                       (e) => GestureDetector(
                         child: e,
                         onTap: () {
+                          if (e is! AnimeWidget) return;
                           Navigator.pop(context);
                           Navigator.pushNamed(
                             context,

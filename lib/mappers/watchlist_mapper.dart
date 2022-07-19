@@ -1,51 +1,25 @@
-import 'dart:convert';
-
 import 'package:jais/components/episodes/episode_loader_widget.dart';
 import 'package:jais/components/episodes/episode_widget.dart';
 import 'package:jais/mappers/imapper.dart';
 import 'package:jais/models/episode.dart';
 import 'package:jais/models/lang_type.dart';
 import 'package:jais/utils/const.dart';
-import 'package:jais/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url/url.dart';
 
 class WatchlistMapper extends IMapper<Episode> {
   final String pseudo;
 
   WatchlistMapper({required this.pseudo})
-      : super(limit: 21, loaderWidget: EpisodeLoaderWidget());
+      : super(
+          limit: 21,
+          loaderWidget: EpisodeLoaderWidget(),
+          fromJson: Episode.fromJson,
+          toWidget: (episode) => EpisodeWidget(episode: episode),
+        );
 
   @override
-  List<Episode> stringTo(String string) {
-    try {
-      return (jsonDecode(string) as List<dynamic>)
-          .map((e) => Episode.fromJson(e as Map<String, dynamic>))
-          .toList();
-    } catch (_) {
-      return [];
-    }
-  }
-
-  @override
-  List<EpisodeWidget> toWidgets(List<Episode> objects) {
-    return objects.map((e) => EpisodeWidget(episode: e)).toList();
-  }
-
-  @override
-  Future<void> updateCurrentPage() async {
-    addLoader();
-
-    final response =
-        await URL().get(getWatchlistEpisodesUrl(pseudo, currentPage, limit));
-
-    if (response == null || response.statusCode != 200) {
-      return;
-    }
-
-    list.addAll(toWidgets(stringTo(fromBrotli(response.body))));
-    removeLoader();
-  }
+  Future<void> updateCurrentPage() async =>
+      loadPage(getWatchlistEpisodesUrl(pseudo, currentPage, limit));
 
   static const _filterKey = "langTypesFilter";
 
