@@ -116,7 +116,9 @@ class _SettingsViewState extends State<SettingsView> {
                 ),
                 FullWidget(
                   widget: ElevatedButton(
-                    onPressed: (isDefaultMode || isWatchlistModeOrNeedUpdate)
+                    onPressed: (isDefaultMode ||
+                            isWatchlistModeOrNeedUpdate ||
+                            isDisabledMode)
                         ? () {
                             member_mapper.setWatchlistNotifications();
                             if (!mounted) return;
