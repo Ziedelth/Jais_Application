@@ -27,11 +27,18 @@ jobs:
           files: upgradable_dependencies.txt
 
       - if: steps.check_files.outputs.files_exists == 'true'
+        id: prepare_issue
+        name: Prepare issue
+        run: |
+          echo "::set-output name=title::$(date +%Y-%m-%d)"
+          echo "::set-output name=body::$(cat upgradable_dependencies.txt)"
+
+      - if: steps.check_files.outputs.files_exists == 'true'
         name: Create an issue
         uses: dacbd/create-issue-action@main
         with:
           token: ${{ secrets.PRIVATE_TOKEN }}
-          title: "Upgradable dependencies $(date +%Y-%m-%d)"
-          body: "Upgradable dependencies :\n\n$(cat upgradable_dependencies.txt)"
+          title: "Upgradable dependencies ${{ steps.prepare_issue.outputs.title }}"
+          body: "Upgradable dependencies :\n\n${{ steps.prepare_issue.outputs.body }}"
           assignees: Ziedelth
           labels: upgradable
