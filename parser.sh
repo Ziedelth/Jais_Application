@@ -1,6 +1,7 @@
 #!/bin/bash
 
-function getUpgradableDependencies() {
+getUpgradableDependencies() {
+  flutter pub get
   flutter pub outdated >pub_outdated.txt && sed -i -e 's/\s\+/ /g' pub_outdated.txt
   sed -n '/direct dependencies:/,/transitive dependencies:/p' pub_outdated.txt >pub_outdated_clean.txt
   sed -i '/direct dependencies:/d' pub_outdated_clean.txt
@@ -10,7 +11,7 @@ function getUpgradableDependencies() {
 }
 
 # Go to each dependency directory and get the number of upgradable dependencies
-function getUpgradableDependenciesPerDependency() {
+getUpgradableDependenciesPerDependency() {
   IFS=$'\n' read -d '' -r -a lines < <(find dependencies -type d -mindepth 1 -maxdepth 1)
 
   for line in "${lines[@]}"; do
