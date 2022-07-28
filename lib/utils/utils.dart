@@ -192,14 +192,14 @@ extension IterableExt<T> on Iterable<T> {
     final iterator = this.iterator;
     if (!iterator.moveNext()) return [];
 
-    final _l = [iterator.current];
+    final l = [iterator.current];
 
     while (iterator.moveNext()) {
-      _l
+      l
         ..add(separator)
         ..add(iterator.current);
     }
 
-    return _l;
+    return l;
   }
 }

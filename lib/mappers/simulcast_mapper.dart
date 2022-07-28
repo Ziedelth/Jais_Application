@@ -6,11 +6,10 @@ import 'package:jais/models/simulcast.dart';
 import 'package:jais/utils/const.dart';
 
 class SimulcastMapper extends IMapper<Simulcast> {
-  SimulcastMapper({bool listener = true})
+  SimulcastMapper({super.listener})
       : super(
           limit: 5,
           loaderWidget: const SimulcastLoaderWidget(),
-          listener: listener,
           fromJson: Simulcast.fromJson,
           toWidget: (simulcast) => SimulcastWidget(simulcast: simulcast),
         );
