@@ -18,7 +18,10 @@ jobs:
           channel: 'stable'
 
       - name: Check dependencies
-        run: bash parser.sh
+        run: bash parser.sh > dependencies.txt
+
+      - run: cat dependencies.txt
+      - run: ls -lash
 
       - name: Check file existence
         id: check_files
