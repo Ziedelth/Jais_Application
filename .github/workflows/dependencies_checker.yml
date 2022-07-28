@@ -18,7 +18,7 @@ jobs:
           channel: 'stable'
 
       - name: Check dependencies
-        run: bash parser.sh > dependencies.txt
+        run: bash parser.sh
 
       - run: cat dependencies.txt
       - run: ls -lash
@@ -27,7 +27,7 @@ jobs:
         id: check_files
         uses: andstor/file-existence-action@v1
         with:
-          files: upgradable_dependencies.txt"
+          files: upgradable_dependencies.txt
 
       - if: steps.check_files.outputs.files_exists == 'true'
         name: Create an issue
