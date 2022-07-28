@@ -1,0 +1,31 @@
+name: Dependencies Checker
+
+on:
+  schedule:
+    - cron: "0 10 * * 1"
+  push:
+
+jobs:
+  cron:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Check dependencies
+        run: sh parser.sh
+
+      - if: file_exists('upgradable_dependencies.txt')
+        name: Create an issue
+        uses: dacbd/create-issue-action@main
+        with:
+          token: ${{ secrets.PRIVATE_TOKEN }}
+          title: "Upgradable dependencies $(date +%Y-%m-%d)"
+          body: "Upgradable dependencies :\n\n$(cat upgradable_dependencies.txt)"
+          assignees: Ziedelth
+          labels: upgradable
