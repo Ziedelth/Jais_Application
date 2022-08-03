@@ -1,0 +1,21 @@
+name: Build & Deploy Development
+
+on:
+  pull_request:
+
+jobs:
+  build-node:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up NodeJS 16
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Build with NodeJS
+        run: |
+          npm i
+          npm run build
