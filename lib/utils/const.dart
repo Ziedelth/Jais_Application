@@ -19,17 +19,18 @@ String getSimulcastsUrl() => '${apiUrl}v2/simulcasts';
 String getAnimesUrl(Simulcast? simulcast, int page, int limit) =>
     '${apiUrl}v2/animes/country/${CountryMapper.selectedCountry?.tag}/simulcast/${simulcast?.id}/page/$page/limit/$limit';
 
-String getAnimeDetailsUrl(String? url) => '${apiUrl}v2/episodes/anime/$url';
+String getAnimeDetailsUrl(String? url, int page, int limit) =>
+    '${apiUrl}v2/animes/$url/episodes/page/$page/limit/$limit';
 
 String getAnimesSearchUrl(String query) =>
     '${apiUrl}v2/animes/country/${CountryMapper.selectedCountry?.tag}/search/$query';
 
-String getAnimesUpdateUrl() => '${apiUrl}v2/animes/update';
+String getAnimesUpdateUrl() => '${apiUrl}v1/animes/update';
 
 String getEpisodesUrl(int page, int limit) =>
     '${apiUrl}v2/episodes/country/${CountryMapper.selectedCountry?.tag}/page/$page/limit/$limit';
 
-String getEpisodesUpdateUrl() => '${apiUrl}v2/episodes/update';
+String getEpisodesUpdateUrl() => '${apiUrl}v1/episodes/update';
 
 String getLoginWithTokenUrl() => '${apiUrl}v1/member/token';
 

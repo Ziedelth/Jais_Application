@@ -1,11 +1,14 @@
 import 'package:jais/components/episodes/episode_loader_widget.dart';
 import 'package:jais/components/episodes/episode_widget.dart';
 import 'package:jais/mappers/imapper.dart';
+import 'package:jais/models/anime.dart';
 import 'package:jais/models/episode.dart';
 import 'package:jais/utils/const.dart';
 
-class EpisodeMapper extends IMapper<Episode> {
-  EpisodeMapper()
+class AnimeDetailsMapper extends IMapper<Episode> {
+  final Anime anime;
+
+  AnimeDetailsMapper(this.anime)
       : super(
           limit: 12,
           loaderWidget: EpisodeLoaderWidget(),
@@ -16,6 +19,8 @@ class EpisodeMapper extends IMapper<Episode> {
   }
 
   @override
-  Future<void> updateCurrentPage() async =>
-      loadPage(getEpisodesUrl(currentPage, limit));
+  Future<void> updateCurrentPage() async {
+    if (anime.url == null) return;
+    await loadPage(getAnimeDetailsUrl(anime.url, currentPage, limit));
+  }
 }

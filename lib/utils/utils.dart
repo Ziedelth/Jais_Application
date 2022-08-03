@@ -180,7 +180,6 @@ Future<bool> needsToShowReview() async {
     const counterKey = 'reviewCounter';
     var reviewCounter = sharedPreferences.getInt(counterKey) ?? 0;
     reviewCounter = (reviewCounter + 1) % 5;
-    print('reviewCounter: $reviewCounter');
     await sharedPreferences.setInt(counterKey, reviewCounter);
     return reviewCounter == 0 && (await InAppReview.instance.isAvailable());
   }
@@ -193,14 +192,14 @@ extension IterableExt<T> on Iterable<T> {
     final iterator = this.iterator;
     if (!iterator.moveNext()) return [];
 
-    final _l = [iterator.current];
-    
+    final l = [iterator.current];
+
     while (iterator.moveNext()) {
-      _l
+      l
         ..add(separator)
         ..add(iterator.current);
     }
 
-    return _l;
+    return l;
   }
 }

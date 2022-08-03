@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:jais/components/animes/anime_list.dart';
 import 'package:jais/components/animes/anime_widget.dart';
-import 'package:jais/components/loading_widget.dart';
 import 'package:jais/components/simulcasts/simulcast_list.dart';
 import 'package:jais/components/simulcasts/simulcast_widget.dart';
 import 'package:jais/mappers/anime_mapper.dart';
 import 'package:jais/mappers/simulcast_mapper.dart';
-import 'package:jais/models/anime.dart';
-import 'package:jais/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class AnimesView extends StatefulWidget {
@@ -24,28 +21,6 @@ class AnimesViewState extends State<AnimesView> {
   Future<void> rebuildAnimes({bool force = false}) async {
     if (force) _animeMapper.clear();
     await _animeMapper.updateCurrentPage();
-  }
-
-  Future<void> _onTap(Anime anime) async {
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) => const AlertDialog(
-        content: Loading(),
-      ),
-    );
-
-    final details = await _animeMapper.loadDetails(anime);
-    if (!mounted) return;
-    Navigator.pop(context);
-
-    // If details is null, show error
-    if (details == null) {
-      showSnackBar(context, 'An error occurred while loading details');
-      return;
-    }
-
-    Navigator.pushNamed(context, '/anime', arguments: details);
   }
 
   void scrollToEndSimulcasts() {
@@ -131,8 +106,13 @@ class AnimesViewState extends State<AnimesView> {
                         .map<Widget>(
                           (e) => GestureDetector(
                             child: e,
-                            onTap: () =>
-                                e is AnimeWidget ? _onTap(e.anime) : null,
+                            onTap: () => e is AnimeWidget
+                                ? Navigator.pushNamed(
+                                    context,
+                                    '/anime',
+                                    arguments: e.anime,
+                                  )
+                                : null,
                           ),
                         )
                         .toList(),

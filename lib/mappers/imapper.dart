@@ -1,22 +1,33 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:jais/utils/utils.dart';
+import 'package:url/url.dart';
 
 abstract class IMapper<T> extends ChangeNotifier {
   final int limit;
   final Widget loaderWidget;
   final list = <Widget>[];
   final scrollController = ScrollController();
+  final T Function(Map<String, dynamic>) fromJson;
+  final Widget Function(T) toWidget;
   int currentPage = 1;
+  bool isLoading = false;
 
   IMapper({
     required this.limit,
     required this.loaderWidget,
+    required this.fromJson,
+    required this.toWidget,
     bool listener = true,
   }) {
     if (listener) {
-      scrollController.addListener(() {
-        if (scrollController.position.extentAfter <= 0) {
+      scrollController.addListener(() async {
+        if (scrollController.position.extentAfter <= 0 && !isLoading) {
+          isLoading = true;
           currentPage++;
-          updateCurrentPage();
+          await updateCurrentPage();
+          isLoading = false;
         }
       });
     }
@@ -47,9 +58,28 @@ abstract class IMapper<T> extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<T> stringTo(String string);
+  List<Widget> toWidgets(String string) {
+    try {
+      return (jsonDecode(fromBrotli(string)) as List<dynamic>)
+          .map<Widget>((e) => toWidget(fromJson(e as Map<String, dynamic>)))
+          .toList();
+    } catch (_) {
+      return [];
+    }
+  }
 
-  List<Widget> toWidgets(List<T> objects);
+  Future<void> loadPage(String url) async {
+    addLoader();
+
+    final response = await URL().get(url);
+
+    if (response == null || response.statusCode != 200) {
+      return;
+    }
+
+    list.addAll(toWidgets(response.body));
+    removeLoader();
+  }
 
   Future<void> updateCurrentPage();
 }

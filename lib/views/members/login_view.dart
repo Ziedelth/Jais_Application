@@ -6,7 +6,6 @@ import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/models/member.dart';
 import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
-import 'package:logger/logger.dart' as logger;
 import 'package:url/url.dart';
 
 class LoginView extends StatefulWidget {
@@ -183,16 +182,10 @@ class _LoginViewState extends State<LoginView> {
                             );
 
                             Navigator.pop(context);
-                          } catch (exception, stackTrace) {
+                          } catch (_) {
                             setState(() {
                               _isLoading = false;
                             });
-
-                            logger.error(
-                              'Exception when trying to login',
-                              exception,
-                              stackTrace,
-                            );
 
                             showSnackBar(context, 'Une erreur est survenue');
                           }

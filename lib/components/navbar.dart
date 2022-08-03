@@ -40,7 +40,7 @@ class Navbar extends StatelessWidget {
           Expanded(
             child: globalBannerAd != null
                 ? AdWidget(ad: globalBannerAd!)
-                : Container(color: Theme.of(context).backgroundColor),
+                : ColoredBox(color: Theme.of(context).backgroundColor),
           ),
           const SizedBox(width: 10),
           if (navbarMapper.currentPage == 1) ...[
