@@ -13,25 +13,19 @@ class AnimeLoaderWidget extends StatelessWidget {
         border: Border.all(color: Theme.of(context).primaryColor),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Row(
-            children: [
-              const Skeleton(width: 75, height: 100),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Skeleton(height: 20),
-                    SizedBox(height: 10),
-                    Skeleton(height: 70),
-                  ],
-                ),
-              ),
-            ],
+          const Skeleton(width: 75, height: 100),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                Skeleton(height: 20),
+                SizedBox(height: 10),
+                Skeleton(height: 70),
+              ],
+            ),
           ),
         ],
       ),

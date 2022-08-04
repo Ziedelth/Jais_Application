@@ -11,13 +11,8 @@ class FullWidget extends StatelessWidget {
     return Row(
       children: [
         if (icon != null)
-          Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: icon,
-          ),
-        Expanded(
-          child: widget,
-        ),
+          Padding(padding: const EdgeInsets.only(right: 10), child: icon),
+        Expanded(child: widget),
       ],
     );
   }
