@@ -43,57 +43,47 @@ class AnimeWidget extends StatelessWidget {
           border: Border.all(color: Theme.of(context).primaryColor),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            Row(
-              children: [
-                CachedNetworkImage(
-                  imageUrl: '$attachmentsUrl${anime.image}',
-                  imageBuilder: (context, imageProvider) => RoundBorderWidget(
-                    widget: Image(
-                      image: imageProvider,
-                      fit: BoxFit.cover,
+            CachedNetworkImage(
+              imageUrl: '$attachmentsUrl${anime.image}',
+              imageBuilder: (context, imageProvider) => RoundBorderWidget(
+                widget: Image(image: imageProvider, fit: BoxFit.cover),
+              ),
+              placeholder: (context, url) =>
+                  const Skeleton(width: 75, height: 100),
+              errorWidget: (context, url, error) =>
+                  const Skeleton(width: 75, height: 100),
+              width: 75,
+              height: 100,
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      anime.name,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                  placeholder: (context, url) =>
-                      const Skeleton(width: 75, height: 100),
-                  errorWidget: (context, url, error) =>
-                      const Skeleton(width: 75, height: 100),
-                  width: 75,
-                  height: 100,
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          anime.name,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          anime.description ??
-                              'Aucune description pour le moment',
-                          maxLines: 4,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      anime.description ?? 'Aucune description pour le moment',
+                      maxLines: 4,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

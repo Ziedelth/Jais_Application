@@ -24,9 +24,7 @@ class EpisodeLoaderWidget extends StatelessWidget {
             children: const [
               Skeleton(width: 20, height: 20),
               SizedBox(width: 10),
-              Expanded(
-                child: Skeleton(height: 20),
-              ),
+              Expanded(child: Skeleton(height: 20)),
             ],
           ),
           const SizedBox(height: 10),

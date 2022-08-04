@@ -29,9 +29,7 @@ class SimulcastWidget extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        border: Border.all(
-          color: Theme.of(context).primaryColor,
-        ),
+        border: Border.all(color: Theme.of(context).primaryColor),
         borderRadius: BorderRadius.circular(8),
         color: isSelected ? Theme.of(context).primaryColor : Colors.transparent,
       ),
