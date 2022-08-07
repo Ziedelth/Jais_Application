@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:jais/utils/utils.dart';
@@ -70,7 +71,6 @@ abstract class IMapper<T> extends ChangeNotifier {
 
   Future<void> loadPage(String url) async {
     addLoader();
-
     final response = await URL().get(url);
 
     if (response == null || response.statusCode != 200) {
