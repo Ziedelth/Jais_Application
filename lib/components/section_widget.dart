@@ -22,19 +22,12 @@ class SectionWidget extends StatelessWidget {
           padding: const EdgeInsets.only(left: 10, top: 10),
           child: FullWidget(
             icon: icon,
-            widget: Text(
-              title,
-              style: const TextStyle(
-                fontSize: 16,
-              ),
-            ),
+            widget: Text(title, style: const TextStyle(fontSize: 16)),
           ),
         ),
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 2.5),
-          child: Divider(
-            height: 1,
-          ),
+          child: Divider(height: 1),
         ),
         ...?widgets?.superJoin(const SizedBox(height: 8))
       ],

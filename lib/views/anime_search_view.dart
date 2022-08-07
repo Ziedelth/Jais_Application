@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jais/components/animes/anime_list.dart';
 import 'package:jais/components/animes/anime_widget.dart';
-import 'package:jais/components/jlist.dart';
 import 'package:jais/mappers/anime_mapper.dart';
 import 'package:jais/mappers/anime_search_notifier.dart';
 
@@ -37,18 +36,18 @@ class _AnimeSearchViewState extends State<AnimeSearchView> {
         animes
             .map<Widget>(
               (e) => GestureDetector(
-            child: e,
-            onTap: () {
-              if (e is! AnimeWidget) return;
-              Navigator.pop(context);
-              Navigator.pushNamed(
-                context,
-                '/anime',
-                arguments: e.anime,
-              );
-            },
-          ),
-        )
+                child: e,
+                onTap: () {
+                  if (e is! AnimeWidget) return;
+                  Navigator.pop(context);
+                  Navigator.pushNamed(
+                    context,
+                    '/anime',
+                    arguments: e.anime,
+                  );
+                },
+              ),
+            )
             .toList(),
       );
 

@@ -24,9 +24,7 @@ class Navbar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
         children: [
-          RoundBorderWidget(
-            widget: Image.asset('assets/icon.png'),
-          ),
+          RoundBorderWidget(widget: Image.asset('assets/icon.png')),
           const SizedBox(width: 10),
           Text(
             'Jaïs',

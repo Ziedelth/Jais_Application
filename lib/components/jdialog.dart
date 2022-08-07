@@ -13,9 +13,7 @@ void show(
         borderRadius: BorderRadius.circular(5),
         side: BorderSide(color: Theme.of(context).primaryColor),
       ),
-      content: SingleChildScrollView(
-        child: widget,
-      ),
+      content: SingleChildScrollView(child: widget),
       actions: actions,
     ),
   );
