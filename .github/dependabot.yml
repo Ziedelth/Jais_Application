@@ -12,9 +12,3 @@ updates:
     schedule:
       interval: "weekly"
     target-branch: "dev"
-
-  - package-ecosystem: "gradle"
-    directory: "/android/app/"
-    schedule:
-      interval: "weekly"
-    target-branch: "dev"
