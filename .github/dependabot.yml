@@ -4,29 +4,11 @@ updates:
   - package-ecosystem: "pub"
     directory: "/"
     schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "pub"
-    directory: "/dependencies/logger/"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "pub"
-    directory: "/dependencies/notifications/"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "pub"
-    directory: "/dependencies/url/"
-    schedule:
-      interval: "weekly"
+      interval: "daily"
+    target-branch: "dev"
 
   - package-ecosystem: "gradle"
     directory: "/android/"
     schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "gradle"
-    directory: "/android/app/"
-    schedule:
-      interval: "weekly"
+      interval: "daily"
+    target-branch: "dev"
