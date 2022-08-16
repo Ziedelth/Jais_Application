@@ -26,17 +26,14 @@ class EpisodeUpdateView extends StatefulWidget {
 }
 
 class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
-  final PlatformMapper platformMapper = PlatformMapper();
-  final EpisodeTypeMapper episodeTypeMapper = EpisodeTypeMapper();
-
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Future.wait([
-        platformMapper.update(),
-        episodeTypeMapper.update(),
+        PlatformMapper.instance.update(),
+        EpisodeTypeMapper.instance.update(),
         LangTypeMapper.instance.update(),
       ]);
 
@@ -93,7 +90,7 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                   labelText: 'Plateforme',
                 ),
                 value: widget.episode.platform.id,
-                items: platformMapper.list
+                items: PlatformMapper.instance.list
                     .map<DropdownMenuItem<int>>(
                       (platform) => DropdownMenuItem<int>(
                         value: platform.id,
@@ -103,7 +100,8 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                     .toList(),
                 onChanged: (platform) {
                   if (platform == null) return;
-                  widget.episode.platform = platformMapper.list.firstWhere(
+                  widget.episode.platform =
+                      PlatformMapper.instance.list.firstWhere(
                     (p) => p.id == platform,
                   );
                   if (!mounted) return;
@@ -115,7 +113,7 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                   labelText: 'Type',
                 ),
                 value: widget.episode.episodeType.id,
-                items: episodeTypeMapper.list
+                items: EpisodeTypeMapper.instance.list
                     .map<DropdownMenuItem<int>>(
                       (episodeType) => DropdownMenuItem<int>(
                         value: episodeType.id,
@@ -126,7 +124,7 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 onChanged: (episodeType) {
                   if (episodeType == null) return;
                   widget.episode.episodeType =
-                      episodeTypeMapper.list.firstWhere(
+                      EpisodeTypeMapper.instance.list.firstWhere(
                     (p) => p.id == episodeType,
                   );
                   if (!mounted) return;

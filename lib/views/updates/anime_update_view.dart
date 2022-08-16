@@ -22,7 +22,6 @@ class AnimeUpdateView extends StatefulWidget {
 class _AnimeUpdateViewState extends State<AnimeUpdateView>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
-  final GenreMapper genreMapper = GenreMapper();
   String _searchText = '';
 
   @override
@@ -32,7 +31,7 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Future.wait([
-        genreMapper.update(),
+        GenreMapper.instance.update(),
       ]);
 
       if (!mounted) return;
@@ -157,7 +156,7 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                             _searchText = value;
                           }),
                         ),
-                        ...genreMapper.list
+                        ...GenreMapper.instance.list
                             .map(
                               (genre) => CheckboxListTile(
                                 title: Text(genre.fr),

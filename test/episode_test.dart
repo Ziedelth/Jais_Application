@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:jais/components/episodes/episode_list.dart';
 import 'package:jais/components/episodes/episode_loader_widget.dart';
 import 'package:jais/components/episodes/episode_widget.dart';
 import 'package:jais/mappers/episode_mapper.dart';
@@ -32,11 +34,8 @@ void main() {
     });
 
     testWidgets('Test episode widget on phone', (widgetTester) async {
+      widgetTester.binding.window.devicePixelRatioTestValue = 1.0;
       widgetTester.binding.window.physicalSizeTestValue = const Size(500, 700);
-
-      final width = widgetTester.binding.window.physicalSize.width;
-      final height = widgetTester.binding.window.physicalSize.height;
-      print('width: $width, height: $height');
 
       final widgets = episodeMapper.toWidgets(string);
       final list = widgets;
@@ -49,17 +48,13 @@ void main() {
         ),
       );
 
-      await widgetTester.binding.setSurfaceSize(null);
       expect(find.byType(ListView), findsOneWidget);
       expect(find.byType(EpisodeWidget), findsWidgets);
     });
 
     testWidgets('Test episode widget on tablet', (widgetTester) async {
+      widgetTester.binding.window.devicePixelRatioTestValue = 1.0;
       widgetTester.binding.window.physicalSizeTestValue = const Size(1000, 700);
-
-      final width = widgetTester.binding.window.physicalSize.width;
-      final height = widgetTester.binding.window.physicalSize.height;
-      print('width: $width, height: $height');
 
       final widgets = episodeMapper.toWidgets(string);
       final list = widgets;
@@ -72,7 +67,6 @@ void main() {
         ),
       );
 
-      await widgetTester.binding.setSurfaceSize(null);
       expect(find.byType(GridView), findsOneWidget);
       expect(find.byType(EpisodeWidget), findsWidgets);
     });

@@ -12,10 +12,9 @@ import 'package:jais/views/updates/episode_update_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class EpisodeWidget extends StatelessWidget {
-  final _displayMapper = DisplayMapper();
   final Episode episode;
 
-  EpisodeWidget({required this.episode, super.key});
+  const EpisodeWidget({required this.episode, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +100,7 @@ class EpisodeWidget extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 10),
-            if (_displayMapper.isOnMobile(context))
+            if (DisplayMapper.instance.isOnMobile(context))
               RoundBorderWidget(
                 widget: CachedNetworkImage(
                   imageUrl: '$attachmentsUrl${episode.image}',

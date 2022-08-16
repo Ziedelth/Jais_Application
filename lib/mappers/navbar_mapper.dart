@@ -3,6 +3,7 @@ import 'package:jais/mappers/member_mapper.dart' as member_mapper;
 import 'package:jais/utils/utils.dart';
 
 class NavbarMapper extends ChangeNotifier {
+  static final instance = NavbarMapper();
   late final PageController pageController;
 
   NavbarMapper({int defaultPage = 0})
@@ -23,24 +24,24 @@ class NavbarMapper extends ChangeNotifier {
   }
 
   List<NavbarLink> get items => <NavbarLink>[
-        const NavbarLink(
-          name: 'Épisodes',
-          icon: Icon(Icons.subscriptions),
-        ),
-        const NavbarLink(
-          name: 'Animes',
-          icon: Icon(Icons.live_tv),
-        ),
-        if (member_mapper.isConnected())
-          const NavbarLink(
-            name: 'Watchlist',
-            icon: Icon(Icons.playlist_add_check),
-          ),
-        const NavbarLink(
-          name: 'Paramètres',
-          icon: Icon(Icons.settings),
-        ),
-      ];
+    const NavbarLink(
+      name: 'Épisodes',
+      icon: Icon(Icons.subscriptions),
+    ),
+    const NavbarLink(
+      name: 'Animes',
+      icon: Icon(Icons.live_tv),
+    ),
+    if (member_mapper.isConnected())
+      const NavbarLink(
+        name: 'Watchlist',
+        icon: Icon(Icons.playlist_add_check),
+      ),
+    const NavbarLink(
+      name: 'Paramètres',
+      icon: Icon(Icons.settings),
+    ),
+  ];
 
   List<BottomNavigationBarItem> get itemsBottomNavBar =>
       items.map((e) => e.toBottomNavigationBarItem()).toList();
@@ -49,10 +50,10 @@ class NavbarMapper extends ChangeNotifier {
       .asMap()
       .map(
         (i, e) => MapEntry(
-          i,
-          e.toTextButton(onPressed: () => callback?.call(i)),
-        ),
-      )
+      i,
+      e.toTextButton(onPressed: () => callback?.call(i)),
+    ),
+  )
       .values
       .toList();
 }

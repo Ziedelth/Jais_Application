@@ -6,6 +6,7 @@ import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
 class EpisodeTypeMapper {
+  static final instance = EpisodeTypeMapper();
   List<EpisodeType> list = [];
 
   List<EpisodeType>? stringToEpisodeTypes(String? string) {
@@ -21,6 +22,8 @@ class EpisodeTypeMapper {
   }
 
   Future<void> update() async {
+    if (list.isNotEmpty) return;
+
     final response = await URL().get(getEpisodeTypesUrl());
 
     if (response == null || response.statusCode != 200) {
