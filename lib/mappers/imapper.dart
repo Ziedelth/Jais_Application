@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:jais/utils/utils.dart';
@@ -25,6 +24,7 @@ abstract class IMapper<T> extends ChangeNotifier {
     if (listener) {
       scrollController.addListener(() async {
         if (scrollController.position.extentAfter <= 0 && !isLoading) {
+          clearImagesCache();
           isLoading = true;
           currentPage++;
           await updateCurrentPage();

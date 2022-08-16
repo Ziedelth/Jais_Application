@@ -85,7 +85,7 @@ class EpisodeWidget extends StatelessWidget {
               ],
             ),
             Text(
-              episode.title?.replaceAll("\n", ' ') ?? '＞﹏＜',
+              episode.title.ifEmptyOrNull('＞﹏＜').replaceAll("\n", ' '),
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),

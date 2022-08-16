@@ -187,6 +187,11 @@ Future<bool> needsToShowReview() async {
   return false;
 }
 
+void clearImagesCache() {
+  PaintingBinding.instance.imageCache.clear();
+  PaintingBinding.instance.imageCache.clearLiveImages();
+}
+
 extension IterableExt<T> on Iterable<T> {
   Iterable<T> superJoin(T separator) {
     final iterator = this.iterator;
@@ -202,4 +207,9 @@ extension IterableExt<T> on Iterable<T> {
 
     return l;
   }
+}
+
+extension StringExt on String? {
+  String ifEmptyOrNull(String replacement) =>
+      (this == null || this?.isEmpty == true) ? replacement : this!;
 }

@@ -80,7 +80,7 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
       ),
       body: SafeArea(
         child: Column(
-          children: [
+          children: <Widget>[
             TabBar(
               controller: _tabController,
               indicatorColor: Colors.black,
@@ -102,7 +102,7 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                   SingleChildScrollView(
                     padding: const EdgeInsets.all(16),
                     child: Column(
-                      children: [
+                      children: <Widget>[
                         TextFormField(
                           initialValue: widget.anime.releaseDate,
                           decoration: const InputDecoration(
@@ -111,7 +111,6 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                           onChanged: (value) =>
                               widget.anime.releaseDate = value,
                         ),
-                        const SizedBox(height: 16),
                         TextFormField(
                           initialValue: widget.anime.name,
                           decoration: const InputDecoration(
@@ -119,7 +118,6 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                           ),
                           onChanged: (value) => widget.anime.name = value,
                         ),
-                        const SizedBox(height: 16),
                         TextFormField(
                           initialValue: widget.anime.url,
                           decoration: const InputDecoration(
@@ -127,7 +125,6 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                           ),
                           onChanged: (value) => widget.anime.url = value,
                         ),
-                        const SizedBox(height: 16),
                         TextFormField(
                           initialValue: widget.anime.image,
                           decoration: const InputDecoration(
@@ -135,7 +132,6 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                           ),
                           onChanged: (value) => widget.anime.image = value,
                         ),
-                        const SizedBox(height: 16),
                         TextFormField(
                           initialValue: widget.anime.description,
                           decoration: const InputDecoration(
@@ -146,13 +142,13 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                           onChanged: (value) =>
                               widget.anime.description = value,
                         ),
-                      ],
+                      ].superJoin(const SizedBox(height: 16)).toList(),
                     ),
                   ),
                   SingleChildScrollView(
                     padding: const EdgeInsets.all(16),
                     child: Column(
-                      children: [
+                      children: <Widget>[
                         TextFormField(
                           decoration: const InputDecoration(
                             labelText: 'Rechercher',
@@ -161,7 +157,6 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                             _searchText = value;
                           }),
                         ),
-                        const SizedBox(height: 16),
                         ...genreMapper.list
                             .map(
                               (genre) => CheckboxListTile(
@@ -195,7 +190,7 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                                           )) ||
                                   _searchText.isEmpty,
                             ),
-                      ],
+                      ].superJoin(const SizedBox(height: 16)).toList(),
                     ),
                   ),
                 ],

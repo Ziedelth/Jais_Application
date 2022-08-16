@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jais/mappers/member_mapper.dart' as member_mapper;
+import 'package:jais/utils/utils.dart';
 
 class NavbarMapper extends ChangeNotifier {
   late final PageController pageController;
@@ -18,8 +19,7 @@ class NavbarMapper extends ChangeNotifier {
   set currentPage(int page) {
     pageController.jumpToPage(page);
     notifyListeners();
-    PaintingBinding.instance.imageCache.clear();
-    PaintingBinding.instance.imageCache.clearLiveImages();
+    clearImagesCache();
   }
 
   List<NavbarLink> get items => <NavbarLink>[

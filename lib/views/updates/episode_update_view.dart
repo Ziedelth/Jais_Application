@@ -87,7 +87,7 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
-            children: [
+            children: <Widget>[
               DropdownButtonFormField<int>(
                 decoration: const InputDecoration(
                   labelText: 'Plateforme',
@@ -110,7 +110,6 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                   setState(() {});
                 },
               ),
-              const SizedBox(height: 16),
               DropdownButtonFormField<int>(
                 decoration: const InputDecoration(
                   labelText: 'Type',
@@ -134,7 +133,6 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                   setState(() {});
                 },
               ),
-              const SizedBox(height: 16),
               DropdownButtonFormField<int>(
                 decoration: const InputDecoration(
                   labelText: 'Langue',
@@ -158,7 +156,6 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                   setState(() {});
                 },
               ),
-              const SizedBox(height: 16),
               TextFormField(
                 initialValue: widget.episode.releaseDate,
                 decoration: const InputDecoration(
@@ -166,7 +163,6 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 ),
                 onChanged: (value) => widget.episode.releaseDate = value,
               ),
-              const SizedBox(height: 16),
               TextFormField(
                 initialValue: '${widget.episode.season}',
                 keyboardType: TextInputType.number,
@@ -176,7 +172,6 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 onChanged: (value) =>
                     widget.episode.season = int.tryParse(value) ?? 0,
               ),
-              const SizedBox(height: 16),
               TextFormField(
                 initialValue: '${widget.episode.number}',
                 keyboardType: TextInputType.number,
@@ -186,7 +181,6 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 onChanged: (value) =>
                     widget.episode.number = int.tryParse(value) ?? 0,
               ),
-              const SizedBox(height: 16),
               TextFormField(
                 initialValue: widget.episode.episodeId,
                 decoration: const InputDecoration(
@@ -194,7 +188,6 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 ),
                 onChanged: (value) => widget.episode.episodeId = value,
               ),
-              const SizedBox(height: 16),
               TextFormField(
                 initialValue: widget.episode.title,
                 decoration: const InputDecoration(
@@ -202,7 +195,6 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 ),
                 onChanged: (value) => widget.episode.title = value,
               ),
-              const SizedBox(height: 16),
               TextFormField(
                 initialValue: widget.episode.url,
                 decoration: const InputDecoration(
@@ -210,7 +202,6 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 ),
                 onChanged: (value) => widget.episode.url = value,
               ),
-              const SizedBox(height: 16),
               TextFormField(
                 initialValue: widget.episode.image,
                 decoration: const InputDecoration(
@@ -218,7 +209,6 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 ),
                 onChanged: (value) => widget.episode.image = value,
               ),
-              const SizedBox(height: 16),
               TextFormField(
                 initialValue: '${widget.episode.duration}',
                 keyboardType: TextInputType.number,
@@ -228,7 +218,7 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 onChanged: (value) =>
                     widget.episode.duration = int.tryParse(value) ?? 0,
               ),
-            ],
+            ].superJoin(const SizedBox(height: 16)).toList(),
           ),
         ),
       ),
