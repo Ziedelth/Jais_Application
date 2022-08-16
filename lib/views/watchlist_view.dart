@@ -15,7 +15,8 @@ class WatchlistView extends StatefulWidget {
 }
 
 class _WatchlistViewState extends State<WatchlistView> {
-  final _watchlistMapper = WatchlistMapper(pseudo: getMember()!.pseudo);
+  final _watchlistMapper =
+      WatchlistMapper(pseudo: MemberMapper.instance.getMember()!.pseudo);
   UniqueKey _key = UniqueKey();
   bool _filterIsExpanded = false;
   List<String> _filter = [];

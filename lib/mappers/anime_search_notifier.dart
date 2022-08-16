@@ -23,6 +23,10 @@ class AnimeSearchNotifier {
     final searchList = getSearch();
 
     if (!searchList.contains(search)) {
+      while (searchList.length >= 5) {
+        searchList.removeLast();
+      }
+
       searchList.add(search);
       await setSearch(searchList);
     }

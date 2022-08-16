@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:jais/components/full_widget.dart';
-import 'package:jais/mappers/member_mapper.dart' as member_mapper;
+import 'package:jais/mappers/member_mapper.dart';
 import 'package:jais/models/member.dart';
 import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
@@ -44,7 +44,7 @@ class _LoginViewState extends State<LoginView> {
                   labelText: 'Adresse mail',
                 ),
                 keyboardType: TextInputType.emailAddress,
-                inputFormatters: member_mapper.inputFormatters,
+                inputFormatters: MemberMapper.instance.inputFormatters,
               ),
               const SizedBox(height: 16),
               // Password text form field
@@ -54,7 +54,7 @@ class _LoginViewState extends State<LoginView> {
                   labelText: 'Mot de passe',
                 ),
                 obscureText: true,
-                inputFormatters: member_mapper.inputFormatters,
+                inputFormatters: MemberMapper.instance.inputFormatters,
               ),
               const SizedBox(height: 32),
               FullWidget(
@@ -79,7 +79,7 @@ class _LoginViewState extends State<LoginView> {
                             return;
                           }
 
-                          if (!member_mapper.emailRegExp
+                          if (!MemberMapper.instance.emailRegExp
                               .hasMatch(_emailController.text.trim())) {
                             setState(() {
                               _isLoading = false;
@@ -105,7 +105,7 @@ class _LoginViewState extends State<LoginView> {
                             return;
                           }
 
-                          if (!member_mapper.passwordRegExp
+                          if (!MemberMapper.instance.passwordRegExp
                               .hasMatch(_passwordController.text.trim())) {
                             setState(() {
                               _isLoading = false;
@@ -166,7 +166,7 @@ class _LoginViewState extends State<LoginView> {
                             }
 
                             // Save token and pseudo in shared preferences
-                            member_mapper.setMember(member);
+                            MemberMapper.instance.setMember(member);
 
                             if (!mounted) return;
 

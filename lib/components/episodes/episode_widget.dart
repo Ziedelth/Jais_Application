@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:jais/components/roundborder_widget.dart';
 import 'package:jais/components/skeleton.dart';
 import 'package:jais/mappers/display_mapper.dart';
-import 'package:jais/mappers/member_mapper.dart' as member_mapper;
+import 'package:jais/mappers/member_mapper.dart';
 import 'package:jais/models/episode.dart';
 import 'package:jais/models/member_role.dart';
 import 'package:jais/utils/const.dart';
@@ -24,13 +24,11 @@ class EpisodeWidget extends StatelessWidget {
         mode: LaunchMode.externalApplication,
       ),
       onLongPress: () {
-        if (!member_mapper.isConnected()) {
+        if (!MemberMapper.instance.isConnected()) {
           return;
         }
 
-        final member = member_mapper.getMember()!;
-
-        if (member.role != MemberRole.admin) {
+        if (MemberMapper.instance.getMember()?.role != MemberRole.admin) {
           return;
         }
 
@@ -38,7 +36,6 @@ class EpisodeWidget extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) => EpisodeUpdateView(
               episode: episode,
-              member: member,
             ),
           ),
         );

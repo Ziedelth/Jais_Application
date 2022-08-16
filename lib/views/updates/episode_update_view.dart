@@ -3,20 +3,18 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:jais/mappers/episode_type_mapper.dart';
 import 'package:jais/mappers/lang_type_mapper.dart';
+import 'package:jais/mappers/member_mapper.dart';
 import 'package:jais/mappers/platform_mapper.dart';
 import 'package:jais/models/episode.dart';
-import 'package:jais/models/member.dart';
 import 'package:jais/models/member_role.dart';
 import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
 class EpisodeUpdateView extends StatefulWidget {
-  final Member member;
   final Episode episode;
 
   const EpisodeUpdateView({
-    required this.member,
     required this.episode,
     super.key,
   });
@@ -56,14 +54,15 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
           IconButton(
             icon: const Icon(Icons.send),
             onPressed: () async {
-              if (widget.member.role != MemberRole.admin) {
+              if (MemberMapper.instance.getMember()?.role != MemberRole.admin) {
                 return;
               }
 
               final response = await URL().put(
                 getEpisodesUpdateUrl(),
                 headers: {
-                  'Authorization': widget.member.token ?? '',
+                  'Authorization':
+                      MemberMapper.instance.getMember()?.token ?? '',
                 },
                 body: jsonEncode(widget.episode.toJson()),
               );

@@ -2,18 +2,17 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:jais/mappers/genre_mapper.dart';
+import 'package:jais/mappers/member_mapper.dart';
 import 'package:jais/models/anime.dart';
-import 'package:jais/models/member.dart';
 import 'package:jais/models/member_role.dart';
 import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
 class AnimeUpdateView extends StatefulWidget {
-  final Member member;
   final Anime anime;
 
-  const AnimeUpdateView({required this.member, required this.anime, super.key});
+  const AnimeUpdateView({required this.anime, super.key});
 
   @override
   _AnimeUpdateViewState createState() => _AnimeUpdateViewState();
@@ -53,14 +52,15 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
           IconButton(
             icon: const Icon(Icons.send),
             onPressed: () async {
-              if (widget.member.role != MemberRole.admin) {
+              if (MemberMapper.instance.getMember()?.role != MemberRole.admin) {
                 return;
               }
 
               final response = await URL().put(
                 getAnimesUpdateUrl(),
                 headers: {
-                  'Authorization': widget.member.token!,
+                  'Authorization':
+                      MemberMapper.instance.getMember()?.token ?? '',
                 },
                 body: jsonEncode(widget.anime.toJson()),
               );

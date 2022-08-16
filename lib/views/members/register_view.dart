@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jais/components/full_widget.dart';
-import 'package:jais/mappers/member_mapper.dart' as member_mapper;
+import 'package:jais/mappers/member_mapper.dart';
 import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:jais/views/members/login_view.dart';
@@ -48,7 +48,7 @@ class _RegisterViewState extends State<RegisterView> {
                   labelText: 'Adresse mail',
                 ),
                 keyboardType: TextInputType.emailAddress,
-                inputFormatters: member_mapper.inputFormatters,
+                inputFormatters: MemberMapper.instance.inputFormatters,
               ),
               const SizedBox(height: 16),
               // Pseudo text form field
@@ -57,7 +57,7 @@ class _RegisterViewState extends State<RegisterView> {
                 decoration: const InputDecoration(
                   labelText: 'Pseudonyme',
                 ),
-                inputFormatters: member_mapper.inputFormatters,
+                inputFormatters: MemberMapper.instance.inputFormatters,
               ),
               const SizedBox(height: 16),
               // Password text form field
@@ -67,7 +67,7 @@ class _RegisterViewState extends State<RegisterView> {
                   labelText: 'Mot de passe',
                 ),
                 obscureText: true,
-                inputFormatters: member_mapper.inputFormatters,
+                inputFormatters: MemberMapper.instance.inputFormatters,
               ),
               const SizedBox(height: 16),
               // Confirm password text form field
@@ -77,7 +77,7 @@ class _RegisterViewState extends State<RegisterView> {
                   labelText: 'Confirmer votre mot de passe',
                 ),
                 obscureText: true,
-                inputFormatters: member_mapper.inputFormatters,
+                inputFormatters: MemberMapper.instance.inputFormatters,
               ),
               const SizedBox(height: 32),
               FullWidget(
@@ -102,7 +102,7 @@ class _RegisterViewState extends State<RegisterView> {
                             return;
                           }
 
-                          if (!member_mapper.emailRegExp
+                          if (!MemberMapper.instance.emailRegExp
                               .hasMatch(_emailController.text.trim())) {
                             setState(() {
                               _isLoading = false;
@@ -129,7 +129,7 @@ class _RegisterViewState extends State<RegisterView> {
                             return;
                           }
 
-                          if (!member_mapper.pseudoRegExp
+                          if (!MemberMapper.instance.pseudoRegExp
                               .hasMatch(_pseudoController.text.trim())) {
                             setState(() {
                               _isLoading = false;
@@ -155,7 +155,7 @@ class _RegisterViewState extends State<RegisterView> {
                             return;
                           }
 
-                          if (!member_mapper.passwordRegExp
+                          if (!MemberMapper.instance.passwordRegExp
                               .hasMatch(_passwordController.text.trim())) {
                             setState(() {
                               _isLoading = false;

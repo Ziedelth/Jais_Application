@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jais/components/episodes/episode_list.dart';
 import 'package:jais/components/jdialog.dart';
 import 'package:jais/mappers/anime_details_mapper.dart';
-import 'package:jais/mappers/member_mapper.dart' as member_mapper;
+import 'package:jais/mappers/member_mapper.dart';
 import 'package:jais/models/anime.dart';
 import 'package:notifications/notifications.dart' as notifications;
 import 'package:provider/provider.dart';
@@ -36,7 +36,7 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
   @override
   Widget build(BuildContext context) {
     final hasAnimeInWatchlist =
-        member_mapper.hasAnimeInWatchlist(widget._anime);
+        MemberMapper.instance.hasAnimeInWatchlist(widget._anime);
 
     return Column(
       children: [
@@ -57,7 +57,7 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
                 ),
               ),
             ),
-            if (member_mapper.isConnected())
+            if (MemberMapper.instance.isConnected())
               IconButton(
                 icon: Icon(
                   hasAnimeInWatchlist
@@ -70,13 +70,15 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
                       notifications.getType() == 'watchlist';
 
                   if (hasAnimeInWatchlist) {
-                    await member_mapper.removeAnimeInWatchlist(widget._anime);
+                    await MemberMapper.instance
+                        .removeAnimeInWatchlist(widget._anime);
 
                     if (isWatchlistMode) {
                       notifications.removeTopic(widget._anime.id.toString());
                     }
                   } else {
-                    await member_mapper.addAnimeInWatchlist(widget._anime);
+                    await MemberMapper.instance
+                        .addAnimeInWatchlist(widget._anime);
 
                     if (isWatchlistMode) {
                       notifications.addTopic(widget._anime.id.toString());

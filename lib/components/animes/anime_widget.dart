@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:jais/components/roundborder_widget.dart';
 import 'package:jais/components/skeleton.dart';
-import 'package:jais/mappers/member_mapper.dart' as member_mapper;
+import 'package:jais/mappers/member_mapper.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/member_role.dart';
 import 'package:jais/utils/const.dart';
@@ -17,13 +17,11 @@ class AnimeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPress: () {
-        if (!member_mapper.isConnected()) {
+        if (!MemberMapper.instance.isConnected()) {
           return;
         }
 
-        final member = member_mapper.getMember()!;
-
-        if (member.role != MemberRole.admin) {
+        if (MemberMapper.instance.getMember()?.role != MemberRole.admin) {
           return;
         }
 
@@ -31,7 +29,6 @@ class AnimeWidget extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) => AnimeUpdateView(
               anime: anime,
-              member: member,
             ),
           ),
         );

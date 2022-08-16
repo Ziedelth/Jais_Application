@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:jais/components/jdialog.dart';
 import 'package:jais/components/navbar.dart';
-import 'package:jais/mappers/member_mapper.dart' as member_mapper;
+import 'package:jais/mappers/member_mapper.dart';
 import 'package:jais/mappers/navbar_mapper.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:jais/views/animes_view.dart';
@@ -25,7 +25,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await member_mapper.loginWithToken();
+      await MemberMapper.instance.loginWithToken();
 
       if (await needsToShowReview()) {
         final sharedPreferences = await SharedPreferences.getInstance();
@@ -60,10 +60,10 @@ class _MyHomePageState extends State<MyHomePage> {
       if (!mounted) return;
       setState(() {});
 
-      if (member_mapper.isConnected()) {
+      if (MemberMapper.instance.isConnected()) {
         showSnackBar(
           context,
-          'De retour, ${member_mapper.getMember()?.pseudo} !',
+          'De retour, ${MemberMapper.instance.getMember()?.pseudo} !',
         );
       }
     });
@@ -92,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         children: <Widget>[
                           const EpisodesView(),
                           const AnimesView(),
-                          if (member_mapper.isConnected())
+                          if (MemberMapper.instance.isConnected())
                             const WatchlistView(),
                           SettingsView(
                             onLogin: () => navbarMapper.currentPage = 0,
