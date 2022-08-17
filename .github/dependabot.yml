@@ -5,7 +5,7 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    versioning-strategy: increase
+    versioning-strategy: "increase"
     assignees:
       - "Ziedelth"
     reviewers:
@@ -16,7 +16,7 @@ updates:
     directory: "/android/"
     schedule:
       interval: "daily"
-    versioning-strategy: increase
+    versioning-strategy: "increase"
     assignees:
       - "Ziedelth"
     reviewers:
