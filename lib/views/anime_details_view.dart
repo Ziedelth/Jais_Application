@@ -4,7 +4,6 @@ import 'package:jais/components/jdialog.dart';
 import 'package:jais/mappers/anime_details_mapper.dart';
 import 'package:jais/mappers/member_mapper.dart';
 import 'package:jais/models/anime.dart';
-import 'package:notifications/notifications.dart' as notifications;
 import 'package:provider/provider.dart';
 
 class AnimeDetailsView extends StatefulWidget {
@@ -66,23 +65,12 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
                   color: hasAnimeInWatchlist ? Colors.red : Colors.green,
                 ),
                 onPressed: () async {
-                  final isWatchlistMode =
-                      notifications.getType() == 'watchlist';
-
                   if (hasAnimeInWatchlist) {
                     await MemberMapper.instance
                         .removeAnimeInWatchlist(widget._anime);
-
-                    if (isWatchlistMode) {
-                      notifications.removeTopic(widget._anime.id.toString());
-                    }
                   } else {
                     await MemberMapper.instance
                         .addAnimeInWatchlist(widget._anime);
-
-                    if (isWatchlistMode) {
-                      notifications.addTopic(widget._anime.id.toString());
-                    }
                   }
 
                   if (!mounted) return;

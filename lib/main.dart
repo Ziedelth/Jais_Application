@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:jais/mappers/country_mapper.dart';
 import 'package:jais/mappers/lang_type_mapper.dart';
@@ -11,25 +10,33 @@ import 'package:jais/utils/utils.dart';
 import 'package:jais/views/anime_details_view.dart';
 import 'package:jais/views/anime_search_view.dart';
 import 'package:jais/views/home_view.dart';
-import 'package:notifications/notifications.dart' as notifications;
+import 'package:logger/logger.dart';
+import 'package:notifications/notifications.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Logger.info('Initializing...');
+  Logger.info('Initializing Google Mobile Ads...');
   await MobileAds.instance.initialize();
 
   try {
-    await notifications.init();
-  } catch (_) {}
+    Logger.info('Initializing Notifications...');
+    await Notifications.instance.init();
+  } catch (exception, stacktrace) {
+    Logger.error(
+      'An error occurred while initializing Notifications',
+      exception,
+      stacktrace,
+    );
+  }
 
+  Logger.info('Initializing Member Mapper...');
   await MemberMapper.instance.init();
+  Logger.info('Initializing Country Mapper...');
   await CountryMapper().update();
+  Logger.info('Initializing Lang Type Mapper...');
   LangTypeMapper.instance.update();
-
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
-
+  Logger.info('Running app...');
   runApp(const MyApp());
 }
 

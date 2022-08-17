@@ -5,7 +5,8 @@ import 'package:jais/models/anime.dart';
 import 'package:jais/models/member.dart';
 import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
-import 'package:notifications/notifications.dart' as notifications;
+import 'package:logger/logger.dart';
+import 'package:notifications/notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url/url.dart';
 
@@ -57,11 +58,16 @@ class MemberMapper {
   }
 
   Future<void> loginWithToken() async {
+    Logger.info('Logging in with token...');
+
     if (!isConnected()) {
+      Logger.warning('Not connected');
       return;
     }
 
     try {
+      Logger.info('Logging in...');
+
       final response = await URL().post(
         getLoginWithTokenUrl(),
         body: {
@@ -74,6 +80,7 @@ class MemberMapper {
         throw Exception("Error while logging in");
       }
 
+      Logger.debug('Decoding response...');
       final member = Member.fromJson(
         jsonDecode(fromBrotli(response.body)) as Map<String, dynamic>,
       );
@@ -83,8 +90,11 @@ class MemberMapper {
         throw Exception("Error while logging in");
       }
 
+      Logger.debug('Logged in as ${member.pseudo}');
       await setMember(member);
-    } catch (_) {}
+    } catch (exception, stacktrace) {
+      Logger.error('An error occurred while logging in', exception, stacktrace);
+    }
   }
 
   bool hasAnimeInWatchlist(Anime anime) {
@@ -103,6 +113,12 @@ class MemberMapper {
 
     if (hasAnimeInWatchlist(anime)) {
       return;
+    }
+
+    final isWatchlistMode = Notifications.instance.getType() == 'watchlist';
+
+    if (isWatchlistMode) {
+      await Notifications.instance.addTopic(anime.id.toString());
     }
 
     final member = getMember()!;
@@ -129,6 +145,12 @@ class MemberMapper {
       return;
     }
 
+    final isWatchlistMode = Notifications.instance.getType() == 'watchlist';
+
+    if (isWatchlistMode) {
+      await Notifications.instance.removeTopic(anime.id.toString());
+    }
+
     final member = getMember()!;
     member.watchlist.removeWhere((element) => element.id == anime.id);
     await setMember(member);
@@ -145,9 +167,9 @@ class MemberMapper {
   }
 
   Future<void> setDefaultNotifications() async {
-    await notifications.setType("default");
-    await notifications.removeAllTopics();
-    await notifications.addTopic("animes");
+    await Notifications.instance.setType("default");
+    await Notifications.instance.removeAllTopics();
+    await Notifications.instance.addTopic("animes");
   }
 
   Future<void> setWatchlistNotifications() async {
@@ -155,11 +177,11 @@ class MemberMapper {
       return;
     }
 
-    await notifications.setType("watchlist");
-    await notifications.removeAllTopics();
+    await Notifications.instance.setType("watchlist");
+    await Notifications.instance.removeAllTopics();
 
     for (final anime in getMember()!.watchlist) {
-      await notifications.addTopic(anime.id.toString());
+      await Notifications.instance.addTopic(anime.id.toString());
     }
   }
 
@@ -168,7 +190,7 @@ class MemberMapper {
       return;
     }
 
-    await notifications.setType("disable");
-    await notifications.removeAllTopics();
+    await Notifications.instance.setType("disable");
+    await Notifications.instance.removeAllTopics();
   }
 }

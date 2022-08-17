@@ -9,6 +9,7 @@ import 'package:jais/views/animes_view.dart';
 import 'package:jais/views/episodes_view.dart';
 import 'package:jais/views/settings_view.dart';
 import 'package:jais/views/watchlist_view.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,6 +24,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    Logger.info('Initializing home page...');
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await MemberMapper.instance.loginWithToken();
@@ -67,6 +69,8 @@ class _MyHomePageState extends State<MyHomePage> {
         );
       }
     });
+
+    Logger.info('Home page initialized.');
   }
 
   @override

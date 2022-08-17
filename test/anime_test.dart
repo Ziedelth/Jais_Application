@@ -5,6 +5,8 @@ import 'package:jais/components/animes/anime_loader_widget.dart';
 import 'package:jais/components/animes/anime_widget.dart';
 import 'package:jais/mappers/anime_mapper.dart';
 
+import 'const_test.dart';
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   final animeMapper = AnimeMapper();
@@ -34,41 +36,81 @@ void main() {
     });
 
     testWidgets('Test anime widget on phone', (widgetTester) async {
-      widgetTester.binding.window.devicePixelRatioTestValue = 1.0;
-      widgetTester.binding.window.physicalSizeTestValue = const Size(500, 700);
-
-      final widgets = animeMapper.toWidgets(string);
-      final list = widgets;
-
-      await widgetTester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: AnimeList(children: list),
-          ),
-        ),
-      );
-
-      expect(find.byType(ListView), findsOneWidget);
-      expect(find.byType(AnimeWidget), findsWidgets);
+      for (final size in phoneSizes) {
+        await testOrientation(
+          widgetTester,
+          animeMapper,
+          string,
+          size.width,
+          size.height,
+          ListView,
+          GridView,
+        );
+      }
     });
 
     testWidgets('Test anime widget on tablet', (widgetTester) async {
-      widgetTester.binding.window.devicePixelRatioTestValue = 1.0;
-      widgetTester.binding.window.physicalSizeTestValue = const Size(1000, 700);
-
-      final widgets = animeMapper.toWidgets(string);
-      final list = widgets;
-
-      await widgetTester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: AnimeList(children: list),
-          ),
-        ),
-      );
-
-      expect(find.byType(GridView), findsOneWidget);
-      expect(find.byType(AnimeWidget), findsWidgets);
+      for (final size in tabletSizes) {
+        await testOrientation(
+          widgetTester,
+          animeMapper,
+          string,
+          size.width,
+          size.height,
+          GridView,
+          GridView,
+        );
+      }
     });
   });
+}
+
+Future<void> testOrientation(
+  WidgetTester widgetTester,
+  AnimeMapper animeMapper,
+  String string,
+  double width,
+  double height,
+  Type type1,
+  Type type2,
+) async {
+  await testWidget(
+    widgetTester,
+    animeMapper,
+    string,
+    Size(width, height),
+    type1,
+  );
+  await testWidget(
+    widgetTester,
+    animeMapper,
+    string,
+    Size(height, width),
+    type2,
+  );
+}
+
+Future<void> testWidget(
+  WidgetTester widgetTester,
+  AnimeMapper animeMapper,
+  String string,
+  Size size,
+  Type type,
+) async {
+  widgetTester.binding.window.devicePixelRatioTestValue = 1.0;
+  widgetTester.binding.window.physicalSizeTestValue = size;
+
+  final widgets = animeMapper.toWidgets(string);
+  final list = widgets;
+
+  await widgetTester.pumpWidget(
+    MaterialApp(
+      home: Scaffold(
+        body: AnimeList(children: list),
+      ),
+    ),
+  );
+
+  expect(find.byType(type), findsOneWidget);
+  expect(find.byType(AnimeWidget), findsWidgets);
 }

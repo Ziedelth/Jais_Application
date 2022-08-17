@@ -5,7 +5,7 @@ import 'package:jais/mappers/country_mapper.dart';
 import 'package:jais/mappers/member_mapper.dart';
 import 'package:jais/views/members/login_view.dart';
 import 'package:jais/views/members/register_view.dart';
-import 'package:notifications/notifications.dart' as notifications;
+import 'package:notifications/notifications.dart';
 
 class SettingsView extends StatefulWidget {
   final Function()? onLogin;
@@ -20,7 +20,7 @@ class SettingsView extends StatefulWidget {
 class _SettingsViewState extends State<SettingsView> {
   @override
   Widget build(BuildContext context) {
-    final notificationsType = notifications.getType();
+    final notificationsType = Notifications.instance.getType();
     final isDefaultMode = notificationsType == "default";
     final isWatchlistModeOrNeedUpdate =
         notificationsType == "watchlist" && !_same();
@@ -150,7 +150,7 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   bool _same() {
-    final topics = notifications.getTopics();
+    final topics = Notifications.instance.getTopics();
     final watchlist = MemberMapper.instance.getMember()!.watchlist;
     return MemberMapper.instance.isConnected() &&
         watchlist.length == topics.length &&

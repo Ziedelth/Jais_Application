@@ -5,6 +5,8 @@ import 'package:jais/components/episodes/episode_loader_widget.dart';
 import 'package:jais/components/episodes/episode_widget.dart';
 import 'package:jais/mappers/episode_mapper.dart';
 
+import 'const_test.dart';
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   final episodeMapper = EpisodeMapper();
@@ -34,41 +36,81 @@ void main() {
     });
 
     testWidgets('Test episode widget on phone', (widgetTester) async {
-      widgetTester.binding.window.devicePixelRatioTestValue = 1.0;
-      widgetTester.binding.window.physicalSizeTestValue = const Size(500, 700);
-
-      final widgets = episodeMapper.toWidgets(string);
-      final list = widgets;
-
-      await widgetTester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: EpisodeList(children: list),
-          ),
-        ),
-      );
-
-      expect(find.byType(ListView), findsOneWidget);
-      expect(find.byType(EpisodeWidget), findsWidgets);
+      for (final size in phoneSizes) {
+        await testOrientation(
+          widgetTester,
+          episodeMapper,
+          string,
+          size.width,
+          size.height,
+          ListView,
+          GridView,
+        );
+      }
     });
 
     testWidgets('Test episode widget on tablet', (widgetTester) async {
-      widgetTester.binding.window.devicePixelRatioTestValue = 1.0;
-      widgetTester.binding.window.physicalSizeTestValue = const Size(1000, 700);
-
-      final widgets = episodeMapper.toWidgets(string);
-      final list = widgets;
-
-      await widgetTester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: EpisodeList(children: list),
-          ),
-        ),
-      );
-
-      expect(find.byType(GridView), findsOneWidget);
-      expect(find.byType(EpisodeWidget), findsWidgets);
+      for (final size in tabletSizes) {
+        await testOrientation(
+          widgetTester,
+          episodeMapper,
+          string,
+          size.width,
+          size.height,
+          GridView,
+          GridView,
+        );
+      }
     });
   });
+}
+
+Future<void> testOrientation(
+  WidgetTester widgetTester,
+  EpisodeMapper episodeMapper,
+  String string,
+  double width,
+  double height,
+  Type type1,
+  Type type2,
+) async {
+  await testWidget(
+    widgetTester,
+    episodeMapper,
+    string,
+    Size(width, height),
+    type1,
+  );
+  await testWidget(
+    widgetTester,
+    episodeMapper,
+    string,
+    Size(height, width),
+    type2,
+  );
+}
+
+Future<void> testWidget(
+  WidgetTester widgetTester,
+  EpisodeMapper episodeMapper,
+  String string,
+  Size size,
+  Type type,
+) async {
+  widgetTester.binding.window.devicePixelRatioTestValue = 1.0;
+  widgetTester.binding.window.physicalSizeTestValue = size;
+
+  final widgets = episodeMapper.toWidgets(string);
+  final list = widgets;
+
+  await widgetTester.pumpWidget(
+    MaterialApp(
+      home: Scaffold(
+        body: EpisodeList(children: list),
+      ),
+    ),
+  );
+
+  expect(find.byType(type), findsOneWidget);
+  expect(find.byType(EpisodeWidget), findsWidgets);
 }
