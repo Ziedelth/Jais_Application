@@ -5,10 +5,20 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    assignees:
+      - "Ziedelth"
+    reviewers:
+      - "Ziedelth"
     target-branch: "dev"
+    versioning-strategy: increase
 
   - package-ecosystem: "gradle"
     directory: "/android/"
     schedule:
       interval: "daily"
+    assignees:
+      - "Ziedelth"
+    reviewers:
+      - "Ziedelth"
     target-branch: "dev"
+    versioning-strategy: increase
