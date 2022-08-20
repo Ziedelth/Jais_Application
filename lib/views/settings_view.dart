@@ -120,7 +120,7 @@ class _SettingsViewState extends State<SettingsView> {
                             isWatchlistModeOrNeedUpdate ||
                             isDisabledMode)
                         ? () {
-                      MemberMapper.instance.setWatchlistNotifications();
+                            MemberMapper.instance.setWatchlistNotifications();
                             if (!mounted) return;
                             setState(() {});
                           }

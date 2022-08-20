@@ -62,9 +62,9 @@ class _WatchlistViewState extends State<WatchlistView> {
       Logger.info('Loading watchlist...');
       await _watchlistMapper.updateCurrentPage();
       Logger.debug('Watchlist length: ${_watchlistMapper.list.length}');
-      await _setFilterWidgets();
 
       if (!mounted) return;
+      await _setFilterWidgets();
       setState(() => _key = UniqueKey());
     });
 

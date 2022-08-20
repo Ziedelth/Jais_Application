@@ -87,14 +87,16 @@ class AnimesViewState extends State<AnimesView> {
                               ? GestureDetector(
                                   onTap: () {
                                     Logger.info(
-                                        'Changing simulcast to ${e.simulcast}...');
+                                      'Changing simulcast to ${e.simulcast}...',
+                                    );
                                     _animeMapper.scrollController.jumpTo(0);
                                     _animeMapper.simulcast = e.simulcast;
                                     Logger.info('Loading animes...');
                                     _animeMapper.clear();
                                     rebuildAnimes(force: true);
                                     Logger.debug(
-                                        'Animes length: ${_animeMapper.list.length}');
+                                      'Animes length: ${_animeMapper.list.length}',
+                                    );
                                     setState(() {});
                                   },
                                   child: e,

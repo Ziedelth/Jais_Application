@@ -24,7 +24,7 @@ class AnimeSearchNotifier {
 
     if (!searchList.contains(search)) {
       while (searchList.length >= 5) {
-        searchList.removeLast();
+        searchList.removeAt(0);
       }
 
       searchList.add(search);

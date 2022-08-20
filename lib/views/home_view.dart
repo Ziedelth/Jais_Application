@@ -36,7 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
           show(
             context,
             widget: const Text(
-              "Vous avez apprécié notre application ? Merci de laisser un avis.",
+              "Aimez-vous notre application ? Veuillez laisser un avis.",
             ),
             actions: [
               ElevatedButton(

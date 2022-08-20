@@ -11,14 +11,6 @@ class Notifications {
   final _topicsKey = "topics";
   final _typeKey = "type";
 
-  Future<void> initFirebase() async =>
-      Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  Future<void> _firebaseMessagingBackgroundHandler(
-    RemoteMessage message,
-  ) async =>
-      initFirebase();
-
   List<String> getTopics() => _sharedPreferences.containsKey(_topicsKey)
       ? _sharedPreferences.getStringList(_topicsKey)!
       : <String>[];
@@ -71,8 +63,9 @@ class Notifications {
 
   Future<void> init() async {
     _sharedPreferences = await SharedPreferences.getInstance();
-    await initFirebase();
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     final isInit = _sharedPreferences.containsKey(_topicsKey) &&
         _sharedPreferences.containsKey(_typeKey);
 
