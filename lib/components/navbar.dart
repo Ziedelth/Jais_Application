@@ -22,7 +22,10 @@ class Navbar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
         children: [
-          RoundBorderWidget(widget: Image.asset('assets/icon.png')),
+          GestureDetector(
+            onLongPress: showVideoAd,
+            child: RoundBorderWidget(widget: Image.asset('assets/icon.png')),
+          ),
           const SizedBox(width: 10),
           Text(
             'Jaïs',
