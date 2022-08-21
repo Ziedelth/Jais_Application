@@ -146,7 +146,8 @@ class _LoginViewState extends State<LoginView> {
 
                             // Decode response to member
                             final member = Member.fromJson(
-                              jsonDecode(response.body) as Map<String, dynamic>,
+                              jsonDecode(fromBrotli(response.body))
+                                  as Map<String, dynamic>,
                             );
 
                             // If responseBody not contains token, return an error

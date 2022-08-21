@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/models/member.dart';
 import 'package:jais/utils/const.dart';
+import 'package:jais/utils/utils.dart';
 import 'package:logger/logger.dart';
 import 'package:notifications/notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -82,8 +83,9 @@ class MemberMapper {
       Logger.debug('Decoding response...');
       Logger.debug(response.body);
 
-      final member =
-          Member.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+      final member = Member.fromJson(
+        jsonDecode(fromBrotli(response.body)) as Map<String, dynamic>,
+      );
 
       if (member.token == null) {
         await setMember(null);

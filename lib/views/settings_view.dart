@@ -135,7 +135,7 @@ class _SettingsViewState extends State<SettingsView> {
                     onPressed: isDisabledMode
                         ? null
                         : () {
-                      MemberMapper.instance.setDisabledNotifications();
+                            MemberMapper.instance.setDisabledNotifications();
                             if (!mounted) return;
                             setState(() {});
                           },

@@ -32,9 +32,9 @@ String getEpisodesUrl(int page, int limit) =>
 
 String getEpisodesUpdateUrl() => '${apiUrl}v1/episodes/update';
 
-String getLoginWithTokenUrl() => '${apiUrl}v1/member/token';
+String getLoginWithTokenUrl() => '${apiUrl}v2/member/token';
 
-String getLoginWithCredentialsUrl() => '${apiUrl}v1/member/login';
+String getLoginWithCredentialsUrl() => '${apiUrl}v2/member/login';
 
 String getRegisterUrl() => '${apiUrl}v1/member/register';
 
