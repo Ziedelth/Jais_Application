@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:jais/components/roundborder_widget.dart';
 import 'package:jais/components/skeleton.dart';
 import 'package:jais/mappers/display_mapper.dart';
-import 'package:jais/mappers/member_mapper.dart' as member_mapper;
+import 'package:jais/mappers/member_mapper.dart';
 import 'package:jais/models/episode.dart';
 import 'package:jais/models/member_role.dart';
 import 'package:jais/utils/const.dart';
@@ -12,10 +12,9 @@ import 'package:jais/views/updates/episode_update_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class EpisodeWidget extends StatelessWidget {
-  final _displayMapper = DisplayMapper();
   final Episode episode;
 
-  EpisodeWidget({required this.episode, super.key});
+  const EpisodeWidget({required this.episode, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +24,11 @@ class EpisodeWidget extends StatelessWidget {
         mode: LaunchMode.externalApplication,
       ),
       onLongPress: () {
-        if (!member_mapper.isConnected()) {
+        if (!MemberMapper.instance.isConnected()) {
           return;
         }
 
-        final member = member_mapper.getMember()!;
-
-        if (member.role != MemberRole.admin) {
+        if (MemberMapper.instance.getMember()?.role != MemberRole.admin) {
           return;
         }
 
@@ -39,7 +36,6 @@ class EpisodeWidget extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) => EpisodeUpdateView(
               episode: episode,
-              member: member,
             ),
           ),
         );
@@ -85,7 +81,7 @@ class EpisodeWidget extends StatelessWidget {
               ],
             ),
             Text(
-              episode.title?.replaceAll("\n", ' ') ?? '＞﹏＜',
+              episode.title.ifEmptyOrNull('＞﹏＜').replaceAll("\n", ' '),
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
@@ -101,7 +97,7 @@ class EpisodeWidget extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 10),
-            if (_displayMapper.isOnMobile(context))
+            if (DisplayMapper.instance.isOnMobile(context))
               RoundBorderWidget(
                 widget: CachedNetworkImage(
                   imageUrl: '$attachmentsUrl${episode.image}',

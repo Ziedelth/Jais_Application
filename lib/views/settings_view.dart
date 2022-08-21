@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:jais/components/full_widget.dart';
 import 'package:jais/components/section_widget.dart';
 import 'package:jais/mappers/country_mapper.dart';
-import 'package:jais/mappers/member_mapper.dart' as member_mapper;
+import 'package:jais/mappers/member_mapper.dart';
 import 'package:jais/views/members/login_view.dart';
 import 'package:jais/views/members/register_view.dart';
-import 'package:notifications/notifications.dart' as notifications;
+import 'package:notifications/notifications.dart';
 
 class SettingsView extends StatefulWidget {
   final Function()? onLogin;
@@ -20,7 +20,7 @@ class SettingsView extends StatefulWidget {
 class _SettingsViewState extends State<SettingsView> {
   @override
   Widget build(BuildContext context) {
-    final notificationsType = notifications.getType();
+    final notificationsType = Notifications.instance.getType();
     final isDefaultMode = notificationsType == "default";
     final isWatchlistModeOrNeedUpdate =
         notificationsType == "watchlist" && !_same();
@@ -45,11 +45,11 @@ class _SettingsViewState extends State<SettingsView> {
           ),
           SectionWidget(
             icon: const Icon(Icons.person),
-            title: member_mapper.isConnected()
-                ? '${member_mapper.getMember()?.pseudo}'
+            title: MemberMapper.instance.isConnected()
+                ? '${MemberMapper.instance.getMember()?.pseudo}'
                 : 'Utilisateur',
             widgets: [
-              if (!member_mapper.isConnected()) ...[
+              if (!MemberMapper.instance.isConnected()) ...[
                 FullWidget(
                   widget: ElevatedButton(
                     child: const Text('Inscription'),
@@ -86,8 +86,8 @@ class _SettingsViewState extends State<SettingsView> {
                   widget: ElevatedButton(
                     child: const Text('Déconnexion'),
                     onPressed: () {
-                      member_mapper.setDefaultNotifications();
-                      member_mapper.setMember(null);
+                      MemberMapper.instance.setDefaultNotifications();
+                      MemberMapper.instance.setMember(null);
                       widget.onLogout?.call();
                       if (!mounted) return;
                       setState(() {});
@@ -97,7 +97,7 @@ class _SettingsViewState extends State<SettingsView> {
               ],
             ],
           ),
-          if (member_mapper.isConnected())
+          if (MemberMapper.instance.isConnected())
             SectionWidget(
               icon: const Icon(Icons.notifications),
               title: 'Notifications',
@@ -107,7 +107,7 @@ class _SettingsViewState extends State<SettingsView> {
                     onPressed: isDefaultMode
                         ? null
                         : () {
-                            member_mapper.setDefaultNotifications();
+                            MemberMapper.instance.setDefaultNotifications();
                             if (!mounted) return;
                             setState(() {});
                           },
@@ -120,7 +120,7 @@ class _SettingsViewState extends State<SettingsView> {
                             isWatchlistModeOrNeedUpdate ||
                             isDisabledMode)
                         ? () {
-                            member_mapper.setWatchlistNotifications();
+                            MemberMapper.instance.setWatchlistNotifications();
                             if (!mounted) return;
                             setState(() {});
                           }
@@ -135,7 +135,7 @@ class _SettingsViewState extends State<SettingsView> {
                     onPressed: isDisabledMode
                         ? null
                         : () {
-                            member_mapper.setDisabledNotifications();
+                            MemberMapper.instance.setDisabledNotifications();
                             if (!mounted) return;
                             setState(() {});
                           },
@@ -150,9 +150,9 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   bool _same() {
-    final topics = notifications.getTopics();
-    final watchlist = member_mapper.getMember()!.watchlist;
-    return member_mapper.isConnected() &&
+    final topics = Notifications.instance.getTopics();
+    final watchlist = MemberMapper.instance.getMember()!.watchlist;
+    return MemberMapper.instance.isConnected() &&
         watchlist.length == topics.length &&
         watchlist.every((element) => topics.contains(element.id.toString()));
   }

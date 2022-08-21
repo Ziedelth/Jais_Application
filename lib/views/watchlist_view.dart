@@ -5,6 +5,7 @@ import 'package:jais/components/episodes/episode_widget.dart';
 import 'package:jais/mappers/lang_type_mapper.dart';
 import 'package:jais/mappers/member_mapper.dart';
 import 'package:jais/mappers/watchlist_mapper.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class WatchlistView extends StatefulWidget {
@@ -15,7 +16,8 @@ class WatchlistView extends StatefulWidget {
 }
 
 class _WatchlistViewState extends State<WatchlistView> {
-  final _watchlistMapper = WatchlistMapper(pseudo: getMember()!.pseudo);
+  final _watchlistMapper =
+      WatchlistMapper(pseudo: MemberMapper.instance.getMember()!.pseudo);
   UniqueKey _key = UniqueKey();
   bool _filterIsExpanded = false;
   List<String> _filter = [];
@@ -53,15 +55,20 @@ class _WatchlistViewState extends State<WatchlistView> {
   @override
   void initState() {
     super.initState();
+    Logger.info('Initializing watchlist view...');
     _watchlistMapper.clear();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      Logger.info('Loading watchlist...');
       await _watchlistMapper.updateCurrentPage();
-      await _setFilterWidgets();
+      Logger.debug('Watchlist length: ${_watchlistMapper.list.length}');
 
       if (!mounted) return;
+      await _setFilterWidgets();
       setState(() => _key = UniqueKey());
     });
+
+    Logger.info('Watchlist view initialized.');
   }
 
   @override

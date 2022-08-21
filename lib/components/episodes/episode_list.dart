@@ -5,15 +5,14 @@ import 'package:jais/components/jlist.dart';
 import 'package:jais/mappers/display_mapper.dart';
 
 class EpisodeList extends StatelessWidget {
-  final _displayMapper = DisplayMapper();
   final ScrollController? scrollController;
   final List<Widget> children;
 
-  EpisodeList({this.scrollController, required this.children, super.key});
+  const EpisodeList({this.scrollController, required this.children, super.key});
 
   @override
   Widget build(BuildContext context) {
-    if (!_displayMapper.isOnMobile(context)) {
+    if (!DisplayMapper.instance.isOnMobile(context)) {
       final width = MediaQuery.of(context).size.width;
 
       return GridView(

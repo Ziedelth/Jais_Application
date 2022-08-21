@@ -11,7 +11,7 @@ class AnimeDetailsMapper extends IMapper<Episode> {
   AnimeDetailsMapper(this.anime)
       : super(
           limit: 12,
-          loaderWidget: EpisodeLoaderWidget(),
+          loaderWidget: const EpisodeLoaderWidget(),
           fromJson: Episode.fromJson,
           toWidget: (episode) => EpisodeWidget(episode: episode),
         ) {

@@ -6,11 +6,9 @@ import 'package:jais/mappers/navbar_mapper.dart';
 import 'package:jais/utils/utils.dart';
 
 class Navbar extends StatelessWidget {
-  final NavbarMapper navbarMapper;
   final Function(int)? onPageChanged;
 
   Navbar({
-    required this.navbarMapper,
     this.onPageChanged,
     super.key,
   }) {
@@ -24,7 +22,10 @@ class Navbar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
         children: [
-          RoundBorderWidget(widget: Image.asset('assets/icon.png')),
+          GestureDetector(
+            onLongPress: showVideoAd,
+            child: RoundBorderWidget(widget: Image.asset('assets/icon.png')),
+          ),
           const SizedBox(width: 10),
           Text(
             'Jaïs',
@@ -41,7 +42,7 @@ class Navbar extends StatelessWidget {
                 : ColoredBox(color: Theme.of(context).backgroundColor),
           ),
           const SizedBox(width: 10),
-          if (navbarMapper.currentPage == 1) ...[
+          if (NavbarMapper.instance.currentPage == 1) ...[
             IconButton(
               icon: const Icon(Icons.search),
               onPressed: () => Navigator.pushNamed(context, "/search"),

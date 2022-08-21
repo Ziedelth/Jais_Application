@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:jais/mappers/member_mapper.dart' as member_mapper;
+import 'package:jais/mappers/member_mapper.dart';
+import 'package:jais/utils/utils.dart';
 
 class NavbarMapper extends ChangeNotifier {
+  static final instance = NavbarMapper();
   late final PageController pageController;
 
   NavbarMapper({int defaultPage = 0})
@@ -18,8 +20,7 @@ class NavbarMapper extends ChangeNotifier {
   set currentPage(int page) {
     pageController.jumpToPage(page);
     notifyListeners();
-    PaintingBinding.instance.imageCache.clear();
-    PaintingBinding.instance.imageCache.clearLiveImages();
+    clearImagesCache();
   }
 
   List<NavbarLink> get items => <NavbarLink>[
@@ -31,7 +32,7 @@ class NavbarMapper extends ChangeNotifier {
           name: 'Animes',
           icon: Icon(Icons.live_tv),
         ),
-        if (member_mapper.isConnected())
+        if (MemberMapper.instance.isConnected())
           const NavbarLink(
             name: 'Watchlist',
             icon: Icon(Icons.playlist_add_check),

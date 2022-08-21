@@ -2,18 +2,17 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:jais/mappers/genre_mapper.dart';
+import 'package:jais/mappers/member_mapper.dart';
 import 'package:jais/models/anime.dart';
-import 'package:jais/models/member.dart';
 import 'package:jais/models/member_role.dart';
 import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
 class AnimeUpdateView extends StatefulWidget {
-  final Member member;
   final Anime anime;
 
-  const AnimeUpdateView({required this.member, required this.anime, super.key});
+  const AnimeUpdateView({required this.anime, super.key});
 
   @override
   _AnimeUpdateViewState createState() => _AnimeUpdateViewState();
@@ -22,7 +21,6 @@ class AnimeUpdateView extends StatefulWidget {
 class _AnimeUpdateViewState extends State<AnimeUpdateView>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
-  final GenreMapper genreMapper = GenreMapper();
   String _searchText = '';
 
   @override
@@ -32,7 +30,7 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Future.wait([
-        genreMapper.update(),
+        GenreMapper.instance.update(),
       ]);
 
       if (!mounted) return;
@@ -54,14 +52,15 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
           IconButton(
             icon: const Icon(Icons.send),
             onPressed: () async {
-              if (widget.member.role != MemberRole.admin) {
+              if (MemberMapper.instance.getMember()?.role != MemberRole.admin) {
                 return;
               }
 
               final response = await URL().put(
                 getAnimesUpdateUrl(),
                 headers: {
-                  'Authorization': widget.member.token!,
+                  'Authorization':
+                      MemberMapper.instance.getMember()?.token ?? '',
                 },
                 body: jsonEncode(widget.anime.toJson()),
               );
@@ -80,7 +79,7 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
       ),
       body: SafeArea(
         child: Column(
-          children: [
+          children: <Widget>[
             TabBar(
               controller: _tabController,
               indicatorColor: Colors.black,
@@ -102,7 +101,7 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                   SingleChildScrollView(
                     padding: const EdgeInsets.all(16),
                     child: Column(
-                      children: [
+                      children: <Widget>[
                         TextFormField(
                           initialValue: widget.anime.releaseDate,
                           decoration: const InputDecoration(
@@ -111,7 +110,6 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                           onChanged: (value) =>
                               widget.anime.releaseDate = value,
                         ),
-                        const SizedBox(height: 16),
                         TextFormField(
                           initialValue: widget.anime.name,
                           decoration: const InputDecoration(
@@ -119,7 +117,6 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                           ),
                           onChanged: (value) => widget.anime.name = value,
                         ),
-                        const SizedBox(height: 16),
                         TextFormField(
                           initialValue: widget.anime.url,
                           decoration: const InputDecoration(
@@ -127,7 +124,6 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                           ),
                           onChanged: (value) => widget.anime.url = value,
                         ),
-                        const SizedBox(height: 16),
                         TextFormField(
                           initialValue: widget.anime.image,
                           decoration: const InputDecoration(
@@ -135,7 +131,6 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                           ),
                           onChanged: (value) => widget.anime.image = value,
                         ),
-                        const SizedBox(height: 16),
                         TextFormField(
                           initialValue: widget.anime.description,
                           decoration: const InputDecoration(
@@ -146,13 +141,13 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                           onChanged: (value) =>
                               widget.anime.description = value,
                         ),
-                      ],
+                      ].superJoin(const SizedBox(height: 16)).toList(),
                     ),
                   ),
                   SingleChildScrollView(
                     padding: const EdgeInsets.all(16),
                     child: Column(
-                      children: [
+                      children: <Widget>[
                         TextFormField(
                           decoration: const InputDecoration(
                             labelText: 'Rechercher',
@@ -161,8 +156,7 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                             _searchText = value;
                           }),
                         ),
-                        const SizedBox(height: 16),
-                        ...genreMapper.list
+                        ...GenreMapper.instance.list
                             .map(
                               (genre) => CheckboxListTile(
                                 title: Text(genre.fr),
@@ -195,7 +189,7 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
                                           )) ||
                                   _searchText.isEmpty,
                             ),
-                      ],
+                      ].superJoin(const SizedBox(height: 16)).toList(),
                     ),
                   ),
                 ],
