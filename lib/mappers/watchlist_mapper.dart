@@ -12,7 +12,7 @@ class WatchlistMapper extends IMapper<Episode> {
   WatchlistMapper({required this.pseudo})
       : super(
           limit: 21,
-          loaderWidget: EpisodeLoaderWidget(),
+          loaderWidget: const EpisodeLoaderWidget(),
           fromJson: Episode.fromJson,
           toWidget: (episode) => EpisodeWidget(episode: episode),
         );

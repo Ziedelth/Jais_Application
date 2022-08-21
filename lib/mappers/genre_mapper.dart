@@ -6,6 +6,7 @@ import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
 class GenreMapper {
+  static final instance = GenreMapper();
   List<Genre> list = [];
 
   List<Genre>? stringToGenres(String? string) {
@@ -21,6 +22,8 @@ class GenreMapper {
   }
 
   Future<void> update() async {
+    if (list.isNotEmpty) return;
+
     final response = await URL().get(getGenresUrl());
 
     if (response == null || response.statusCode != 200) {

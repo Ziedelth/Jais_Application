@@ -24,6 +24,23 @@ void createGlobalBanner() {
   globalBannerAd?.load();
 }
 
+Future<void> showVideoAd({VoidCallback? callback}) async {
+  await RewardedAd.load(
+    adUnitId: 'ca-app-pub-5658764393995798/3650456466',
+    request: const AdRequest(),
+    rewardedAdLoadCallback: RewardedAdLoadCallback(
+      onAdLoaded: (RewardedAd ad) {
+        ad.show(
+          onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {
+            callback?.call();
+          },
+        );
+      },
+      onAdFailedToLoad: (LoadAdError error) {},
+    ),
+  );
+}
+
 String printTimeSince(DateTime? dateTime) {
   if (dateTime == null) {
     return 'erreur';
@@ -187,6 +204,11 @@ Future<bool> needsToShowReview() async {
   return false;
 }
 
+void clearImagesCache() {
+  PaintingBinding.instance.imageCache.clear();
+  PaintingBinding.instance.imageCache.clearLiveImages();
+}
+
 extension IterableExt<T> on Iterable<T> {
   Iterable<T> superJoin(T separator) {
     final iterator = this.iterator;
@@ -202,4 +224,9 @@ extension IterableExt<T> on Iterable<T> {
 
     return l;
   }
+}
+
+extension StringExt on String? {
+  String ifEmptyOrNull(String replacement) =>
+      (this == null || this?.isEmpty == true) ? replacement : this!;
 }

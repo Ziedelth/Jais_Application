@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:jais/utils/utils.dart';
+import 'package:logger/logger.dart';
 import 'package:url/url.dart';
 
 abstract class IMapper<T> extends ChangeNotifier {
@@ -14,6 +14,7 @@ abstract class IMapper<T> extends ChangeNotifier {
   final Widget Function(T) toWidget;
   int currentPage = 1;
   bool isLoading = false;
+  bool canLoadMore = true;
 
   IMapper({
     required this.limit,
@@ -24,11 +25,17 @@ abstract class IMapper<T> extends ChangeNotifier {
   }) {
     if (listener) {
       scrollController.addListener(() async {
-        if (scrollController.position.extentAfter <= 0 && !isLoading) {
+        if (scrollController.position.extentAfter <= 0 &&
+            !isLoading &&
+            canLoadMore) {
           isLoading = true;
+          Logger.info('Clearing images cache...');
+          clearImagesCache();
           currentPage++;
+          Logger.debug('Loading page $currentPage...');
           await updateCurrentPage();
           isLoading = false;
+          canLoadMore = list.length % limit == 0;
         }
       });
     }

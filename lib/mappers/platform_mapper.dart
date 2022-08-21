@@ -6,6 +6,7 @@ import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
 class PlatformMapper {
+  static final instance = PlatformMapper();
   List<Platform> list = [];
 
   List<Platform>? stringToPlatforms(String? string) {
@@ -21,6 +22,8 @@ class PlatformMapper {
   }
 
   Future<void> update() async {
+    if (list.isNotEmpty) return;
+
     final response = await URL().get(getPlatformsUrl());
 
     if (response == null || response.statusCode != 200) {

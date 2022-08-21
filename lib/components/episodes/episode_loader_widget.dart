@@ -3,9 +3,7 @@ import 'package:jais/components/skeleton.dart';
 import 'package:jais/mappers/display_mapper.dart';
 
 class EpisodeLoaderWidget extends StatelessWidget {
-  final _displayMapper = DisplayMapper();
-
-  EpisodeLoaderWidget({super.key});
+  const EpisodeLoaderWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +32,7 @@ class EpisodeLoaderWidget extends StatelessWidget {
           const SizedBox(height: 5),
           const Skeleton(width: 100, height: 20),
           const SizedBox(height: 10),
-          if (_displayMapper.isOnMobile(context))
+          if (DisplayMapper.instance.isOnMobile(context))
             const Skeleton(height: 200)
           else
             const Expanded(child: Skeleton()),

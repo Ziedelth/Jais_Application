@@ -3,20 +3,18 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:jais/mappers/episode_type_mapper.dart';
 import 'package:jais/mappers/lang_type_mapper.dart';
+import 'package:jais/mappers/member_mapper.dart';
 import 'package:jais/mappers/platform_mapper.dart';
 import 'package:jais/models/episode.dart';
-import 'package:jais/models/member.dart';
 import 'package:jais/models/member_role.dart';
 import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:url/url.dart';
 
 class EpisodeUpdateView extends StatefulWidget {
-  final Member member;
   final Episode episode;
 
   const EpisodeUpdateView({
-    required this.member,
     required this.episode,
     super.key,
   });
@@ -26,17 +24,14 @@ class EpisodeUpdateView extends StatefulWidget {
 }
 
 class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
-  final PlatformMapper platformMapper = PlatformMapper();
-  final EpisodeTypeMapper episodeTypeMapper = EpisodeTypeMapper();
-
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Future.wait([
-        platformMapper.update(),
-        episodeTypeMapper.update(),
+        PlatformMapper.instance.update(),
+        EpisodeTypeMapper.instance.update(),
         LangTypeMapper.instance.update(),
       ]);
 
@@ -59,14 +54,15 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
           IconButton(
             icon: const Icon(Icons.send),
             onPressed: () async {
-              if (widget.member.role != MemberRole.admin) {
+              if (MemberMapper.instance.getMember()?.role != MemberRole.admin) {
                 return;
               }
 
               final response = await URL().put(
                 getEpisodesUpdateUrl(),
                 headers: {
-                  'Authorization': widget.member.token ?? '',
+                  'Authorization':
+                      MemberMapper.instance.getMember()?.token ?? '',
                 },
                 body: jsonEncode(widget.episode.toJson()),
               );
@@ -87,13 +83,13 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
-            children: [
+            children: <Widget>[
               DropdownButtonFormField<int>(
                 decoration: const InputDecoration(
                   labelText: 'Plateforme',
                 ),
                 value: widget.episode.platform.id,
-                items: platformMapper.list
+                items: PlatformMapper.instance.list
                     .map<DropdownMenuItem<int>>(
                       (platform) => DropdownMenuItem<int>(
                         value: platform.id,
@@ -103,20 +99,20 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                     .toList(),
                 onChanged: (platform) {
                   if (platform == null) return;
-                  widget.episode.platform = platformMapper.list.firstWhere(
+                  widget.episode.platform =
+                      PlatformMapper.instance.list.firstWhere(
                     (p) => p.id == platform,
                   );
                   if (!mounted) return;
                   setState(() {});
                 },
               ),
-              const SizedBox(height: 16),
               DropdownButtonFormField<int>(
                 decoration: const InputDecoration(
                   labelText: 'Type',
                 ),
                 value: widget.episode.episodeType.id,
-                items: episodeTypeMapper.list
+                items: EpisodeTypeMapper.instance.list
                     .map<DropdownMenuItem<int>>(
                       (episodeType) => DropdownMenuItem<int>(
                         value: episodeType.id,
@@ -127,14 +123,13 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 onChanged: (episodeType) {
                   if (episodeType == null) return;
                   widget.episode.episodeType =
-                      episodeTypeMapper.list.firstWhere(
+                      EpisodeTypeMapper.instance.list.firstWhere(
                     (p) => p.id == episodeType,
                   );
                   if (!mounted) return;
                   setState(() {});
                 },
               ),
-              const SizedBox(height: 16),
               DropdownButtonFormField<int>(
                 decoration: const InputDecoration(
                   labelText: 'Langue',
@@ -158,7 +153,6 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                   setState(() {});
                 },
               ),
-              const SizedBox(height: 16),
               TextFormField(
                 initialValue: widget.episode.releaseDate,
                 decoration: const InputDecoration(
@@ -166,7 +160,6 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 ),
                 onChanged: (value) => widget.episode.releaseDate = value,
               ),
-              const SizedBox(height: 16),
               TextFormField(
                 initialValue: '${widget.episode.season}',
                 keyboardType: TextInputType.number,
@@ -176,7 +169,6 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 onChanged: (value) =>
                     widget.episode.season = int.tryParse(value) ?? 0,
               ),
-              const SizedBox(height: 16),
               TextFormField(
                 initialValue: '${widget.episode.number}',
                 keyboardType: TextInputType.number,
@@ -186,7 +178,6 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 onChanged: (value) =>
                     widget.episode.number = int.tryParse(value) ?? 0,
               ),
-              const SizedBox(height: 16),
               TextFormField(
                 initialValue: widget.episode.episodeId,
                 decoration: const InputDecoration(
@@ -194,7 +185,6 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 ),
                 onChanged: (value) => widget.episode.episodeId = value,
               ),
-              const SizedBox(height: 16),
               TextFormField(
                 initialValue: widget.episode.title,
                 decoration: const InputDecoration(
@@ -202,7 +192,6 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 ),
                 onChanged: (value) => widget.episode.title = value,
               ),
-              const SizedBox(height: 16),
               TextFormField(
                 initialValue: widget.episode.url,
                 decoration: const InputDecoration(
@@ -210,7 +199,6 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 ),
                 onChanged: (value) => widget.episode.url = value,
               ),
-              const SizedBox(height: 16),
               TextFormField(
                 initialValue: widget.episode.image,
                 decoration: const InputDecoration(
@@ -218,7 +206,6 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 ),
                 onChanged: (value) => widget.episode.image = value,
               ),
-              const SizedBox(height: 16),
               TextFormField(
                 initialValue: '${widget.episode.duration}',
                 keyboardType: TextInputType.number,
@@ -228,7 +215,7 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
                 onChanged: (value) =>
                     widget.episode.duration = int.tryParse(value) ?? 0,
               ),
-            ],
+            ].superJoin(const SizedBox(height: 16)).toList(),
           ),
         ),
       ),
