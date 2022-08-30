@@ -43,8 +43,6 @@ void main() {
           string,
           size.width,
           size.height,
-          ListView,
-          GridView,
         );
       }
     });
@@ -57,8 +55,6 @@ void main() {
           string,
           size.width,
           size.height,
-          GridView,
-          GridView,
         );
       }
     });
@@ -71,22 +67,18 @@ Future<void> testOrientation(
   String string,
   double width,
   double height,
-  Type type1,
-  Type type2,
 ) async {
   await testWidget(
     widgetTester,
     animeMapper,
     string,
     Size(width, height),
-    type1,
   );
   await testWidget(
     widgetTester,
     animeMapper,
     string,
     Size(height, width),
-    type2,
   );
 }
 
@@ -95,7 +87,6 @@ Future<void> testWidget(
   AnimeMapper animeMapper,
   String string,
   Size size,
-  Type type,
 ) async {
   widgetTester.binding.window.devicePixelRatioTestValue = 1.0;
   widgetTester.binding.window.physicalSizeTestValue = size;
@@ -106,11 +97,12 @@ Future<void> testWidget(
   await widgetTester.pumpWidget(
     MaterialApp(
       home: Scaffold(
-        body: AnimeList(children: list),
+        body: SingleChildScrollView(
+          child: AnimeList(children: list),
+        ),
       ),
     ),
   );
 
-  expect(find.byType(type), findsOneWidget);
   expect(find.byType(AnimeWidget), findsWidgets);
 }

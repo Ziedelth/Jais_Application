@@ -21,7 +21,7 @@ Future<void> main() async {
 
   try {
     Logger.info('Initializing Notifications...');
-    await Notifications.instance.init();
+    Notifications.instance.init();
   } catch (exception, stacktrace) {
     Logger.error(
       'An error occurred while initializing Notifications',

@@ -36,6 +36,7 @@ abstract class IMapper<T> extends ChangeNotifier {
           await updateCurrentPage();
           isLoading = false;
           canLoadMore = list.length % limit == 0;
+          Logger.debug('Can load more: $canLoadMore');
         }
       });
     }
@@ -55,6 +56,8 @@ abstract class IMapper<T> extends ChangeNotifier {
   void clear() {
     currentPage = 1;
     list.clear();
+    isLoading = false;
+    canLoadMore = true;
     addLoader();
   }
 

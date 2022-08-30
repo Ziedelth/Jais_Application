@@ -18,38 +18,53 @@ class WatchlistView extends StatefulWidget {
 class _WatchlistViewState extends State<WatchlistView> {
   final _watchlistMapper =
       WatchlistMapper(pseudo: MemberMapper.instance.getMember()!.pseudo);
+  final _langTypeFilter = WatchlistLangTypeFilter();
   UniqueKey _key = UniqueKey();
   bool _filterIsExpanded = false;
   List<String> _filter = [];
   final List<Widget> _filterWidgets = [];
 
   Future<void> _setFilterWidgets({bool update = false}) async {
-    _filter = await _watchlistMapper.getLangTypesFilter();
+    _filter = await _langTypeFilter.getFilter();
 
     _filterWidgets.clear();
     _filterWidgets.addAll(
-      LangTypeMapper.instance.list.map(
-        (langType) => CheckboxListTile(
-          controlAffinity: ListTileControlAffinity.leading,
-          title: Text(langType.fr),
-          activeColor: Theme.of(context).primaryColor,
-          value: _filter.contains(langType.name),
-          onChanged: (value) async {
-            if (value == true) {
-              await _watchlistMapper.addLangTypeFilter(langType);
-            } else {
-              await _watchlistMapper.removeLangTypeFilter(langType);
-            }
+      LangTypeMapper.instance.list
+          .where((element) => element.name != "UNKNOWN")
+          .map(
+            (langType) => CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.leading,
+              title: Text(langType.fr),
+              activeColor: Theme.of(context).primaryColor,
+              value: _filter.contains(langType.name),
+              onChanged: (value) async {
+                if (value == true) {
+                  await _langTypeFilter.addToFilter(langType.name);
+                } else {
+                  await _langTypeFilter.removeToFilter(langType.name);
+                }
 
-            await _setFilterWidgets(update: true);
-          },
-        ),
-      ),
+                await _setFilterWidgets(update: true);
+              },
+            ),
+          ),
     );
 
     if (update && mounted) {
       setState(() {});
     }
+  }
+
+  List<Widget> filteredEpisodes(WatchlistMapper watchlistMapper) {
+    final filter = watchlistMapper.list
+        .where(
+          (e) =>
+              (e is EpisodeLoaderWidget) ||
+              (e is EpisodeWidget && _filter.contains(e.episode.langType.name)),
+        )
+        .toList();
+
+    return filter.isEmpty ? watchlistMapper.list : filter;
   }
 
   @override
@@ -87,6 +102,7 @@ class _WatchlistViewState extends State<WatchlistView> {
                 );
               },
               body: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: _filterWidgets,
               ),
               isExpanded: _filterIsExpanded,
@@ -101,19 +117,7 @@ class _WatchlistViewState extends State<WatchlistView> {
                 return EpisodeList(
                   key: _key,
                   scrollController: watchlistEpisodeMapper.scrollController,
-                  children: [
-                    if (_filter.isEmpty)
-                      ..._watchlistMapper.list
-                    else
-                      ...watchlistEpisodeMapper.list
-                          .where(
-                            (e) =>
-                                (e is EpisodeLoaderWidget) ||
-                                (e is EpisodeWidget &&
-                                    _filter.contains(e.episode.langType.name)),
-                          )
-                          .toList(),
-                  ],
+                  children: filteredEpisodes(watchlistEpisodeMapper),
                 );
               },
             ),
