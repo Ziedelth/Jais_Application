@@ -10,7 +10,8 @@ import 'const_test.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   final simulcastMapper = SimulcastMapper();
-  const string = "G40AIJwHto1u7QNPckk1rSRlhEqHiRxqyzS9yy1vqdqF5glFsCnV7MNvHvNP6uz1JUvXMDjhAFOfapZ4kuKZH4ZWNC4nPwUZRDDRN0c3B5TnWxcHoYhlQGvy+Yog+Vc6WI8JudU/CQ==";
+  const string =
+      "G40AIJwHto1u7QNPckk1rSRlhEqHiRxqyzS9yy1vqdqF5glFsCnV7MNvHvNP6uz1JUvXMDjhAFOfapZ4kuKZH4ZWNC4nPwUZRDDRN0c3B5TnWxcHoYhlQGvy+Yog+Vc6WI8JudU/CQ==";
 
   group('Test simulcasts', () {
     test('Test transformation', () {
@@ -42,7 +43,6 @@ void main() {
           string,
           size.width,
           size.height,
-          ListView,
         );
       }
     });
@@ -55,7 +55,6 @@ void main() {
           string,
           size.width,
           size.height,
-          ListView,
         );
       }
     });
@@ -68,21 +67,18 @@ Future<void> testOrientation(
   String string,
   double width,
   double height,
-  Type type,
 ) async {
   await testWidget(
     widgetTester,
     simulcastMapper,
     string,
     Size(width, height),
-    type,
   );
   await testWidget(
     widgetTester,
     simulcastMapper,
     string,
     Size(height, width),
-    type,
   );
 }
 
@@ -91,7 +87,6 @@ Future<void> testWidget(
   SimulcastMapper simulcastMapper,
   String string,
   Size size,
-  Type type,
 ) async {
   widgetTester.binding.window.devicePixelRatioTestValue = 1.0;
   widgetTester.binding.window.physicalSizeTestValue = size;
@@ -102,11 +97,12 @@ Future<void> testWidget(
   await widgetTester.pumpWidget(
     MaterialApp(
       home: Scaffold(
-        body: SimulcastList(children: list),
+        body: SingleChildScrollView(
+          child: SimulcastList(children: list),
+        ),
       ),
     ),
   );
 
-  expect(find.byType(type), findsOneWidget);
   expect(find.byType(SimulcastWidget), findsWidgets);
 }

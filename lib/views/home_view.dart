@@ -76,49 +76,46 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: ChangeNotifierProvider<NavbarMapper>.value(
-          value: NavbarMapper.instance,
-          child: Consumer<NavbarMapper>(
-            builder: (context, navbarMapper, _) {
-              return Scaffold(
-                resizeToAvoidBottomInset: false,
-                body: Column(
-                  children: [
-                    Navbar(
-                      onPageChanged: (page) => navbarMapper.currentPage = page,
+      child: ChangeNotifierProvider<NavbarMapper>.value(
+        value: NavbarMapper.instance,
+        child: Consumer<NavbarMapper>(
+          builder: (context, navbarMapper, _) {
+            return Scaffold(
+              resizeToAvoidBottomInset: false,
+              body: Column(
+                children: [
+                  Navbar(
+                    onPageChanged: (page) => navbarMapper.currentPage = page,
+                  ),
+                  Expanded(
+                    child: PageView(
+                      controller: navbarMapper.pageController,
+                      onPageChanged: (i) => navbarMapper.currentPage = i,
+                      children: <Widget>[
+                        const EpisodesView(),
+                        const AnimesView(),
+                        if (MemberMapper.instance.isConnected())
+                          const WatchlistView(),
+                        SettingsView(
+                          onLogin: () => navbarMapper.currentPage = 0,
+                          onLogout: () => navbarMapper.currentPage = 0,
+                        ),
+                      ],
                     ),
-                    Expanded(
-                      child: PageView(
-                        controller: navbarMapper.pageController,
-                        onPageChanged: (i) => navbarMapper.currentPage = i,
-                        children: <Widget>[
-                          const EpisodesView(),
-                          const AnimesView(),
-                          if (MemberMapper.instance.isConnected())
-                            const WatchlistView(),
-                          SettingsView(
-                            onLogin: () => navbarMapper.currentPage = 0,
-                            onLogout: () => navbarMapper.currentPage = 0,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                bottomNavigationBar: BottomNavigationBar(
-                  showSelectedLabels: false,
-                  showUnselectedLabels: false,
-                  selectedItemColor: Theme.of(context).primaryColor,
-                  unselectedItemColor: Colors.grey,
-                  currentIndex: navbarMapper.currentPage,
-                  onTap: (index) => navbarMapper.currentPage = index,
-                  items: navbarMapper.itemsBottomNavBar,
-                ),
-              );
-            },
-          ),
+                  ),
+                ],
+              ),
+              bottomNavigationBar: BottomNavigationBar(
+                showSelectedLabels: false,
+                showUnselectedLabels: false,
+                selectedItemColor: Theme.of(context).primaryColor,
+                unselectedItemColor: Colors.grey,
+                currentIndex: navbarMapper.currentPage,
+                onTap: (index) => navbarMapper.currentPage = index,
+                items: navbarMapper.itemsBottomNavBar,
+              ),
+            );
+          },
         ),
       ),
     );

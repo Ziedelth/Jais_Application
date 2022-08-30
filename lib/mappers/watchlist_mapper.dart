@@ -2,7 +2,6 @@ import 'package:jais/components/episodes/episode_loader_widget.dart';
 import 'package:jais/components/episodes/episode_widget.dart';
 import 'package:jais/mappers/imapper.dart';
 import 'package:jais/models/episode.dart';
-import 'package:jais/models/lang_type.dart';
 import 'package:jais/utils/const.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,30 +19,38 @@ class WatchlistMapper extends IMapper<Episode> {
   @override
   Future<void> updateCurrentPage() async =>
       loadPage(getWatchlistEpisodesUrl(pseudo, currentPage, limit));
+}
 
-  static const _filterKey = "langTypesFilter";
+class WatchlistFilter {
+  final String key;
 
-  Future<List<String>> getLangTypesFilter() async {
+  WatchlistFilter({required this.key});
+
+  Future<List<String>> getFilter() async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    return sharedPreferences.containsKey(_filterKey)
-        ? sharedPreferences.getStringList(_filterKey)!
+    return sharedPreferences.containsKey(key)
+        ? sharedPreferences.getStringList(key)!
         : [];
   }
 
-  Future<void> setLangTypesFilter(List<String> langTypes) async {
+  Future<void> setFilter(List<String> filter) async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.setStringList(_filterKey, langTypes);
+    sharedPreferences.setStringList(key, filter);
   }
 
-  Future<void> addLangTypeFilter(LangType langType) async {
-    final langTypes = await getLangTypesFilter();
-    langTypes.add(langType.name);
-    await setLangTypesFilter(langTypes);
+  Future<void> addToFilter(String string) async {
+    final filter = await getFilter();
+    filter.add(string);
+    await setFilter(filter);
   }
 
-  Future<void> removeLangTypeFilter(LangType langType) async {
-    final langTypes = await getLangTypesFilter();
-    langTypes.remove(langType.name);
-    await setLangTypesFilter(langTypes);
+  Future<void> removeToFilter(String string) async {
+    final filter = await getFilter();
+    filter.remove(string);
+    await setFilter(filter);
   }
+}
+
+class WatchlistLangTypeFilter extends WatchlistFilter {
+  WatchlistLangTypeFilter() : super(key: "langTypesFilter");
 }
