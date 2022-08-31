@@ -87,43 +87,37 @@ class _WatchlistViewState extends State<WatchlistView> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ExpansionPanelList(
-          expansionCallback: (int index, bool isExpanded) {
-            setState(() => _filterIsExpanded = !isExpanded);
-          },
-          children: [
-            ExpansionPanel(
-              headerBuilder: (context, isExpanded) {
-                return const ListTile(
+  Widget build(BuildContext context) => Column(
+        children: [
+          ExpansionPanelList(
+            expansionCallback: (int index, bool isExpanded) {
+              setState(() => _filterIsExpanded = !isExpanded);
+            },
+            children: [
+              ExpansionPanel(
+                headerBuilder: (context, isExpanded) => const ListTile(
                   title: Text('Filtres'),
-                );
-              },
-              body: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: _filterWidgets,
+                ),
+                body: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: _filterWidgets,
+                ),
+                isExpanded: _filterIsExpanded,
               ),
-              isExpanded: _filterIsExpanded,
-            ),
-          ],
-        ),
-        Expanded(
-          child: ChangeNotifierProvider<WatchlistMapper>.value(
-            value: _watchlistMapper,
-            child: Consumer<WatchlistMapper>(
-              builder: (context, watchlistEpisodeMapper, _) {
-                return EpisodeList(
+            ],
+          ),
+          Expanded(
+            child: ChangeNotifierProvider<WatchlistMapper>.value(
+              value: _watchlistMapper,
+              child: Consumer<WatchlistMapper>(
+                builder: (context, watchlistEpisodeMapper, _) => EpisodeList(
                   key: _key,
                   scrollController: watchlistEpisodeMapper.scrollController,
                   children: filteredEpisodes(watchlistEpisodeMapper),
-                );
-              },
+                ),
+              ),
             ),
-          ),
-        )
-      ],
-    );
-  }
+          )
+        ],
+      );
 }

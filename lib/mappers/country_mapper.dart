@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:jais/models/country.dart';
 import 'package:jais/utils/const.dart';
 import 'package:jais/utils/utils.dart';
+import 'package:logger/logger.dart';
 import 'package:url/url.dart';
 
 class CountryMapper {
@@ -22,18 +23,24 @@ class CountryMapper {
   }
 
   Future<void> update() async {
+    if (list.isNotEmpty) return;
+
+    Logger.info('Get all countries...');
     final response = await URL().get(getCountriesUrl());
 
     if (response == null || response.statusCode != 200) {
+      Logger.error('An error occurred while getting all countries');
       return;
     }
 
     final countries = stringTo(fromBrotli(response.body));
 
     if (countries == null || countries.isEmpty) {
+      Logger.error('An error occurred while getting all countries');
       return;
     }
 
+    Logger.debug('Countries: ${countries.length}');
     list = countries;
     // Set the selected country to the first one in the list
     selectedCountry = list.first;

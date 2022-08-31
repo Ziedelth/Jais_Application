@@ -9,13 +9,15 @@ import 'package:stack_trace/stack_trace.dart';
 
 class Logger {
   static final _instance = Logger();
+  final logs = <String>[];
   final _dateFormat = DateFormat('HH:mm:ss.SSSS dd/MM/yyyy');
 
   void log({required LogType logType, required String message}) {
     final frame = Trace.current().frames[2];
 
-    final String format =
+    final format =
         '[${_dateFormat.format(DateTime.now())} ${logType.name.toUpperCase()}\t${frame.member}] $message';
+    logs.add(format);
 
     if (kDebugMode) {
       dev.log(format);

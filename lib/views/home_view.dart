@@ -74,13 +74,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: ChangeNotifierProvider<NavbarMapper>.value(
-        value: NavbarMapper.instance,
-        child: Consumer<NavbarMapper>(
-          builder: (context, navbarMapper, _) {
-            return Scaffold(
+  Widget build(BuildContext context) => SafeArea(
+        child: ChangeNotifierProvider<NavbarMapper>.value(
+          value: NavbarMapper.instance,
+          child: Consumer<NavbarMapper>(
+            builder: (context, navbarMapper, _) => Scaffold(
               resizeToAvoidBottomInset: false,
               body: Column(
                 children: [
@@ -114,10 +112,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 onTap: (index) => navbarMapper.currentPage = index,
                 items: navbarMapper.itemsBottomNavBar,
               ),
-            );
-          },
+            ),
+          ),
         ),
-      ),
-    );
-  }
+      );
 }
