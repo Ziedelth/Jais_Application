@@ -9,6 +9,7 @@ updates:
       - "Ziedelth"
     reviewers:
       - "Ziedelth"
+    versioning-strategy: increase
     target-branch: "dev"
 
   - package-ecosystem: "gradle"
