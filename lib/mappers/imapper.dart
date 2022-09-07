@@ -83,11 +83,11 @@ abstract class IMapper<T> extends ChangeNotifier {
     addLoader();
     final response = await URL().get(url);
 
-    if (response == null || response.statusCode != 200) {
+    if (!response.isOk) {
       return;
     }
 
-    list.addAll(toWidgets(response.body));
+    list.addAll(toWidgets(response!.body));
     removeLoader();
   }
 

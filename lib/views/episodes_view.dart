@@ -8,7 +8,7 @@ class EpisodesView extends StatefulWidget {
   const EpisodesView({super.key});
 
   @override
-  _EpisodesViewState createState() => _EpisodesViewState();
+  State<EpisodesView> createState() => _EpisodesViewState();
 }
 
 class _EpisodesViewState extends State<EpisodesView> {
@@ -35,24 +35,26 @@ class _EpisodesViewState extends State<EpisodesView> {
   }
 
   @override
-  Widget build(BuildContext context) => RefreshIndicator(
-    onRefresh: () async {
-      Logger.info('Refreshing episodes...');
-      _episodeMapper.clear();
-      Logger.info('Loading episodes...');
-      _episodeMapper.updateCurrentPage();
-      Logger.debug('Episodes length: ${_episodeMapper.list.length}');
-      Logger.info('Episodes refreshed.');
-    },
-    child: ChangeNotifierProvider<EpisodeMapper>.value(
-      value: _episodeMapper,
-      child: Consumer<EpisodeMapper>(
-        builder: (context, episodeMapper, _) => EpisodeList(
-          key: _key,
-          scrollController: _episodeMapper.scrollController,
-          children: episodeMapper.list,
+  Widget build(BuildContext context) {
+    return RefreshIndicator(
+      onRefresh: () async {
+        Logger.info('Refreshing episodes...');
+        _episodeMapper.clear();
+        Logger.info('Loading episodes...');
+        _episodeMapper.updateCurrentPage();
+        Logger.debug('Episodes length: ${_episodeMapper.list.length}');
+        Logger.info('Episodes refreshed.');
+      },
+      child: ChangeNotifierProvider<EpisodeMapper>.value(
+        value: _episodeMapper,
+        child: Consumer<EpisodeMapper>(
+          builder: (context, episodeMapper, _) => EpisodeList(
+            key: _key,
+            scrollController: _episodeMapper.scrollController,
+            children: episodeMapper.list,
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }

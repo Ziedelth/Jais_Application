@@ -68,65 +68,65 @@ class AnimesViewState extends State<AnimesView> {
 
   @override
   Widget build(BuildContext context) => RefreshIndicator(
-    onRefresh: () async => init(),
-    child: SingleChildScrollView(
-      controller: _animeMapper.scrollController,
-      child: Column(
-        children: [
-          ChangeNotifierProvider<SimulcastMapper>.value(
-            value: _simulcastMapper,
-            child: Consumer<SimulcastMapper>(
-              builder: (context, simulcastMapper, _) => SimulcastList(
-                scrollController: simulcastMapper.scrollController,
-                children: simulcastMapper
-                    .toWidgetsSelected(_animeMapper.simulcast)
-                    .map(
-                      (e) => e is SimulcastWidget
-                      ? GestureDetector(
-                    onTap: () {
-                      Logger.info(
-                        'Changing simulcast to ${e.simulcast}...',
-                      );
-                      _animeMapper.scrollController.jumpTo(0);
-                      _animeMapper.simulcast = e.simulcast;
-                      Logger.info('Loading animes...');
-                      rebuildAnimes(force: true);
-                      Logger.debug(
-                        'Animes length: ${_animeMapper.list.length}',
-                      );
-                      setState(() {});
-                    },
-                    child: e,
-                  )
-                      : e,
-                )
-                    .toList(),
-              ),
-            ),
-          ),
-          ChangeNotifierProvider<AnimeMapper>.value(
-            value: _animeMapper,
-            child: Consumer<AnimeMapper>(
-              builder: (context, animeMapper, _) => AnimeList(
-                children: animeMapper.list
-                    .map<Widget>(
-                      (e) => GestureDetector(
-                    child: e,
-                    onTap: () => e is AnimeWidget
-                        ? Navigator.pushNamed(
-                      context,
-                      '/anime',
-                      arguments: e.anime,
-                    )
-                        : null,
+        onRefresh: () async => init(),
+        child: SingleChildScrollView(
+          controller: _animeMapper.scrollController,
+          child: Column(
+            children: [
+              ChangeNotifierProvider<SimulcastMapper>.value(
+                value: _simulcastMapper,
+                child: Consumer<SimulcastMapper>(
+                  builder: (context, simulcastMapper, _) => SimulcastList(
+                    scrollController: simulcastMapper.scrollController,
+                    children: simulcastMapper
+                        .toWidgetsSelected(_animeMapper.simulcast)
+                        .map(
+                          (e) => e is SimulcastWidget
+                              ? GestureDetector(
+                                  onTap: () {
+                                    Logger.info(
+                                      'Changing simulcast to ${e.simulcast.simulcast}...',
+                                    );
+                                    _animeMapper.scrollController.jumpTo(0);
+                                    _animeMapper.simulcast = e.simulcast;
+                                    Logger.info('Loading animes...');
+                                    rebuildAnimes(force: true);
+                                    Logger.debug(
+                                      'Animes length: ${_animeMapper.list.length}',
+                                    );
+                                    setState(() {});
+                                  },
+                                  child: e,
+                                )
+                              : e,
+                        )
+                        .toList(),
                   ),
-                )
-                    .toList(),
+                ),
               ),
-            ),
+              ChangeNotifierProvider<AnimeMapper>.value(
+                value: _animeMapper,
+                child: Consumer<AnimeMapper>(
+                  builder: (context, animeMapper, _) => AnimeList(
+                    children: animeMapper.list
+                        .map<Widget>(
+                          (e) => GestureDetector(
+                            child: e,
+                            onTap: () => e is AnimeWidget
+                                ? Navigator.pushNamed(
+                                    context,
+                                    '/anime',
+                                    arguments: e.anime,
+                                  )
+                                : null,
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-    ),
-  );
+        ),
+      );
 }

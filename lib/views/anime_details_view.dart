@@ -12,7 +12,7 @@ class AnimeDetailsView extends StatefulWidget {
   const AnimeDetailsView(this._anime, {super.key});
 
   @override
-  _AnimeDetailsViewState createState() => _AnimeDetailsViewState();
+  State<AnimeDetailsView> createState() => _AnimeDetailsViewState();
 }
 
 class _AnimeDetailsViewState extends State<AnimeDetailsView> {

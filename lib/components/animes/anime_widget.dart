@@ -27,9 +27,11 @@ class AnimeWidget extends StatelessWidget {
 
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => AnimeUpdateView(
-              anime: anime,
-            ),
+            builder: (context) {
+              return AnimeUpdateView(
+                anime: anime,
+              );
+            },
           ),
         );
       },

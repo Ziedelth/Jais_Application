@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:jais/mappers/country_mapper.dart';
 import 'package:jais/mappers/episode_type_mapper.dart';
+import 'package:jais/mappers/genre_mapper.dart';
 import 'package:jais/mappers/lang_type_mapper.dart';
 import 'package:jais/mappers/member_mapper.dart';
+import 'package:jais/mappers/platform_mapper.dart';
 import 'package:jais/models/anime.dart';
 import 'package:jais/utils/utils.dart';
 import 'package:jais/views/anime_details_view.dart';
@@ -40,14 +42,17 @@ Future<void> main() async {
     );
   }
 
-  Logger.info('Initializing Member Mapper...');
-  await MemberMapper.instance.init();
-  Logger.info('Initializing Country Mapper...');
-  await CountryMapper().update();
-  Logger.info('Initializing Lang Type Mapper...');
-  LangTypeMapper.instance.update();
-  Logger.info('Initializing Episode Type Mapper...');
-  EpisodeTypeMapper.instance.update();
+  Logger.info('Initializing mappers...');
+
+  await Future.wait([
+    MemberMapper.instance.init(),
+    CountryMapper.instance.update(),
+    EpisodeTypeMapper.instance.update(),
+    GenreMapper.instance.update(),
+    LangTypeMapper.instance.update(),
+    PlatformMapper.instance.update(),
+  ]);
+
   Logger.info('Running app...');
   runApp(const MyApp());
 }
@@ -58,59 +63,68 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) => MaterialApp(
-        title: "Jaïs",
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          backgroundColor: Colors.white,
-          brightness: Brightness.light,
-          useMaterial3: true,
-          primaryColor: _mainColor,
-          colorScheme: ColorScheme.fromSeed(seedColor: _mainColor),
-        ),
-        darkTheme: ThemeData(
-          backgroundColor: Colors.black,
-          brightness: Brightness.dark,
-          useMaterial3: true,
-          primaryColor: _mainColor,
-          primarySwatch: MaterialColor(_mainColor.value, mainColors),
-          scaffoldBackgroundColor: Colors.black,
-        ),
-        onGenerateRoute: (RouteSettings settings) {
-          final arguments = settings.arguments;
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: "Jaïs",
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        backgroundColor: Colors.white,
+        brightness: Brightness.light,
+        useMaterial3: true,
+        primaryColor: _mainColor,
+        colorScheme: ColorScheme.fromSeed(seedColor: _mainColor),
+      ),
+      darkTheme: ThemeData(
+        backgroundColor: Colors.black,
+        brightness: Brightness.dark,
+        useMaterial3: true,
+        primaryColor: _mainColor,
+        primarySwatch: MaterialColor(_mainColor.value, mainColors),
+        scaffoldBackgroundColor: Colors.black,
+      ),
+      onGenerateRoute: (RouteSettings settings) {
+        final arguments = settings.arguments;
 
-          final routes = {
-            '/': (context) => const MyHomePage(),
-            '/search': (context) => const AnimeSearchView(),
-            '/anime': (context) => AnimeDetailsView(arguments! as Anime),
-          };
+        final routes = {
+          '/': (context) => const MyHomePage(),
+          '/search': (context) => const AnimeSearchView(),
+          '/anime': (context) => AnimeDetailsView(arguments! as Anime),
+        };
 
-          if (settings.name != '/') {
-            return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => SafeArea(
+        if (settings.name != '/') {
+          return PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) {
+              return SafeArea(
                 child: Scaffold(
                   resizeToAvoidBottomInset: false,
                   body: routes[settings.name]?.call(context) ??
                       const MyHomePage(),
                 ),
-              ),
-              transitionsBuilder:
-                  (context, animation, secondaryAnimation, child) =>
-                      SlideTransition(
+              );
+            },
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              return SlideTransition(
                 position: animation.drive(
                   Tween(begin: const Offset(0.0, 1.0), end: Offset.zero).chain(
                     CurveTween(curve: Curves.ease),
                   ),
                 ),
                 child: child,
-              ),
-            );
-          }
-
-          return MaterialPageRoute(
-            builder: routes[settings.name] ?? (context) => const MyHomePage(),
+              );
+            },
           );
-        },
-        initialRoute: '/',
-      );
+        }
+
+        return MaterialPageRoute(
+          builder: (context) {
+            return SafeArea(
+              child: routes[settings.name]?.call(context) ?? const MyHomePage(),
+            );
+          },
+        );
+      },
+      initialRoute: '/',
+    );
+  }
 }

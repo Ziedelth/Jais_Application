@@ -12,7 +12,7 @@ class WatchlistView extends StatefulWidget {
   const WatchlistView({super.key});
 
   @override
-  _WatchlistViewState createState() => _WatchlistViewState();
+  State<WatchlistView> createState() => _WatchlistViewState();
 }
 
 class _WatchlistViewState extends State<WatchlistView> {
@@ -29,25 +29,23 @@ class _WatchlistViewState extends State<WatchlistView> {
 
     _filterWidgets.clear();
     _filterWidgets.addAll(
-      LangTypeMapper.instance.list
-          .where((element) => element.name != "UNKNOWN")
-          .map(
-            (langType) => CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.leading,
-              title: Text(langType.fr),
-              activeColor: Theme.of(context).primaryColor,
-              value: _filter.contains(langType.name),
-              onChanged: (value) async {
-                if (value == true) {
-                  await _langTypeFilter.addToFilter(langType.name);
-                } else {
-                  await _langTypeFilter.removeToFilter(langType.name);
-                }
+      LangTypeMapper.instance.list.map(
+        (langType) => CheckboxListTile(
+          controlAffinity: ListTileControlAffinity.leading,
+          title: Text(langType.fr),
+          activeColor: Theme.of(context).primaryColor,
+          value: _filter.contains(langType.name),
+          onChanged: (value) async {
+            if (value == true) {
+              await _langTypeFilter.addToFilter(langType.name);
+            } else {
+              await _langTypeFilter.removeToFilter(langType.name);
+            }
 
-                await _setFilterWidgets(update: true);
-              },
-            ),
-          ),
+            await _setFilterWidgets(update: true);
+          },
+        ),
+      ),
     );
 
     if (update && mounted) {
@@ -87,37 +85,39 @@ class _WatchlistViewState extends State<WatchlistView> {
   }
 
   @override
-  Widget build(BuildContext context) => Column(
-        children: [
-          ExpansionPanelList(
-            expansionCallback: (int index, bool isExpanded) {
-              setState(() => _filterIsExpanded = !isExpanded);
-            },
-            children: [
-              ExpansionPanel(
-                headerBuilder: (context, isExpanded) => const ListTile(
-                  title: Text('Filtres'),
-                ),
-                body: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: _filterWidgets,
-                ),
-                isExpanded: _filterIsExpanded,
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ExpansionPanelList(
+          expansionCallback: (int index, bool isExpanded) {
+            setState(() => _filterIsExpanded = !isExpanded);
+          },
+          children: [
+            ExpansionPanel(
+              headerBuilder: (context, isExpanded) => const ListTile(
+                title: Text('Filtres'),
               ),
-            ],
-          ),
-          Expanded(
-            child: ChangeNotifierProvider<WatchlistMapper>.value(
-              value: _watchlistMapper,
-              child: Consumer<WatchlistMapper>(
-                builder: (context, watchlistEpisodeMapper, _) => EpisodeList(
-                  key: _key,
-                  scrollController: watchlistEpisodeMapper.scrollController,
-                  children: filteredEpisodes(watchlistEpisodeMapper),
-                ),
+              body: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: _filterWidgets,
+              ),
+              isExpanded: _filterIsExpanded,
+            ),
+          ],
+        ),
+        Expanded(
+          child: ChangeNotifierProvider<WatchlistMapper>.value(
+            value: _watchlistMapper,
+            child: Consumer<WatchlistMapper>(
+              builder: (context, watchlistEpisodeMapper, _) => EpisodeList(
+                key: _key,
+                scrollController: watchlistEpisodeMapper.scrollController,
+                children: filteredEpisodes(watchlistEpisodeMapper),
               ),
             ),
-          )
-        ],
-      );
+          ),
+        )
+      ],
+    );
+  }
 }

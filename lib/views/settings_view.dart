@@ -14,7 +14,7 @@ class SettingsView extends StatefulWidget {
   const SettingsView({this.onLogin, this.onLogout, super.key});
 
   @override
-  _SettingsViewState createState() => _SettingsViewState();
+  State<SettingsView> createState() => _SettingsViewState();
 }
 
 class _SettingsViewState extends State<SettingsView> {
@@ -34,7 +34,7 @@ class _SettingsViewState extends State<SettingsView> {
             icon: const Icon(Icons.flag),
             title: 'Pays',
             widgets: [
-              for (final country in CountryMapper.list)
+              for (final country in CountryMapper.instance.list)
                 FullWidget(
                   widget: ElevatedButton(
                     onPressed: null,

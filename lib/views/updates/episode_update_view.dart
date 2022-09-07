@@ -20,26 +20,10 @@ class EpisodeUpdateView extends StatefulWidget {
   });
 
   @override
-  _EpisodeUpdateViewState createState() => _EpisodeUpdateViewState();
+  State<EpisodeUpdateView> createState() => _EpisodeUpdateViewState();
 }
 
 class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Future.wait([
-        PlatformMapper.instance.update(),
-        EpisodeTypeMapper.instance.update(),
-        LangTypeMapper.instance.update(),
-      ]);
-
-      if (!mounted) return;
-      setState(() {});
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,22 +38,23 @@ class _EpisodeUpdateViewState extends State<EpisodeUpdateView> {
           IconButton(
             icon: const Icon(Icons.send),
             onPressed: () async {
-              if (MemberMapper.instance.getMember()?.role != MemberRole.admin) {
+              final member = MemberMapper.instance.getMember();
+
+              if (member?.role != MemberRole.admin) {
                 return;
               }
 
               final response = await URL().put(
                 getEpisodesUpdateUrl(),
                 headers: {
-                  'Authorization':
-                      MemberMapper.instance.getMember()?.token ?? '',
+                  'Authorization': member?.token ?? '',
                 },
                 body: jsonEncode(widget.episode.toJson()),
               );
 
               if (!mounted) return;
 
-              if (response == null || response.statusCode != 200) {
+              if (!response.isOk) {
                 showSnackBar(context, 'Erreur lors de la mise à jour');
                 return;
               }
