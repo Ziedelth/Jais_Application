@@ -18,9 +18,11 @@ Anime _$AnimeFromJson(Map<String, dynamic> json) => Anime(
       json['url'] as String?,
       json['image'] as String,
       json['description'] as String?,
+      json['inWatchlist'] as int,
     );
 
-Map<String, dynamic> _$AnimeToJson(Anime instance) => <String, dynamic>{
+Map<String, dynamic> _$AnimeToJson(Anime instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'codes': instance.codes,
       'genres': instance.genres.map((e) => e.toJson()).toList(),
@@ -30,4 +32,5 @@ Map<String, dynamic> _$AnimeToJson(Anime instance) => <String, dynamic>{
       'url': instance.url,
       'image': instance.image,
       'description': instance.description,
+      'inWatchlist': instance.inWatchlist,
     };
