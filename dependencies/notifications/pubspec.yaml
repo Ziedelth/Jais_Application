@@ -9,8 +9,8 @@ environment:
   flutter: ">=3.0.0"
 
 dependencies:
-  firebase_core: ^1.21.1
-  firebase_messaging: ^13.0.0
+  firebase_core: ^1.22.0
+  firebase_messaging: ^13.0.1
   flutter:
     sdk: flutter
   shared_preferences: ^2.0.15

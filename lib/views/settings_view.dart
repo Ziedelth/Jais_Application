@@ -3,6 +3,7 @@ import 'package:jais/components/full_widget.dart';
 import 'package:jais/components/section_widget.dart';
 import 'package:jais/mappers/country_mapper.dart';
 import 'package:jais/mappers/member_mapper.dart';
+import 'package:jais/utils/utils.dart';
 import 'package:jais/views/members/login_view.dart';
 import 'package:jais/views/members/register_view.dart';
 import 'package:notifications/notifications.dart';
@@ -144,6 +145,24 @@ class _SettingsViewState extends State<SettingsView> {
                 ),
               ],
             ),
+          const SectionWidget(
+            icon: Icon(Icons.thumb_up),
+            title: 'Soutenir',
+            widgets: [
+              FullWidget(
+                widget: ElevatedButton(
+                  onPressed: showVideoAd,
+                  child: Text('Regarder une publicité'),
+                ),
+              ),
+              FullWidget(
+                widget: ElevatedButton(
+                  onPressed: null,
+                  child: Text('Laisser un commentaire'),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );

@@ -11,6 +11,6 @@ class EpisodeTypeMapper extends JMapper<EpisodeType> {
   @override
   Future<void> update() async {
     await super.update();
-    list.retainWhere((element) => element.name == 'UNKNOWN');
+    list.retainWhere((element) => element.name != 'UNKNOWN');
   }
 }

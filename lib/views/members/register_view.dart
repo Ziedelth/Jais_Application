@@ -28,6 +28,7 @@ class _RegisterViewState extends State<RegisterView> {
   // Password confirmation text form controller
   final _passwordConfirmationController = TextEditingController();
   bool _isLoading = false;
+  bool _passwordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -63,20 +64,44 @@ class _RegisterViewState extends State<RegisterView> {
               // Password text form field
               TextFormField(
                 controller: _passwordController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Mot de passe',
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _passwordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _passwordVisible = !_passwordVisible;
+                      });
+                    },
+                  ),
                 ),
-                obscureText: true,
+                obscureText: !_passwordVisible,
                 inputFormatters: MemberMapper.instance.inputFormatters,
               ),
               const SizedBox(height: 16),
               // Confirm password text form field
               TextFormField(
                 controller: _passwordConfirmationController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Confirmer votre mot de passe',
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _passwordVisible
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _passwordVisible = !_passwordVisible;
+                      });
+                    },
+                  ),
                 ),
-                obscureText: true,
+                obscureText: !_passwordVisible,
                 inputFormatters: MemberMapper.instance.inputFormatters,
               ),
               const SizedBox(height: 32),
@@ -192,8 +217,7 @@ class _RegisterViewState extends State<RegisterView> {
                             );
 
                             // If response is null or response code is not 201, return an error
-                            if (response == null ||
-                                response.statusCode != 201) {
+                            if (!response.isCorrect(201)) {
                               if (!mounted) return;
                               setState(() {
                                 _isLoading = false;

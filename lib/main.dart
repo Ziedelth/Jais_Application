@@ -28,8 +28,18 @@ Future<void> main() async {
   };
 
   Logger.info('Initializing...');
-  Logger.info('Initializing Google Mobile Ads...');
-  await MobileAds.instance.initialize();
+
+  try {
+    Logger.info('Initializing Google Mobile Ads...');
+    await MobileAds.instance.initialize();
+    createGlobalBanner();
+  } catch (exception, stacktrace) {
+    Logger.error(
+      'An error occurred while initializing Google Mobile Ads',
+      exception,
+      stacktrace,
+    );
+  }
 
   try {
     Logger.info('Initializing Notifications...');

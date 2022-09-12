@@ -24,6 +24,7 @@ class _LoginViewState extends State<LoginView> {
   // Password text form controller
   final _passwordController = TextEditingController();
   bool _isLoading = false;
+  bool _passwordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -50,10 +51,22 @@ class _LoginViewState extends State<LoginView> {
               // Password text form field
               TextFormField(
                 controller: _passwordController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Mot de passe',
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _passwordVisible
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _passwordVisible = !_passwordVisible;
+                      });
+                    },
+                  ),
                 ),
-                obscureText: true,
+                obscureText: !_passwordVisible,
                 inputFormatters: MemberMapper.instance.inputFormatters,
               ),
               const SizedBox(height: 32),
@@ -128,8 +141,7 @@ class _LoginViewState extends State<LoginView> {
                             );
 
                             // If response is null or response code is not 200, return an error
-                            if (response == null ||
-                                response.statusCode != 200) {
+                            if (!response.isOk) {
                               if (!mounted) return;
                               setState(() {
                                 _isLoading = false;
@@ -146,7 +158,7 @@ class _LoginViewState extends State<LoginView> {
 
                             // Decode response to member
                             final member = Member.fromJson(
-                              jsonDecode(fromBrotli(response.body))
+                              jsonDecode(fromBrotli(response!.body))
                                   as Map<String, dynamic>,
                             );
 
