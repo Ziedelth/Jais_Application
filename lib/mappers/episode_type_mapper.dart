@@ -1,41 +1,16 @@
-import 'dart:convert';
-
+import 'package:jais/mappers/jmapper.dart';
 import 'package:jais/models/episode_type.dart';
 import 'package:jais/utils/const.dart';
-import 'package:jais/utils/utils.dart';
-import 'package:url/url.dart';
 
-class EpisodeTypeMapper {
+class EpisodeTypeMapper extends JMapper<EpisodeType> {
   static final instance = EpisodeTypeMapper();
-  List<EpisodeType> list = [];
 
-  List<EpisodeType>? stringToEpisodeTypes(String? string) {
-    if (string == null) return null;
+  EpisodeTypeMapper()
+      : super(url: getEpisodeTypesUrl(), fromJson: EpisodeType.fromJson);
 
-    try {
-      return (jsonDecode(string) as List<dynamic>)
-          .map((e) => EpisodeType.fromJson(e as Map<String, dynamic>))
-          .toList();
-    } catch (_) {
-      return null;
-    }
-  }
-
+  @override
   Future<void> update() async {
-    if (list.isNotEmpty) return;
-
-    final response = await URL().get(getEpisodeTypesUrl());
-
-    if (response == null || response.statusCode != 200) {
-      return;
-    }
-
-    final episodeTypes = stringToEpisodeTypes(fromBrotli(response.body));
-
-    if (episodeTypes == null || episodeTypes.isEmpty) {
-      return;
-    }
-
-    list = episodeTypes;
+    await super.update();
+    list.retainWhere((element) => element.name != 'UNKNOWN');
   }
 }

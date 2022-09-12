@@ -1,41 +1,15 @@
-import 'dart:convert';
-
+import 'package:jais/mappers/jmapper.dart';
 import 'package:jais/models/genre.dart';
 import 'package:jais/utils/const.dart';
-import 'package:jais/utils/utils.dart';
-import 'package:url/url.dart';
 
-class GenreMapper {
+class GenreMapper extends JMapper<Genre> {
   static final instance = GenreMapper();
-  List<Genre> list = [];
 
-  List<Genre>? stringToGenres(String? string) {
-    if (string == null) return null;
+  GenreMapper() : super(url: getGenresUrl(), fromJson: Genre.fromJson);
 
-    try {
-      return (jsonDecode(string) as List<dynamic>)
-          .map((e) => Genre.fromJson(e as Map<String, dynamic>))
-          .toList();
-    } catch (_) {
-      return null;
-    }
-  }
-
+  @override
   Future<void> update() async {
-    if (list.isNotEmpty) return;
-
-    final response = await URL().get(getGenresUrl());
-
-    if (response == null || response.statusCode != 200) {
-      return;
-    }
-
-    final genres = stringToGenres(fromBrotli(response.body));
-
-    if (genres == null || genres.isEmpty) {
-      return;
-    }
-
-    list = genres;
+    await super.update();
+    list.retainWhere((element) => element.name == 'UNKNOWN');
   }
 }

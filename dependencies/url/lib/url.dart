@@ -2,6 +2,13 @@ library url;
 
 import 'package:http/http.dart' as http;
 
+extension UrlExtension on http.Response? {
+  bool get isOk => this != null && this?.statusCode == 200;
+
+  bool isCorrect(int statusCode) =>
+      this != null && this?.statusCode == statusCode;
+}
+
 class URL {
   Future<http.Response?> get(
     String url, {

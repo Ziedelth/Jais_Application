@@ -8,7 +8,7 @@ class EpisodesView extends StatefulWidget {
   const EpisodesView({super.key});
 
   @override
-  _EpisodesViewState createState() => _EpisodesViewState();
+  State<EpisodesView> createState() => _EpisodesViewState();
 }
 
 class _EpisodesViewState extends State<EpisodesView> {
@@ -48,13 +48,11 @@ class _EpisodesViewState extends State<EpisodesView> {
       child: ChangeNotifierProvider<EpisodeMapper>.value(
         value: _episodeMapper,
         child: Consumer<EpisodeMapper>(
-          builder: (context, episodeMapper, _) {
-            return EpisodeList(
-              key: _key,
-              scrollController: _episodeMapper.scrollController,
-              children: episodeMapper.list,
-            );
-          },
+          builder: (context, episodeMapper, _) => EpisodeList(
+            key: _key,
+            scrollController: _episodeMapper.scrollController,
+            children: episodeMapper.list,
+          ),
         ),
       ),
     );

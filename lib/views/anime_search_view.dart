@@ -8,7 +8,7 @@ class AnimeSearchView extends StatefulWidget {
   const AnimeSearchView({super.key});
 
   @override
-  _AnimeSearchViewState createState() => _AnimeSearchViewState();
+  State<AnimeSearchView> createState() => _AnimeSearchViewState();
 }
 
 class _AnimeSearchViewState extends State<AnimeSearchView> {
