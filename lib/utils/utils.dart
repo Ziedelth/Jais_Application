@@ -24,7 +24,15 @@ void createGlobalBanner() {
   globalBannerAd?.load();
 }
 
+bool _showAds = true;
+
 Future<void> showVideoAd({VoidCallback? callback}) async {
+  if (!_showAds) {
+    return;
+  }
+
+  _showAds = false;
+
   await RewardedAd.load(
     adUnitId: 'ca-app-pub-5658764393995798/3650456466',
     request: const AdRequest(),
@@ -33,10 +41,13 @@ Future<void> showVideoAd({VoidCallback? callback}) async {
         ad.show(
           onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {
             callback?.call();
+            _showAds = true;
           },
         );
       },
-      onAdFailedToLoad: (LoadAdError error) {},
+      onAdFailedToLoad: (LoadAdError error) {
+        _showAds = true;
+      },
     ),
   );
 }

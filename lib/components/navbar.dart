@@ -16,40 +16,38 @@ class Navbar extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 50,
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Row(
-        children: [
-          GestureDetector(
-            onLongPress: showVideoAd,
-            child: RoundBorderWidget(widget: Image.asset('assets/icon.png')),
-          ),
-          const SizedBox(width: 10),
-          Text(
-            'Jaïs',
-            style: GoogleFonts.pacifico(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).primaryColor,
+  Widget build(BuildContext context) => Container(
+        height: 50,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Row(
+          children: [
+            GestureDetector(
+              onLongPress: showVideoAd,
+              child: RoundBorderWidget(widget: Image.asset('assets/icon.png')),
             ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: globalBannerAd != null
-                ? AdWidget(ad: globalBannerAd!)
-                : ColoredBox(color: Theme.of(context).backgroundColor),
-          ),
-          const SizedBox(width: 10),
-          if (NavbarMapper.instance.currentPage == 1) ...[
-            IconButton(
-              icon: const Icon(Icons.search),
-              onPressed: () => Navigator.pushNamed(context, "/search"),
+            const SizedBox(width: 10),
+            Text(
+              'Jaïs',
+              style: GoogleFonts.pacifico(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor,
+              ),
             ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: globalBannerAd != null
+                  ? AdWidget(ad: globalBannerAd!)
+                  : ColoredBox(color: Theme.of(context).backgroundColor),
+            ),
+            const SizedBox(width: 10),
+            if (NavbarMapper.instance.currentPage == 1) ...[
+              IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () => Navigator.pushNamed(context, "/search"),
+              ),
+            ],
           ],
-        ],
-      ),
-    );
-  }
+        ),
+      );
 }

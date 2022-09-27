@@ -75,13 +75,13 @@ class MemberMapper {
         },
       );
 
-      if (response == null || response.statusCode != 200) {
+      if (!response.isOk) {
         await setMember(null);
         throw Exception("Error while logging in");
       }
 
       Logger.debug('Decoding response...');
-      Logger.debug(response.body);
+      Logger.debug(response!.body);
 
       final member = Member.fromJson(
         jsonDecode(fromBrotli(response.body)) as Map<String, dynamic>,

@@ -36,6 +36,7 @@ abstract class IMapper<T> extends ChangeNotifier {
           await updateCurrentPage();
           isLoading = false;
           canLoadMore = list.length % limit == 0;
+          Logger.debug('Can load more: $canLoadMore');
         }
       });
     }
@@ -55,6 +56,8 @@ abstract class IMapper<T> extends ChangeNotifier {
   void clear() {
     currentPage = 1;
     list.clear();
+    isLoading = false;
+    canLoadMore = true;
     addLoader();
   }
 
@@ -80,11 +83,11 @@ abstract class IMapper<T> extends ChangeNotifier {
     addLoader();
     final response = await URL().get(url);
 
-    if (response == null || response.statusCode != 200) {
+    if (!response.isOk) {
       return;
     }
 
-    list.addAll(toWidgets(response.body));
+    list.addAll(toWidgets(response!.body));
     removeLoader();
   }
 

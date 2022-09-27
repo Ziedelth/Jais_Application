@@ -15,7 +15,7 @@ class AnimeUpdateView extends StatefulWidget {
   const AnimeUpdateView({required this.anime, super.key});
 
   @override
-  _AnimeUpdateViewState createState() => _AnimeUpdateViewState();
+  State<AnimeUpdateView> createState() => _AnimeUpdateViewState();
 }
 
 class _AnimeUpdateViewState extends State<AnimeUpdateView>
@@ -27,15 +27,6 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Future.wait([
-        GenreMapper.instance.update(),
-      ]);
-
-      if (!mounted) return;
-      setState(() {});
-    });
   }
 
   @override
@@ -52,22 +43,23 @@ class _AnimeUpdateViewState extends State<AnimeUpdateView>
           IconButton(
             icon: const Icon(Icons.send),
             onPressed: () async {
-              if (MemberMapper.instance.getMember()?.role != MemberRole.admin) {
+              final member = MemberMapper.instance.getMember();
+
+              if (member?.role != MemberRole.admin) {
                 return;
               }
 
               final response = await URL().put(
                 getAnimesUpdateUrl(),
                 headers: {
-                  'Authorization':
-                      MemberMapper.instance.getMember()?.token ?? '',
+                  'Authorization': member?.token ?? '',
                 },
                 body: jsonEncode(widget.anime.toJson()),
               );
 
               if (!mounted) return;
 
-              if (response == null || response.statusCode != 200) {
+              if (!response.isOk) {
                 showSnackBar(context, 'Erreur lors de la mise à jour');
                 return;
               }

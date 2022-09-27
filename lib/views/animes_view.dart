@@ -61,25 +61,23 @@ class AnimesViewState extends State<AnimesView> {
       _animeMapper.simulcast = simulcast;
 
       Logger.info('Loading animes...');
-      rebuildAnimes();
+      await rebuildAnimes();
       Logger.debug('Animes length: ${_animeMapper.list.length}');
     }
   }
 
   @override
-  Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () async => init(),
-      child: Column(
-        children: [
-          Expanded(
-            child: ChangeNotifierProvider<SimulcastMapper>.value(
-              value: _simulcastMapper,
-              child: Consumer<SimulcastMapper>(
-                builder: (context, simulcastMapper, _) {
-                  return SimulcastList(
+  Widget build(BuildContext context) => RefreshIndicator(
+        onRefresh: () async => init(),
+        child: SingleChildScrollView(
+          controller: _animeMapper.scrollController,
+          child: Column(
+            children: [
+              ChangeNotifierProvider<SimulcastMapper>.value(
+                value: _simulcastMapper,
+                child: Consumer<SimulcastMapper>(
+                  builder: (context, simulcastMapper, _) => SimulcastList(
                     scrollController: simulcastMapper.scrollController,
-                    simulcast: _animeMapper.simulcast,
                     children: simulcastMapper
                         .toWidgetsSelected(_animeMapper.simulcast)
                         .map(
@@ -87,12 +85,11 @@ class AnimesViewState extends State<AnimesView> {
                               ? GestureDetector(
                                   onTap: () {
                                     Logger.info(
-                                      'Changing simulcast to ${e.simulcast}...',
+                                      'Changing simulcast to ${e.simulcast.simulcast}...',
                                     );
                                     _animeMapper.scrollController.jumpTo(0);
                                     _animeMapper.simulcast = e.simulcast;
                                     Logger.info('Loading animes...');
-                                    _animeMapper.clear();
                                     rebuildAnimes(force: true);
                                     Logger.debug(
                                       'Animes length: ${_animeMapper.list.length}',
@@ -104,19 +101,13 @@ class AnimesViewState extends State<AnimesView> {
                               : e,
                         )
                         .toList(),
-                  );
-                },
+                  ),
+                ),
               ),
-            ),
-          ),
-          Expanded(
-            flex: 9,
-            child: ChangeNotifierProvider<AnimeMapper>.value(
-              value: _animeMapper,
-              child: Consumer<AnimeMapper>(
-                builder: (context, animeMapper, _) {
-                  return AnimeList(
-                    scrollController: animeMapper.scrollController,
+              ChangeNotifierProvider<AnimeMapper>.value(
+                value: _animeMapper,
+                child: Consumer<AnimeMapper>(
+                  builder: (context, animeMapper, _) => AnimeList(
                     children: animeMapper.list
                         .map<Widget>(
                           (e) => GestureDetector(
@@ -131,13 +122,11 @@ class AnimesViewState extends State<AnimesView> {
                           ),
                         )
                         .toList(),
-                  );
-                },
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      );
 }

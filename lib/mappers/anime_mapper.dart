@@ -29,10 +29,10 @@ class AnimeMapper extends IMapper<Anime> {
   }) async {
     final response = await URL().get(getAnimesSearchUrl(query));
 
-    if (response == null || response.statusCode != 200) {
+    if (!response.isOk) {
       return null;
     }
 
-    return toWidgets(response.body);
+    return toWidgets(response!.body);
   }
 }

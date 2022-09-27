@@ -16,6 +16,7 @@ class Anime {
   String? url;
   String image;
   String? description;
+  final int inWatchlist;
 
   @JsonKey(ignore: true)
   final List<Episode> episodes = <Episode>[];
@@ -30,6 +31,7 @@ class Anime {
     this.url,
     this.image,
     this.description,
+    this.inWatchlist,
   );
 
   factory Anime.fromJson(Map<String, dynamic> data) => _$AnimeFromJson(data);
@@ -51,6 +53,7 @@ class Anime {
       url,
       image,
       description ?? this.description,
+      inWatchlist,
     );
   }
 }
