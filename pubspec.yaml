@@ -27,7 +27,7 @@ dependencies:
   shimmer: ^2.0.0
   url:
     path: dependencies/url
-  url_launcher: ^6.1.5
+  url_launcher: ^6.1.6
 
 dev_dependencies:
   build_runner: ^2.2.0
