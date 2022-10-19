@@ -1,5 +1,8 @@
 # Jaïs
 
+## DEPRECATED
+Look https://github.com/Z-Jais/Application for the latest version
+
 ---
 Pour ajouter un model
 
